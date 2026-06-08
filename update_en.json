@@ -1,0 +1,10 @@
+{
+  "version": "1.0.5",
+  "release_date": "06-06-2025",
+  "download_url_setup": "https://github.com/ZitTechLab/HyperLis/releases/download/Update/HyperLis_Setup_v1.0.5.exe",
+  "content":[
+    "Add Feature: Auto update",
+    "FixBug"
+  ],
+  "is_critical": false
+}
