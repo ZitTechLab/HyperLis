@@ -4,7 +4,13 @@
   "download_url_setup": "https://github.com/ZitTechLab/HyperLis/releases/download/Update/HyperLis_Setup_v1.0.5.exe",
   "content":[
     "Add Feature: Auto update",
-    "Fix Bug"
+    "Fix Bug",
+    "Added Windows Edition Conversion feature via SKUs: Easily convert to any Windows edition without reinstalling Windows.",
+    "Revamped the Office download and installation interface: Separated into a distinct tab with support for various Office versions.",
+    "Added applications to Downloads: Clipchamp, OpenShot, WPS, Polaris, Only Office.",
+    "Fixed an issue where the Enhance Privacy feature failed to open on some machines.",
+    "Fixed calendar opening bug when activating Optimize for Extreme Gaming: Using this feature will now automatically enable 'Disable Notification Center' on the Taskbar.",
+    "Improved the logging algorithm."
   ],
   "size": "100 MB",
   "is_critical": false
