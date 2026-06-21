@@ -1,16 +1,16 @@
 {
-  "version": "1.0.6",
-  "release_date": "10-06-2025",
+  "version": "1.0.5",
+  "release_date": "22-06-2025",
   "download_url_setup": "https://github.com/ZitTechLab/HyperLis/releases/download/Update/HyperLis_Setup_v1.0.5.exe",
   "content":[
-    "Bổ sung tính năng Auto Update",
-    "Sửa lỗi",
-    "Thay đổi giao diện của mục tải và cài đặt Office: Được tách thành 1 tab riêng biệt và hỗ trợ đa dạng phiên bản Office",
-    "Bổ sung app Download: Clipchamp, OpenShot, WPS, Polaris, Only Office",
-    "Sửa lỗi một số máy không mở được tính năng Enhance Privacy",
-    "Sửa lỗi mở lịch khi kích hoạt tính năng Optimize for Extreme Gaming: Khi sử dụng sẽ tự động bật tính năng Disable Notification Center mục Taskbar",
-    "Cải thiện thuật toán lưu log"
+    "Bổ sung tính năng Cập nhật tự động và Kiểm tra bản cập nhật: Từ v1.0.5 người dùng có thể kiểm tra phiên bản cập nhật hoặc HyperLis sẽ tự động kiểm tra và hiển thị 1 pop-up thông báo khi có phiên bản mới",
+    "Bổ sung tính năng Sao lưu và Khôi phục bản quyền Windows trong mục License",
+    "Thay đổi giao diện và thuật toán hoạt động của tính năng gỡ apps: UWP Apps từ nay thêm script gỡ Bloatwares theo Preset có sẵn",
+    "Bổ sung thêm Winget CLI vào thuật toán Tải xuống ứng dụng: Dự phòng trong trường hợp chưa cập nhật kịp Winget phiên bản mới",
+    "Bổ sung tính năng xác định Key OEM có trong máy",
+    "Bổ sung tính năng Import High và Ultimate Powerplan vào mục Windows",
+   "Sửa một số lỗi nhỏ liên quan đến giao diện của Office Setup"
   ],
-  "size": "1025 MB",
+  "size": "100 MB",
   "is_critical": false
 }
