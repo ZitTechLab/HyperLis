@@ -1,16 +1,15 @@
 {
   "version": "1.0.5",
-  "release_date": "07-06-2025",
+  "release_date": "22-06-2025",
   "download_url_setup": "https://github.com/ZitTechLab/HyperLis/releases/download/Update/HyperLis_Setup_v1.0.5.exe",
   "content":[
-    "Add Feature: Auto update",
-    "Fix Bug",
-    "Added Windows Edition Conversion feature via SKUs: Easily convert to any Windows edition without reinstalling Windows.",
-    "Revamped the Office download and installation interface: Separated into a distinct tab with support for various Office versions.",
-    "Added applications to Downloads: Clipchamp, OpenShot, WPS, Polaris, Only Office.",
-    "Fixed an issue where the Enhance Privacy feature failed to open on some machines.",
-    "Fixed calendar opening bug when activating Optimize for Extreme Gaming: Using this feature will now automatically enable 'Disable Notification Center' on the Taskbar.",
-    "Improved the logging algorithm."
+   "Added Auto-Update and Check for Updates feature: From v1.0.5, users can manually check for updates, or HyperLis will automatically check and show a pop-up notification when a new version is available.",
+   "Added Windows License Backup and Restore feature in the License section.",
+   "Changed UI and working algorithm of app uninstallation feature: UWP Apps now includes a script to remove Bloatwares based on available Presets.",
+   "Added Winget CLI to the Application Download algorithm: As a fallback in case the native Winget is outdated or unavailable.",
+   "Added feature to identify the installed OEM Key on the machine.",
+   "Added feature to Import High and Ultimate Powerplan in the Windows section.",
+   "Fixed some minor UI bugs related to Office Setup."
   ],
   "size": "100 MB",
   "is_critical": false
