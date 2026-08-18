@@ -1,16 +1,19 @@
 {
-  "version": "1.0.5",
-  "release_date": "22-06-2025",
-  "download_url_setup": "https://github.com/ZitTechLab/HyperLis/releases/download/Update/HyperLis_Setup_v1.0.5.exe",
+  "version": "1.0.6",
+  "release_date": "18-08-2026",
+  "download_url_setup": "https://github.com/ZitTechLab/HyperLis/releases/download/Update/HyperLis_Setup_v1.0.6.exe",
   "content":[
-   "Added Auto-Update and Check for Updates feature: From v1.0.5, users can manually check for updates, or HyperLis will automatically check and show a pop-up notification when a new version is available.",
-   "Added Windows License Backup and Restore feature in the License section.",
-   "Changed UI and working algorithm of app uninstallation feature: UWP Apps now includes a script to remove Bloatwares based on available Presets.",
-   "Added Winget CLI to the Application Download algorithm: As a fallback in case the native Winget is outdated or unavailable.",
-   "Added feature to identify the installed OEM Key on the machine.",
-   "Added feature to Import High and Ultimate Powerplan in the Windows section.",
-   "Fixed some minor UI bugs related to Office Setup."
+   "Improved S.M.A.R.T algorithm when reading hard drive information, ensuring more accurate data reading and output.",
+   "Fixed UI bugs for Import and Export Presets Pop-ups in UWP Apps.",
+   "Modified Startup algorithm: Scans shell:startup and Task Scheduler.",
+   "Added feature to remove Windows and Office cracks.",
+   "Improved the algorithm for reading OEM Keys and license statuses in License Management and SKU Edition Conversion.",
+   "Changed license status notifications: Can now distinguish between unauthorized licenses activated via MAS and genuine licenses.",
+   "Improved the Printer Error Fix algorithm, resolving errors like 0x00000709, Cannot Connect,... more thoroughly.",
+   "Removed the option to convert editions to IoT Enterprise LTSC due to system limitations.",
+   "Modified the algorithm to allow edition conversion from Home to LTSC on Windows 11.",
+   "Fixed an algorithm bug where converting from Enterprise LTSC to Home failed to recognize the OEM key, error code: 0xC004F012."
   ],
-  "size": "100 MB",
+  "size": "104 MB",
   "is_critical": false
 }
