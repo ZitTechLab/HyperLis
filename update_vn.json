@@ -1,7 +1,7 @@
 {
   "version": "1.0.6",
   "release_date": "18-08-2026",
-  "download_url_setup": "https://github.com/ZitTechLab/HyperLis/releases/download/Update/HyperLis_Setup_v1.0.6.exe",
+  "download_url_setup": "https://github.com/ZitTechLab/HyperLis/releases/download/Updatev1.0.6/HyperLis_Setup_v1.0.6.exe",
   "content":[
             "Chỉnh sửa thuật toán S.M.A.R.T khi đọc thông tin ổ cứng, giúp đọc và xuất thông tin chính xác hơn.",
             "Sửa lỗi giao diện cho Pop-up Import và Export Presets trong UWP Apps",
