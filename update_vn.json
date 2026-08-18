@@ -1,15 +1,18 @@
 {
-  "version": "1.0.5",
-  "release_date": "22-06-2025",
-  "download_url_setup": "https://github.com/ZitTechLab/HyperLis/releases/download/Update/HyperLis_Setup_v1.0.5.exe",
+  "version": "1.0.6",
+  "release_date": "18-08-2026",
+  "download_url_setup": "https://github.com/ZitTechLab/HyperLis/releases/download/Update/HyperLis_Setup_v1.0.6.exe",
   "content":[
-    "Bổ sung tính năng Cập nhật tự động và Kiểm tra bản cập nhật: Từ v1.0.5 người dùng có thể kiểm tra phiên bản cập nhật hoặc HyperLis sẽ tự động kiểm tra và hiển thị 1 pop-up thông báo khi có phiên bản mới",
-    "Bổ sung tính năng Sao lưu và Khôi phục bản quyền Windows trong mục License",
-    "Thay đổi giao diện và thuật toán hoạt động của tính năng gỡ apps: UWP Apps từ nay thêm script gỡ Bloatwares theo Preset có sẵn",
-    "Bổ sung thêm Winget CLI vào thuật toán Tải xuống ứng dụng: Dự phòng trong trường hợp chưa cập nhật kịp Winget phiên bản mới",
-    "Bổ sung tính năng xác định Key OEM có trong máy",
-    "Bổ sung tính năng Import High và Ultimate Powerplan vào mục Windows",
-   "Sửa một số lỗi nhỏ liên quan đến giao diện của Office Setup"
+            "Chỉnh sửa thuật toán S.M.A.R.T khi đọc thông tin ổ cứng, giúp đọc và xuất thông tin chính xác hơn.",
+            "Sửa lỗi giao diện cho Pop-up Import và Export Presets trong UWP Apps",
+            "Chỉnh sửa thuật toán của Startup: Quét shell:startup và Task Schedule",
+            "Bổ sung tính năng Xoá crack của Windows và Office",
+            "Chỉnh sửa lại thuật toán đọc Key OEM, trạng thái bản quyền trong Quản lí bản quyền và Đổi phiên bản SKUs",
+            "Thay đổi thông báo trạng thái bản quyền: Có thể phân biệt bản quyền kích hoạt trái phép bằng MAS hoặc bản quyền thật sự",
+            "Chỉnh sửa lại thuật toán của Sửa lỗi máy in, khắc phục lỗi 0x00000709, Cannot Connect,... triệt để hơn",
+            "Loại bỏ tuỳ chọn chuyển đổi phiên bản lên IoT Enterprise LTSC do hạn chế từ hệ thống",
+            "Chỉnh sửa lại thuật toán để có thể chuyển đổi từ phiên bản Home lên LTSC trên Windows 11",
+            "Sửa lỗi thuật toán khi chuyển đổi từ Enterprise LTSC về Home không nhận key OEM, mã lỗi: 0xC004F012 "
   ],
   "size": "100 MB",
   "is_critical": false
