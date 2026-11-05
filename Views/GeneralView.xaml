@@ -1,0 +1,86 @@
+<UserControl x:Class="HyperLisUI.Views.GeneralView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="900" d:DesignWidth="1000">
+    
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="35,30,0,20">
+        <StackPanel Margin="0,0,340,0">
+            <!-- SYSTEM SECTION -->
+            <TextBlock x:Name="lblSystem" Text="System" FontSize="29" FontWeight="SemiBold" Margin="0,0,0,20"/>
+            <Grid Margin="0,0,0,30">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <CheckBox x:Name="OptimizePerfCheck" Content="Optimize Performance" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="OptimizePerfCheck_Checked" Unchecked="OptimizePerfCheck_Unchecked"/>
+                    <CheckBox x:Name="DisableErrorReportingCheck" Content="Disable Error Reporting" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="DisableErrorReportingCheck_Checked" Unchecked="DisableErrorReportingCheck_Unchecked"/>
+                    <CheckBox x:Name="DisableSmartScreenCheck" Content="Disable SmartScreen" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="DisableSmartScreenCheck_Checked" Unchecked="DisableSmartScreenCheck_Unchecked"/>
+                    <CheckBox x:Name="DisableFSOCheck" Content="Disable Fullscreen Optimizations" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="DisableFSOCheck_Checked" Unchecked="DisableFSOCheck_Unchecked"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1">
+                    <CheckBox x:Name="DisablePrintServiceCheck" Content="Disable Print Service" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="DisablePrintServiceCheck_Checked" Unchecked="DisablePrintServiceCheck_Unchecked"/>
+                    <CheckBox x:Name="DisableFaxServiceCheck" Content="Disable Fax Service" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="DisableFaxServiceCheck_Checked" Unchecked="DisableFaxServiceCheck_Unchecked"/>
+                    <CheckBox x:Name="DisableStickyKeysCheck" Content="Disable Sticky Keys" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="DisableStickyKeysCheck_Checked" Unchecked="DisableStickyKeysCheck_Unchecked"/>
+                    <CheckBox x:Name="DisplayPerformanceCheck" Content="Set Display for Performance" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="DisplayPerformanceCheck_Checked" Unchecked="DisplayPerformanceCheck_Unchecked"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- DISK DRIVES SECTION -->
+            <TextBlock x:Name="lblDiskDrives" Text="Disk drives" FontSize="29" FontWeight="SemiBold" Margin="0,0,0,20"/>
+            <Grid Margin="0,0,0,30">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <CheckBox x:Name="DisableSuperfetchCheck" Content="Disable Superfetch" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="DisableSuperfetchCheck_Checked" Unchecked="DisableSuperfetchCheck_Unchecked"/>
+
+                </StackPanel>
+                <StackPanel Grid.Column="1">
+                    <CheckBox x:Name="DisableNTFSTimeStampCheck" Content="Disable NTFS Timestamp" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="DisableNTFSTimeStampCheck_Checked" Unchecked="DisableNTFSTimeStampCheck_Unchecked"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- PRIVACY SECTION -->
+            <TextBlock x:Name="lblPrivacy" Text="Privacy" FontSize="29" FontWeight="SemiBold" Margin="0,0,0,20"/>
+            <Grid Margin="0,0,0,30">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <CheckBox x:Name="DisableTelemetryTasksCheck" Content="Disable Telemetry Tasks" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="DisableTelemetryTasksCheck_Checked" Unchecked="DisableTelemetryTasksCheck_Unchecked"/>
+                    <CheckBox x:Name="DisableMediaPlayerSharingCheck" Content="Disable Media Player Sharing" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="DisableMediaPlayerSharingCheck_Checked" Unchecked="DisableMediaPlayerSharingCheck_Unchecked"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1">
+                    <CheckBox x:Name="DisableHomeGroupCheck" Content="Disable HomeGroup" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="DisableHomeGroupCheck_Checked" Unchecked="DisableHomeGroupCheck_Unchecked"/>
+                    <CheckBox x:Name="DisableSMBCheck" Content="Disable SMB v1 &amp; v2 Protocol" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="DisableSMBCheck_Checked" Unchecked="DisableSMBCheck_Unchecked"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- APPS SECTION -->
+            <TextBlock x:Name="lblApps" Text="Apps" FontSize="29" FontWeight="SemiBold" Margin="0,0,0,20"/>
+            <Grid Margin="0,0,0,30">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <CheckBox x:Name="DisableOfficeTelemetryCheck" Content="Disable Office Telemetry" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="DisableOfficeTelemetryCheck_Checked" Unchecked="DisableOfficeTelemetryCheck_Unchecked"/>
+                    <CheckBox x:Name="DisableChromeTelemetryCheck" Content="Disable Chrome Telemetry" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="DisableChromeTelemetryCheck_Checked" Unchecked="DisableChromeTelemetryCheck_Unchecked"/>
+                    <CheckBox x:Name="DisableNvidiaTelemetryCheck" Content="Disable NVIDIA Telemetry" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="DisableNvidiaTelemetryCheck_Checked" Unchecked="DisableNvidiaTelemetryCheck_Unchecked"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1">
+                    <CheckBox x:Name="DisableBraveTelemetryCheck" Content="Disable Brave Telemetry" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="DisableBraveTelemetryCheck_Checked" Unchecked="DisableBraveTelemetryCheck_Unchecked"/>
+                    <CheckBox x:Name="DisableEdgeTelemetryCheck" Content="Disable Edge Telemetry" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="DisableEdgeTelemetryCheck_Checked" Unchecked="DisableEdgeTelemetryCheck_Unchecked"/>
+                    <CheckBox x:Name="DisableVisualStudioTelemetryCheck" Content="Disable Visual Studio Telemetry" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="DisableVisualStudioTelemetryCheck_Checked" Unchecked="DisableVisualStudioTelemetryCheck_Unchecked"/>
+                </StackPanel>
+            </Grid>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

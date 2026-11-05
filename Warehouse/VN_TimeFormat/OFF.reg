@@ -1,0 +1,19 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CURRENT_USER\Control Panel\International]
+"sShortDate"=-
+"sLongDate"=-
+"sShortTime"=-
+"sTimeFormat"=-
+"s1159"=-
+"s2359"=-
+"iFirstDayOfWeek"=-
+
+[HKEY_USERS\.DEFAULT\Control Panel\International]
+"sShortDate"=-
+"sLongDate"=-
+"sShortTime"=-
+"sTimeFormat"=-
+"s1159"=-
+"s2359"=-
+"iFirstDayOfWeek"=-

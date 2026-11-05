@@ -1,0 +1,97 @@
+<UserControl x:Class="HyperLisUI.Views.CleaningView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="700" d:DesignWidth="800">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="35,30,0,20">
+        <StackPanel Margin="0,0,340,0">
+            <!-- HEADER WINDOWS & RAM -->
+            <TextBlock x:Name="lblCleanWindowsRam" Text="Windows &amp; RAM" FontSize="29" FontWeight="SemiBold" Margin="0,0,0,25" Foreground="#333"/>
+            
+            <Grid Margin="30,0,0,30" HorizontalAlignment="Left">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="250"/>
+                    <ColumnDefinition Width="250"/>
+                </Grid.ColumnDefinitions>
+                
+                <!-- Column 1 -->
+                <StackPanel Grid.Column="0">
+                    <CheckBox x:Name="ChkTempFiles" Content="Temporary Files" Style="{StaticResource RoundedCheckBoxStyle}" Margin="0,5"/>
+                    <CheckBox x:Name="ChkBSOD" Content="BSOD Minidumps" Style="{StaticResource RoundedCheckBoxStyle}" Margin="0,5"/>
+                    <CheckBox x:Name="ChkErrorReports" Content="Error Requests" Style="{StaticResource RoundedCheckBoxStyle}" Margin="0,5"/>
+                    <CheckBox x:Name="ChkRecycleBin" Content="Empty Recycle Bin"  Style="{StaticResource RoundedCheckBoxStyle}" Margin="0,5"/>
+                </StackPanel>
+    
+                <!-- Column 2 -->
+                 <StackPanel Grid.Column="1">
+                    <CheckBox x:Name="ChkUpdateCache" Content="Update Cache" Style="{StaticResource RoundedCheckBoxStyle}" Margin="0,5"/>
+                    <CheckBox x:Name="ChkSystemRestore" Content="System Restore" Style="{StaticResource RoundedCheckBoxStyle}" Margin="0,5"/>
+                    <CheckBox x:Name="ChkRamCache" Content="RAM Cache" Style="{StaticResource RoundedCheckBoxStyle}" Margin="0,5"/>
+                    <CheckBox x:Name="ChkRamUsage" Content="RAM Usage" Style="{StaticResource RoundedCheckBoxStyle}" Margin="0,5"/>
+                </StackPanel>
+                
+            </Grid>
+    
+            <!-- BROWSERS SECTION -->
+            <TextBlock x:Name="lblCleanBrowsers" Text="Browsers" FontSize="29" FontWeight="SemiBold" Margin="0,0,0,15" Foreground="#333"/>
+            
+            <Border Background="#60FFFFFF" CornerRadius="12" Padding="25">
+                <Grid>
+                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <!-- Icon -->
+                    <!-- <TextBlock Text="🌐" FontSize="43" VerticalAlignment="Top" Margin="0,0,20,0" Grid.Column="0"/> -->
+                    <Image Grid.Column="0" Source="pack://application:,,,/Images/browser.png" Width="35" Height="35" VerticalAlignment="Top" Margin="0,10,10,0"/>
+                    <!-- Text Content -->
+                    <StackPanel Grid.Column="1" VerticalAlignment="Top" Margin="0,5,0,0">
+                        <TextBlock x:Name="lblCleanChooseBrowser" Text="Choose a Browser:" FontWeight="SemiBold" FontSize="19" Foreground="Black"/>
+                        <TextBlock x:Name="lblCleanBrowserDesc" Text="Google Chrome, Microsoft Edge, Brave, Firefox" FontSize="16" Foreground="#444" TextWrapping="Wrap" Margin="0,5,0,0"/>
+    
+                        <!-- Checkboxes Grid below text -->
+                        <Grid Margin="0,20,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="150"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                             
+                             <StackPanel Grid.Column="0">
+                                 <CheckBox x:Name="ChkBrowserCache" Content="Cache" Style="{StaticResource RoundedCheckBoxStyle}" Margin="0,5"/>
+                                 <CheckBox x:Name="ChkBrowserCookies" Content="Cookies" Style="{StaticResource RoundedCheckBoxStyle}" Margin="0,5"/>
+                                 <CheckBox x:Name="ChkBrowserHistory" Content="History" Style="{StaticResource RoundedCheckBoxStyle}" Margin="0,5"/>
+                             </StackPanel>
+                             
+                             <StackPanel Grid.Column="1">
+                                 <CheckBox x:Name="ChkBrowserSession" Content="Session" Style="{StaticResource RoundedCheckBoxStyle}" Margin="0,5"/>
+                                 <CheckBox x:Name="ChkBrowserPasswords" Content="Passwords" Style="{StaticResource RoundedCheckBoxStyle}" Margin="0,5"/>
+                             </StackPanel>
+                        </Grid>
+                    </StackPanel>
+    
+                    <!-- Dropdown (Right Side) -->
+                    <ComboBox x:Name="CmbBrowser" Grid.Column="2" Style="{StaticResource WinUIComboBoxStyle}" Width="220" SelectedIndex="0" VerticalAlignment="Top" Margin="0,0,60,0">
+                        <ComboBoxItem Content="Google Chrome"/>
+                        <ComboBoxItem Content="Microsoft Edge"/>
+                        <ComboBoxItem Content="Brave"/>
+                        <ComboBoxItem Content="Firefox"/>
+                    </ComboBox>
+    
+                </Grid>
+            </Border>
+            
+            <!-- BUTTONS ROW -->
+            <StackPanel Orientation="Horizontal" Margin="0,30,0,0" VerticalAlignment="Center" HorizontalAlignment="Left">
+                 <Button x:Name="btnCleanHyperLis" Content="Clean by HyperLis" Style="{StaticResource ActionButtonStyle}" Margin="5,0" Width="Auto" MinWidth="160" Padding="15,12" FontSize="15" Background="#A078C0E0" Click="CleanByHyperLis_Click"/>
+                 <Button x:Name="btnCleanDiskCleanup" Content="Clean by Disk Cleanup" Style="{StaticResource ActionButtonStyle}" Margin="5,0" Width="Auto" MinWidth="160" Padding="15,12" FontSize="15" Background="#A078C0E0" Click="CleanByDiskCleanup_Click"/>
+                 <Button x:Name="btnCleanBoth" Content="Use both methods" Style="{StaticResource ActionButtonStyle}" Margin="5,0" Width="Auto" MinWidth="160" Padding="15,12" FontSize="15" Background="#A078C0E0" Click="UseBothMethods_Click"/>
+                 <Button x:Name="btnOptimizeDrives" Content="Optimize Drives" Style="{StaticResource ActionButtonStyle}" Margin="5,0" Width="Auto" MinWidth="160" Padding="15,12" FontSize="15" Background="#A078C0E0" Click="OptimizeDrives_Click"/>
+            </StackPanel>
+    
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

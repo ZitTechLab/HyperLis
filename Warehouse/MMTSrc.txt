@@ -1,0 +1,1423 @@
+using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Management;
+using System.Runtime.CompilerServices;
+using System.Security.Principal;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Markup;
+using System.Windows.Media;
+
+namespace WinPE
+{
+	// Token: 0x02000003 RID: 3
+	public class MainWindow : Window, IComponentConnector
+	{
+		// Token: 0x06000004 RID: 4 RVA: 0x00002078 File Offset: 0x00000278
+		public MainWindow()
+		{
+			this.TryRelaunchAsAdminAndExit();
+			this.InitializeComponent();
+			this.RefreshDrivesButton_Click(null, null);
+			this.CheckForXDriveOnStartup();
+			this.AddDefenderExclusion();
+			base.Closing += this.MainWindow_Closing;
+		}
+
+		// Token: 0x06000005 RID: 5 RVA: 0x000020E0 File Offset: 0x000002E0
+		private bool IsRunningAsAdministrator()
+		{
+			bool result;
+			try
+			{
+				using (WindowsIdentity current = WindowsIdentity.GetCurrent())
+				{
+					result = new WindowsPrincipal(current).IsInRole(WindowsBuiltInRole.Administrator);
+				}
+			}
+			catch
+			{
+				result = false;
+			}
+			return result;
+		}
+
+		// Token: 0x06000006 RID: 6 RVA: 0x00002134 File Offset: 0x00000334
+		private void TryRelaunchAsAdminAndExit()
+		{
+			if (this.IsRunningAsAdministrator())
+			{
+				return;
+			}
+			try
+			{
+				string fileName = Process.GetCurrentProcess().MainModule.FileName;
+				string arguments = string.Join(" ", from a in Environment.GetCommandLineArgs().Skip(1)
+				select "\"" + a + "\"");
+				Process.Start(new ProcessStartInfo
+				{
+					FileName = fileName,
+					Arguments = arguments,
+					UseShellExecute = true,
+					Verb = "runas"
+				});
+				Application.Current.Shutdown();
+			}
+			catch (Win32Exception ex)
+			{
+				this.LogStatus("Yêu cầu quyền Admin bị hủy: " + ex.Message);
+			}
+			catch (Exception ex2)
+			{
+				this.LogStatus("Không thể khởi động lại với quyền Admin: " + ex2.Message);
+			}
+		}
+
+		// Token: 0x06000007 RID: 7 RVA: 0x0000221C File Offset: 0x0000041C
+		private void CheckForXDriveOnStartup()
+		{
+			if (DriveInfo.GetDrives().Any((DriveInfo d) => d.Name.Equals("X:\\", StringComparison.OrdinalIgnoreCase)))
+			{
+				this.LogStatus("Phát hiện ổ đĩa X: đã tồn tại. Bạn có thể tiến hành cài đặt WinPE hoặc xóa ổ X để lấy lại dung lượng.");
+				return;
+			}
+			this.LogStatus("Không tìm thấy ổ X: Bạn có thể tạo ổ X: bằng cách shrink một phân vùng.");
+		}
+
+		// Token: 0x06000008 RID: 8 RVA: 0x0000226C File Offset: 0x0000046C
+		private void RefreshDrivesButton_Click(object sender, RoutedEventArgs e)
+		{
+			this.DriveSelectionComboBox.Items.Clear();
+			foreach (DriveInfo driveInfo in DriveInfo.GetDrives())
+			{
+				if (driveInfo.DriveType == DriveType.Fixed && driveInfo.IsReady && driveInfo.TotalFreeSpace >= 6442450944L)
+				{
+					this.DriveSelectionComboBox.Items.Add(driveInfo.Name);
+				}
+			}
+			if (this.DriveSelectionComboBox.Items.Count > 0)
+			{
+				this.DriveSelectionComboBox.SelectedIndex = 0;
+			}
+		}
+
+		// Token: 0x06000009 RID: 9 RVA: 0x000022FC File Offset: 0x000004FC
+		private void ShrinkVolumeButton_Click(object sender, RoutedEventArgs e)
+		{
+			MainWindow.<ShrinkVolumeButton_Click>d__9 <ShrinkVolumeButton_Click>d__;
+			<ShrinkVolumeButton_Click>d__.<>t__builder = AsyncVoidMethodBuilder.Create();
+			<ShrinkVolumeButton_Click>d__.<>4__this = this;
+			<ShrinkVolumeButton_Click>d__.<>1__state = -1;
+			<ShrinkVolumeButton_Click>d__.<>t__builder.Start<MainWindow.<ShrinkVolumeButton_Click>d__9>(ref <ShrinkVolumeButton_Click>d__);
+		}
+
+		// Token: 0x0600000A RID: 10 RVA: 0x00002334 File Offset: 0x00000534
+		private void ShrinkVolume(int sizeMB)
+		{
+			string contents = string.Format("\r\n                select volume {0}\r\n                shrink desired={1}\r\n                create partition primary size={2}\r\n                assign letter=X\r\n                format fs=ntfs label=\"zX WinPE\" quick\r\n            ", this.selectedDrive[0], sizeMB, sizeMB);
+			string tempFileName = Path.GetTempFileName();
+			File.WriteAllText(tempFileName, contents);
+			Process process = Process.Start(new ProcessStartInfo
+			{
+				FileName = "diskpart.exe",
+				Arguments = "/s \"" + tempFileName + "\"",
+				UseShellExecute = false,
+				CreateNoWindow = true,
+				RedirectStandardOutput = true,
+				RedirectStandardError = true
+			});
+			process.WaitForExit();
+			File.Delete(tempFileName);
+			if (process.ExitCode != 0)
+			{
+				string str = process.StandardError.ReadToEnd();
+				throw new Exception("diskpart failed: " + str);
+			}
+		}
+
+		// Token: 0x0600000B RID: 11 RVA: 0x000023F0 File Offset: 0x000005F0
+		private void GoToSourceButton_Click(object sender, RoutedEventArgs e)
+		{
+			try
+			{
+				string fileName = "https://drive.google.com/drive/folders/1vPpZmcAmLPY8lGnkgOZ6I2bOrQKrJt30?usp=drive_link";
+				Process.Start(new ProcessStartInfo
+				{
+					FileName = fileName,
+					UseShellExecute = true
+				});
+			}
+			catch (Exception ex)
+			{
+				this.LogStatus("Lỗi khi mở trang nguồn: " + ex.Message);
+				MessageBox.Show("Không thể mở trang nguồn: " + ex.Message, "Lỗi", MessageBoxButton.OK, MessageBoxImage.Hand);
+			}
+		}
+
+		// Token: 0x0600000C RID: 12 RVA: 0x00002468 File Offset: 0x00000668
+		private void DownloadISOButton_Click(object sender, RoutedEventArgs e)
+		{
+			MainWindow.<DownloadISOButton_Click>d__12 <DownloadISOButton_Click>d__;
+			<DownloadISOButton_Click>d__.<>t__builder = AsyncVoidMethodBuilder.Create();
+			<DownloadISOButton_Click>d__.<>4__this = this;
+			<DownloadISOButton_Click>d__.<>1__state = -1;
+			<DownloadISOButton_Click>d__.<>t__builder.Start<MainWindow.<DownloadISOButton_Click>d__12>(ref <DownloadISOButton_Click>d__);
+		}
+
+		// Token: 0x0600000D RID: 13 RVA: 0x000024A0 File Offset: 0x000006A0
+		private Task StartInstallationProcess()
+		{
+			MainWindow.<StartInstallationProcess>d__13 <StartInstallationProcess>d__;
+			<StartInstallationProcess>d__.<>t__builder = AsyncTaskMethodBuilder.Create();
+			<StartInstallationProcess>d__.<>4__this = this;
+			<StartInstallationProcess>d__.<>1__state = -1;
+			<StartInstallationProcess>d__.<>t__builder.Start<MainWindow.<StartInstallationProcess>d__13>(ref <StartInstallationProcess>d__);
+			return <StartInstallationProcess>d__.<>t__builder.Task;
+		}
+
+		// Token: 0x0600000E RID: 14 RVA: 0x000024E4 File Offset: 0x000006E4
+		private void SelectISOButton_Click(object sender, RoutedEventArgs e)
+		{
+			MainWindow.<SelectISOButton_Click>d__14 <SelectISOButton_Click>d__;
+			<SelectISOButton_Click>d__.<>t__builder = AsyncVoidMethodBuilder.Create();
+			<SelectISOButton_Click>d__.<>4__this = this;
+			<SelectISOButton_Click>d__.<>1__state = -1;
+			<SelectISOButton_Click>d__.<>t__builder.Start<MainWindow.<SelectISOButton_Click>d__14>(ref <SelectISOButton_Click>d__);
+		}
+
+		// Token: 0x0600000F RID: 15 RVA: 0x0000251B File Offset: 0x0000071B
+		private void StopButton_Click(object sender, RoutedEventArgs e)
+		{
+			if (this.cancellationTokenSource != null)
+			{
+				this.cancellationTokenSource.Cancel();
+				this.LogStatus("Đang hủy tác vụ...");
+			}
+		}
+
+		// Token: 0x06000010 RID: 16 RVA: 0x0000253B File Offset: 0x0000073B
+		private void SetActionButtonsEnabled(bool isEnabled)
+		{
+			this.ShrinkVolumeButton.IsEnabled = isEnabled;
+			this.ReclaimXDriveButton.IsEnabled = isEnabled;
+			this.SelectISOButton.IsEnabled = isEnabled;
+			this.DownloadISOButton.IsEnabled = isEnabled;
+		}
+
+		// Token: 0x06000011 RID: 17 RVA: 0x00002570 File Offset: 0x00000770
+		private void MountISOButton_Click(object sender, RoutedEventArgs e)
+		{
+			MainWindow.<MountISOButton_Click>d__17 <MountISOButton_Click>d__;
+			<MountISOButton_Click>d__.<>t__builder = AsyncVoidMethodBuilder.Create();
+			<MountISOButton_Click>d__.<>4__this = this;
+			<MountISOButton_Click>d__.<>1__state = -1;
+			<MountISOButton_Click>d__.<>t__builder.Start<MainWindow.<MountISOButton_Click>d__17>(ref <MountISOButton_Click>d__);
+		}
+
+		// Token: 0x06000012 RID: 18 RVA: 0x000025A8 File Offset: 0x000007A8
+		private void MountISO()
+		{
+			string str = this.isoPath.Replace("'", "''");
+			Process process = Process.Start(new ProcessStartInfo
+			{
+				FileName = "powershell.exe",
+				Arguments = "-Command \"Mount-DiskImage -ImagePath '" + str + "' -PassThru\"",
+				UseShellExecute = false,
+				CreateNoWindow = true,
+				RedirectStandardOutput = true,
+				RedirectStandardError = true
+			});
+			process.WaitForExit();
+			if (process.ExitCode != 0)
+			{
+				string str2 = process.StandardError.ReadToEnd();
+				throw new Exception("Mount ISO failed: " + str2);
+			}
+			foreach (DriveInfo driveInfo in DriveInfo.GetDrives())
+			{
+				if (driveInfo.DriveType == DriveType.CDRom && driveInfo.IsReady)
+				{
+					this.mountedDrive = driveInfo.Name;
+					return;
+				}
+			}
+		}
+
+		// Token: 0x06000013 RID: 19 RVA: 0x00002680 File Offset: 0x00000880
+		private void UnmountISO()
+		{
+			if (string.IsNullOrEmpty(this.isoPath))
+			{
+				return;
+			}
+			try
+			{
+				this.LogStatus("Đang unmount ISO...");
+				string str = this.isoPath.Replace("'", "''");
+				using (Process process = Process.Start(new ProcessStartInfo
+				{
+					FileName = "powershell.exe",
+					Arguments = "-Command \"Dismount-DiskImage -ImagePath '" + str + "'\"",
+					UseShellExecute = false,
+					CreateNoWindow = true,
+					RedirectStandardOutput = true,
+					RedirectStandardError = true
+				}))
+				{
+					process.WaitForExit();
+					if (process.ExitCode != 0)
+					{
+						string str2 = process.StandardError.ReadToEnd();
+						this.LogStatus("Lỗi khi unmount ISO: " + str2);
+					}
+					else
+					{
+						this.LogStatus("Unmount ISO thành công!");
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				this.LogStatus("Lỗi khi unmount ISO: " + ex.Message);
+			}
+			finally
+			{
+				this.mountedDrive = string.Empty;
+			}
+		}
+
+		// Token: 0x06000014 RID: 20 RVA: 0x00002798 File Offset: 0x00000998
+		private string BytesToString(long byteCount)
+		{
+			string[] array = new string[]
+			{
+				"B",
+				"KB",
+				"MB",
+				"GB",
+				"TB"
+			};
+			if (byteCount == 0L)
+			{
+				return "0" + array[0];
+			}
+			long num = Math.Abs(byteCount);
+			int num2 = Convert.ToInt32(Math.Floor(Math.Log((double)num, 1024.0)));
+			if (num2 >= array.Length)
+			{
+				num2 = array.Length - 1;
+			}
+			double num3 = Math.Round((double)num / Math.Pow(1024.0, (double)num2), 1);
+			return ((double)Math.Sign(byteCount) * num3).ToString() + " " + array[num2];
+		}
+
+		// Token: 0x06000015 RID: 21 RVA: 0x0000284C File Offset: 0x00000A4C
+		private void InstallWinPEButton_Click(object sender, RoutedEventArgs e)
+		{
+			MainWindow.<InstallWinPEButton_Click>d__21 <InstallWinPEButton_Click>d__;
+			<InstallWinPEButton_Click>d__.<>t__builder = AsyncVoidMethodBuilder.Create();
+			<InstallWinPEButton_Click>d__.<>4__this = this;
+			<InstallWinPEButton_Click>d__.<>1__state = -1;
+			<InstallWinPEButton_Click>d__.<>t__builder.Start<MainWindow.<InstallWinPEButton_Click>d__21>(ref <InstallWinPEButton_Click>d__);
+		}
+
+		// Token: 0x06000016 RID: 22 RVA: 0x00002884 File Offset: 0x00000A84
+		private void InstallWinPE(string bootWimPath, CancellationToken cancellationToken = default(CancellationToken))
+		{
+			string text = Path.Combine(Path.GetTempPath(), "WinPEScratch_" + Guid.NewGuid().ToString());
+			DateTime d = DateTime.Now;
+			try
+			{
+				Directory.CreateDirectory(text);
+				ProcessStartInfo startInfo = new ProcessStartInfo
+				{
+					FileName = "dism.exe",
+					Arguments = string.Concat(new string[]
+					{
+						"/Apply-Image /ImageFile:\"",
+						bootWimPath,
+						"\" /Index:1 /ApplyDir:X:\\ /ScratchDir:\"",
+						text,
+						"\""
+					}),
+					UseShellExecute = false,
+					CreateNoWindow = true,
+					RedirectStandardOutput = true,
+					RedirectStandardError = true,
+					StandardOutputEncoding = Encoding.UTF8
+				};
+				using (Process process = new Process
+				{
+					StartInfo = startInfo
+				})
+				{
+					using (cancellationToken.Register(delegate()
+					{
+						try
+						{
+							if (!process.HasExited)
+							{
+								process.Kill();
+								this.LogStatus("Tiến trình DISM đã được dừng.");
+							}
+						}
+						catch (Exception ex)
+						{
+							this.LogStatus("Lỗi khi dừng tiến trình DISM: " + ex.Message);
+						}
+					}))
+					{
+						process.Start();
+						while (!process.StandardOutput.EndOfStream)
+						{
+							cancellationToken.ThrowIfCancellationRequested();
+							string text2 = process.StandardOutput.ReadLine();
+							if (text2 != null)
+							{
+								Match match = Regex.Match(text2, "(\\d{1,3}([.,]\\d+)?)\\s*%");
+								double progress;
+								if (match.Success && double.TryParse(match.Groups[1].Value.Replace(',', '.'), NumberStyles.Any, CultureInfo.InvariantCulture, out progress))
+								{
+									DateTime now = DateTime.Now;
+									if ((now - d).TotalMilliseconds >= 50.0)
+									{
+										base.Dispatcher.Invoke(delegate()
+										{
+											this.ActionProgressBar.Value = progress;
+											this.ActionTextBlock.Text = string.Format("Đang cài WinPE vào ổ X:... {0:0.0}%", progress);
+										});
+										d = now;
+									}
+								}
+							}
+						}
+						string str = process.StandardError.ReadToEnd();
+						process.WaitForExit();
+						if (process.ExitCode != 0 && !cancellationToken.IsCancellationRequested)
+						{
+							throw new Exception("DISM apply image failed: " + str);
+						}
+					}
+				}
+			}
+			finally
+			{
+				try
+				{
+					if (Directory.Exists(text))
+					{
+						Directory.Delete(text, true);
+					}
+				}
+				catch
+				{
+				}
+			}
+		}
+
+		// Token: 0x06000017 RID: 23 RVA: 0x00002B30 File Offset: 0x00000D30
+		private void CreateBootButton_Click(object sender, RoutedEventArgs e)
+		{
+			MainWindow.<CreateBootButton_Click>d__23 <CreateBootButton_Click>d__;
+			<CreateBootButton_Click>d__.<>t__builder = AsyncVoidMethodBuilder.Create();
+			<CreateBootButton_Click>d__.<>4__this = this;
+			<CreateBootButton_Click>d__.<>1__state = -1;
+			<CreateBootButton_Click>d__.<>t__builder.Start<MainWindow.<CreateBootButton_Click>d__23>(ref <CreateBootButton_Click>d__);
+		}
+
+		// Token: 0x06000018 RID: 24 RVA: 0x00002B68 File Offset: 0x00000D68
+		private void CreateBoot()
+		{
+			Process process = Process.Start(new ProcessStartInfo
+			{
+				FileName = "bcdboot.exe",
+				Arguments = "X:\\Windows",
+				UseShellExecute = false,
+				CreateNoWindow = true,
+				RedirectStandardOutput = true,
+				RedirectStandardError = true
+			});
+			process.WaitForExit();
+			if (process.ExitCode != 0)
+			{
+				string str = process.StandardError.ReadToEnd();
+				throw new Exception("Create boot failed: " + str);
+			}
+		}
+
+		// Token: 0x06000019 RID: 25 RVA: 0x00002BE0 File Offset: 0x00000DE0
+		private void ReclaimXDriveButton_Click(object sender, RoutedEventArgs e)
+		{
+			MainWindow.<ReclaimXDriveButton_Click>d__25 <ReclaimXDriveButton_Click>d__;
+			<ReclaimXDriveButton_Click>d__.<>t__builder = AsyncVoidMethodBuilder.Create();
+			<ReclaimXDriveButton_Click>d__.<>4__this = this;
+			<ReclaimXDriveButton_Click>d__.<>1__state = -1;
+			<ReclaimXDriveButton_Click>d__.<>t__builder.Start<MainWindow.<ReclaimXDriveButton_Click>d__25>(ref <ReclaimXDriveButton_Click>d__);
+		}
+
+		// Token: 0x0600001A RID: 26 RVA: 0x00002C18 File Offset: 0x00000E18
+		private void ReclaimXDrive()
+		{
+			try
+			{
+				ManagementObject managementObject = null;
+				using (ManagementObjectSearcher managementObjectSearcher = new ManagementObjectSearcher("ASSOCIATORS OF {Win32_LogicalDisk.DeviceID='X:'} WHERE AssocClass = Win32_LogicalDiskToPartition"))
+				{
+					managementObject = managementObjectSearcher.Get().OfType<ManagementObject>().FirstOrDefault<ManagementObject>();
+				}
+				if (managementObject == null)
+				{
+					throw new Exception("Không tìm thấy ổ X: hoặc không thể truy vấn thông tin phân vùng của nó.");
+				}
+				uint num = (uint)managementObject["DiskIndex"];
+				uint num2 = (uint)managementObject["Index"];
+				if (num2 < 1U)
+				{
+					throw new Exception("Không tìm thấy phân vùng liền trước ổ X: để mở rộng.");
+				}
+				uint num3 = num2 - 1U;
+				ManagementObject managementObject2 = null;
+				using (ManagementObjectSearcher managementObjectSearcher2 = new ManagementObjectSearcher(string.Format("SELECT * FROM Win32_DiskPartition WHERE DiskIndex = {0} AND Index = {1}", num, num3)))
+				{
+					managementObject2 = managementObjectSearcher2.Get().OfType<ManagementObject>().FirstOrDefault<ManagementObject>();
+				}
+				if (managementObject2 == null)
+				{
+					throw new Exception("Không thể tìm thấy phân vùng liền trước ổ X:.");
+				}
+				ManagementObject managementObject3 = null;
+				string str = managementObject2["DeviceID"].ToString().Replace("\"", "\\\"");
+				using (ManagementObjectSearcher managementObjectSearcher3 = new ManagementObjectSearcher("ASSOCIATORS OF {Win32_DiskPartition.DeviceID=\"" + str + "\"} WHERE AssocClass = Win32_LogicalDiskToPartition"))
+				{
+					managementObject3 = managementObjectSearcher3.Get().OfType<ManagementObject>().FirstOrDefault<ManagementObject>();
+				}
+				if (managementObject3 == null || managementObject3["DeviceID"] == null)
+				{
+					throw new Exception("Phân vùng liền trước ổ X: không có ký tự ổ đĩa nên không thể mở rộng tự động.");
+				}
+				string str2 = managementObject3["DeviceID"].ToString().Replace(":", "");
+				this.RemoveBootEntriesForX();
+				string contents = "\r\n                    select volume X\r\n                    delete volume\r\n                    select volume " + str2 + "\r\n                    extend\r\n                ";
+				string tempFileName = Path.GetTempFileName();
+				File.WriteAllText(tempFileName, contents);
+				using (Process process = Process.Start(new ProcessStartInfo
+				{
+					FileName = "diskpart.exe",
+					Arguments = "/s \"" + tempFileName + "\"",
+					UseShellExecute = false,
+					CreateNoWindow = true,
+					RedirectStandardOutput = true,
+					RedirectStandardError = true
+				}))
+				{
+					string str3 = process.StandardOutput.ReadToEnd();
+					string str4 = process.StandardError.ReadToEnd();
+					process.WaitForExit();
+					File.Delete(tempFileName);
+					if (process.ExitCode != 0)
+					{
+						this.LogStatus("Diskpart output: " + str3);
+						this.LogStatus("Diskpart error: " + str4);
+						throw new Exception("Diskpart thất bại. Chi tiết: " + str4);
+					}
+				}
+			}
+			catch (ManagementException ex)
+			{
+				throw new Exception("Lỗi WMI khi truy vấn thông tin đĩa: " + ex.Message);
+			}
+			catch (Exception)
+			{
+				throw;
+			}
+		}
+
+		// Token: 0x0600001B RID: 27 RVA: 0x00002F1C File Offset: 0x0000111C
+		private void FormatXDrive(CancellationToken cancellationToken = default(CancellationToken))
+		{
+			ProcessStartInfo startInfo = new ProcessStartInfo
+			{
+				FileName = "format.com",
+				Arguments = "X: /FS:NTFS /Q /Y /V:\"zX WinPE\"",
+				UseShellExecute = false,
+				CreateNoWindow = true,
+				RedirectStandardOutput = true,
+				RedirectStandardError = true
+			};
+			using (Process process = Process.Start(startInfo))
+			{
+				using (cancellationToken.Register(delegate()
+				{
+					try
+					{
+						if (!process.HasExited)
+						{
+							process.Kill();
+						}
+					}
+					catch
+					{
+					}
+				}))
+				{
+					process.WaitForExit();
+					if (process.ExitCode != 0 && !cancellationToken.IsCancellationRequested)
+					{
+						string str = process.StandardError.ReadToEnd();
+						throw new Exception("Format failed: " + str);
+					}
+				}
+			}
+		}
+
+		// Token: 0x0600001C RID: 28 RVA: 0x0000300C File Offset: 0x0000120C
+		private void RemoveBootEntriesForX()
+		{
+			try
+			{
+				this.LogStatus("Đang kiểm tra các boot entry trỏ tới X: và xóa nếu có...");
+				string input;
+				using (Process process = Process.Start(new ProcessStartInfo
+				{
+					FileName = "bcdedit.exe",
+					Arguments = "/enum all",
+					UseShellExecute = false,
+					CreateNoWindow = true,
+					RedirectStandardOutput = true,
+					RedirectStandardError = true
+				}))
+				{
+					input = process.StandardOutput.ReadToEnd();
+					string str = process.StandardError.ReadToEnd();
+					process.WaitForExit();
+					if (process.ExitCode != 0)
+					{
+						this.LogStatus("Không thể liệt kê BCD: " + str);
+						return;
+					}
+				}
+				foreach (string text in Regex.Split(input, "\\r?\\n\\s*\\r?\\n"))
+				{
+					if (text.IndexOf("partition=X", StringComparison.OrdinalIgnoreCase) >= 0)
+					{
+						Match match = Regex.Match(text, "identifier\\s+([^\\r\\n]+)", RegexOptions.IgnoreCase);
+						if (match.Success)
+						{
+							string str2 = match.Groups[1].Value.Trim();
+							using (Process process2 = Process.Start(new ProcessStartInfo
+							{
+								FileName = "bcdedit.exe",
+								Arguments = "/delete " + str2 + " /f",
+								UseShellExecute = false,
+								CreateNoWindow = true,
+								RedirectStandardOutput = true,
+								RedirectStandardError = true
+							}))
+							{
+								process2.StandardOutput.ReadToEnd();
+								string str3 = process2.StandardError.ReadToEnd();
+								process2.WaitForExit();
+								if (process2.ExitCode == 0)
+								{
+									this.LogStatus("Đã xóa boot entry " + str2 + " khỏi BCD.");
+								}
+								else
+								{
+									this.LogStatus("Không thể xóa boot entry " + str2 + ": " + str3);
+								}
+							}
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				this.LogStatus("Lỗi khi xóa boot entries: " + ex.Message);
+			}
+		}
+
+		// Token: 0x0600001D RID: 29 RVA: 0x00003238 File Offset: 0x00001438
+		private void LogStatus(string message)
+		{
+			base.Dispatcher.Invoke(delegate()
+			{
+				this.StatusTextBox.AppendText(string.Format("[{0:HH:mm:ss}] {1}\n", DateTime.Now, message));
+				try
+				{
+					ScrollViewer scrollViewer = this.GetScrollViewer(this.StatusTextBox);
+					if (scrollViewer == null)
+					{
+						this.StatusTextBox.ScrollToEnd();
+					}
+					else if (scrollViewer.VerticalOffset >= scrollViewer.ScrollableHeight - 16.0)
+					{
+						scrollViewer.ScrollToEnd();
+					}
+				}
+				catch
+				{
+					this.StatusTextBox.ScrollToEnd();
+				}
+			});
+		}
+
+		// Token: 0x0600001E RID: 30 RVA: 0x00003270 File Offset: 0x00001470
+		private ScrollViewer GetScrollViewer(DependencyObject dep)
+		{
+			if (dep == null)
+			{
+				return null;
+			}
+			if (dep is ScrollViewer)
+			{
+				return (ScrollViewer)dep;
+			}
+			for (int i = 0; i < VisualTreeHelper.GetChildrenCount(dep); i++)
+			{
+				DependencyObject child = VisualTreeHelper.GetChild(dep, i);
+				ScrollViewer scrollViewer = this.GetScrollViewer(child);
+				if (scrollViewer != null)
+				{
+					return scrollViewer;
+				}
+			}
+			return null;
+		}
+
+		// Token: 0x0600001F RID: 31 RVA: 0x000032B8 File Offset: 0x000014B8
+		private void UpdateProgress(double percentage)
+		{
+			base.Dispatcher.Invoke(delegate()
+			{
+				this.InstallProgressBar.Value = percentage;
+				this.ProgressTextBlock.Text = string.Format("{0:0.0}%", percentage);
+			});
+		}
+
+		// Token: 0x06000020 RID: 32 RVA: 0x000032F0 File Offset: 0x000014F0
+		private void Btn3DPChip_Click(object sender, RoutedEventArgs e)
+		{
+			MainWindow.<Btn3DPChip_Click>d__32 <Btn3DPChip_Click>d__;
+			<Btn3DPChip_Click>d__.<>t__builder = AsyncVoidMethodBuilder.Create();
+			<Btn3DPChip_Click>d__.<>4__this = this;
+			<Btn3DPChip_Click>d__.<>1__state = -1;
+			<Btn3DPChip_Click>d__.<>t__builder.Start<MainWindow.<Btn3DPChip_Click>d__32>(ref <Btn3DPChip_Click>d__);
+		}
+
+		// Token: 0x06000021 RID: 33 RVA: 0x00003328 File Offset: 0x00001528
+		private void Btn3DPNet_Click(object sender, RoutedEventArgs e)
+		{
+			MainWindow.<Btn3DPNet_Click>d__33 <Btn3DPNet_Click>d__;
+			<Btn3DPNet_Click>d__.<>t__builder = AsyncVoidMethodBuilder.Create();
+			<Btn3DPNet_Click>d__.<>4__this = this;
+			<Btn3DPNet_Click>d__.<>1__state = -1;
+			<Btn3DPNet_Click>d__.<>t__builder.Start<MainWindow.<Btn3DPNet_Click>d__33>(ref <Btn3DPNet_Click>d__);
+		}
+
+		// Token: 0x06000022 RID: 34 RVA: 0x00003360 File Offset: 0x00001560
+		private void BtnMMTApps_Click(object sender, RoutedEventArgs e)
+		{
+			MainWindow.<BtnMMTApps_Click>d__34 <BtnMMTApps_Click>d__;
+			<BtnMMTApps_Click>d__.<>t__builder = AsyncVoidMethodBuilder.Create();
+			<BtnMMTApps_Click>d__.<>4__this = this;
+			<BtnMMTApps_Click>d__.<>1__state = -1;
+			<BtnMMTApps_Click>d__.<>t__builder.Start<MainWindow.<BtnMMTApps_Click>d__34>(ref <BtnMMTApps_Click>d__);
+		}
+
+		// Token: 0x06000023 RID: 35 RVA: 0x00003398 File Offset: 0x00001598
+		private void BtnDISMPP_Click(object sender, RoutedEventArgs e)
+		{
+			MainWindow.<BtnDISMPP_Click>d__35 <BtnDISMPP_Click>d__;
+			<BtnDISMPP_Click>d__.<>t__builder = AsyncVoidMethodBuilder.Create();
+			<BtnDISMPP_Click>d__.<>4__this = this;
+			<BtnDISMPP_Click>d__.<>1__state = -1;
+			<BtnDISMPP_Click>d__.<>t__builder.Start<MainWindow.<BtnDISMPP_Click>d__35>(ref <BtnDISMPP_Click>d__);
+		}
+
+		// Token: 0x06000024 RID: 36 RVA: 0x000033D0 File Offset: 0x000015D0
+		private void BtnComfortClipboardPro_Click(object sender, RoutedEventArgs e)
+		{
+			MainWindow.<BtnComfortClipboardPro_Click>d__36 <BtnComfortClipboardPro_Click>d__;
+			<BtnComfortClipboardPro_Click>d__.<>t__builder = AsyncVoidMethodBuilder.Create();
+			<BtnComfortClipboardPro_Click>d__.<>4__this = this;
+			<BtnComfortClipboardPro_Click>d__.<>1__state = -1;
+			<BtnComfortClipboardPro_Click>d__.<>t__builder.Start<MainWindow.<BtnComfortClipboardPro_Click>d__36>(ref <BtnComfortClipboardPro_Click>d__);
+		}
+
+		// Token: 0x06000025 RID: 37 RVA: 0x00003408 File Offset: 0x00001608
+		private void BtnOfficeSoftmaker_Click(object sender, RoutedEventArgs e)
+		{
+			MainWindow.<BtnOfficeSoftmaker_Click>d__37 <BtnOfficeSoftmaker_Click>d__;
+			<BtnOfficeSoftmaker_Click>d__.<>t__builder = AsyncVoidMethodBuilder.Create();
+			<BtnOfficeSoftmaker_Click>d__.<>4__this = this;
+			<BtnOfficeSoftmaker_Click>d__.<>1__state = -1;
+			<BtnOfficeSoftmaker_Click>d__.<>t__builder.Start<MainWindow.<BtnOfficeSoftmaker_Click>d__37>(ref <BtnOfficeSoftmaker_Click>d__);
+		}
+
+		// Token: 0x06000026 RID: 38 RVA: 0x00003440 File Offset: 0x00001640
+		private void BtnAomeiPartitionAssistant_Click(object sender, RoutedEventArgs e)
+		{
+			MainWindow.<BtnAomeiPartitionAssistant_Click>d__38 <BtnAomeiPartitionAssistant_Click>d__;
+			<BtnAomeiPartitionAssistant_Click>d__.<>t__builder = AsyncVoidMethodBuilder.Create();
+			<BtnAomeiPartitionAssistant_Click>d__.<>4__this = this;
+			<BtnAomeiPartitionAssistant_Click>d__.<>1__state = -1;
+			<BtnAomeiPartitionAssistant_Click>d__.<>t__builder.Start<MainWindow.<BtnAomeiPartitionAssistant_Click>d__38>(ref <BtnAomeiPartitionAssistant_Click>d__);
+		}
+
+		// Token: 0x06000027 RID: 39 RVA: 0x00003478 File Offset: 0x00001678
+		private Task InstallWithUIOptionsAsync(string downloadUrl, string fileName, string displayName)
+		{
+			MainWindow.<InstallWithUIOptionsAsync>d__39 <InstallWithUIOptionsAsync>d__;
+			<InstallWithUIOptionsAsync>d__.<>t__builder = AsyncTaskMethodBuilder.Create();
+			<InstallWithUIOptionsAsync>d__.<>4__this = this;
+			<InstallWithUIOptionsAsync>d__.downloadUrl = downloadUrl;
+			<InstallWithUIOptionsAsync>d__.fileName = fileName;
+			<InstallWithUIOptionsAsync>d__.displayName = displayName;
+			<InstallWithUIOptionsAsync>d__.<>1__state = -1;
+			<InstallWithUIOptionsAsync>d__.<>t__builder.Start<MainWindow.<InstallWithUIOptionsAsync>d__39>(ref <InstallWithUIOptionsAsync>d__);
+			return <InstallWithUIOptionsAsync>d__.<>t__builder.Task;
+		}
+
+		// Token: 0x06000028 RID: 40 RVA: 0x000034D4 File Offset: 0x000016D4
+		private Task DownloadAndRunAsync(string downloadUrl, string fileName, string displayName, string arguments)
+		{
+			MainWindow.<DownloadAndRunAsync>d__40 <DownloadAndRunAsync>d__;
+			<DownloadAndRunAsync>d__.<>t__builder = AsyncTaskMethodBuilder.Create();
+			<DownloadAndRunAsync>d__.<>4__this = this;
+			<DownloadAndRunAsync>d__.downloadUrl = downloadUrl;
+			<DownloadAndRunAsync>d__.fileName = fileName;
+			<DownloadAndRunAsync>d__.displayName = displayName;
+			<DownloadAndRunAsync>d__.arguments = arguments;
+			<DownloadAndRunAsync>d__.<>1__state = -1;
+			<DownloadAndRunAsync>d__.<>t__builder.Start<MainWindow.<DownloadAndRunAsync>d__40>(ref <DownloadAndRunAsync>d__);
+			return <DownloadAndRunAsync>d__.<>t__builder.Task;
+		}
+
+		// Token: 0x06000029 RID: 41 RVA: 0x00003538 File Offset: 0x00001738
+		private Task RunProcessAsync(string filePath, string arguments = "")
+		{
+			MainWindow.<RunProcessAsync>d__41 <RunProcessAsync>d__;
+			<RunProcessAsync>d__.<>t__builder = AsyncTaskMethodBuilder.Create();
+			<RunProcessAsync>d__.filePath = filePath;
+			<RunProcessAsync>d__.arguments = arguments;
+			<RunProcessAsync>d__.<>1__state = -1;
+			<RunProcessAsync>d__.<>t__builder.Start<MainWindow.<RunProcessAsync>d__41>(ref <RunProcessAsync>d__);
+			return <RunProcessAsync>d__.<>t__builder.Task;
+		}
+
+		// Token: 0x0600002A RID: 42 RVA: 0x00003584 File Offset: 0x00001784
+		private string GetMMTPCFolder()
+		{
+			string text = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "GMTPC");
+			if (!Directory.Exists(text))
+			{
+				Directory.CreateDirectory(text);
+			}
+			return text;
+		}
+
+		// Token: 0x0600002B RID: 43 RVA: 0x000035B4 File Offset: 0x000017B4
+		private string GetWinPEMMTPCFolder()
+		{
+			string text = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "GMTPC", "WinPE");
+			if (!Directory.Exists(text))
+			{
+				Directory.CreateDirectory(text);
+			}
+			return text;
+		}
+
+		// Token: 0x0600002C RID: 44 RVA: 0x000035E8 File Offset: 0x000017E8
+		private Task DownloadWithProgressAsync(string downloadUrl, string destinationPath, string displayName, bool useDataSystemUI = false)
+		{
+			MainWindow.<DownloadWithProgressAsync>d__44 <DownloadWithProgressAsync>d__;
+			<DownloadWithProgressAsync>d__.<>t__builder = AsyncTaskMethodBuilder.Create();
+			<DownloadWithProgressAsync>d__.<>4__this = this;
+			<DownloadWithProgressAsync>d__.downloadUrl = downloadUrl;
+			<DownloadWithProgressAsync>d__.destinationPath = destinationPath;
+			<DownloadWithProgressAsync>d__.displayName = displayName;
+			<DownloadWithProgressAsync>d__.useDataSystemUI = useDataSystemUI;
+			<DownloadWithProgressAsync>d__.<>1__state = -1;
+			<DownloadWithProgressAsync>d__.<>t__builder.Start<MainWindow.<DownloadWithProgressAsync>d__44>(ref <DownloadWithProgressAsync>d__);
+			return <DownloadWithProgressAsync>d__.<>t__builder.Task;
+		}
+
+		// Token: 0x0600002D RID: 45 RVA: 0x0000364C File Offset: 0x0000184C
+		private void UpdateInstallButtonState_Click(object sender, RoutedEventArgs e)
+		{
+			bool isEnabled = this.Chk3DPChip.IsChecked.GetValueOrDefault() || this.Chk3DPNet.IsChecked.GetValueOrDefault() || this.ChkMMTApps.IsChecked.GetValueOrDefault() || this.ChkDISMPP.IsChecked.GetValueOrDefault() || this.ChkComfortClipboardPro.IsChecked.GetValueOrDefault() || this.ChkOfficeSoftmaker.IsChecked.GetValueOrDefault() || this.ChkAomeiPartitionAssistant.IsChecked.GetValueOrDefault();
+			this.BtnInstall.IsEnabled = isEnabled;
+		}
+
+		// Token: 0x0600002E RID: 46 RVA: 0x000036FC File Offset: 0x000018FC
+		private void BtnSelectAll_Click(object sender, RoutedEventArgs e)
+		{
+			this.Chk3DPChip.IsChecked = new bool?(true);
+			this.Chk3DPNet.IsChecked = new bool?(true);
+			this.ChkMMTApps.IsChecked = new bool?(true);
+			this.ChkDISMPP.IsChecked = new bool?(true);
+			this.ChkComfortClipboardPro.IsChecked = new bool?(true);
+			this.ChkOfficeSoftmaker.IsChecked = new bool?(true);
+			this.ChkAomeiPartitionAssistant.IsChecked = new bool?(true);
+			this.UpdateInstallButtonState_Click(null, null);
+		}
+
+		// Token: 0x0600002F RID: 47 RVA: 0x00003788 File Offset: 0x00001988
+		private void BtnSelectNone_Click(object sender, RoutedEventArgs e)
+		{
+			this.Chk3DPChip.IsChecked = new bool?(false);
+			this.Chk3DPNet.IsChecked = new bool?(false);
+			this.ChkMMTApps.IsChecked = new bool?(false);
+			this.ChkDISMPP.IsChecked = new bool?(false);
+			this.ChkComfortClipboardPro.IsChecked = new bool?(false);
+			this.ChkOfficeSoftmaker.IsChecked = new bool?(false);
+			this.ChkAomeiPartitionAssistant.IsChecked = new bool?(false);
+			this.UpdateInstallButtonState_Click(null, null);
+		}
+
+		// Token: 0x06000030 RID: 48 RVA: 0x00003814 File Offset: 0x00001A14
+		private void BtnInstall_Click(object sender, RoutedEventArgs e)
+		{
+			MainWindow.<BtnInstall_Click>d__48 <BtnInstall_Click>d__;
+			<BtnInstall_Click>d__.<>t__builder = AsyncVoidMethodBuilder.Create();
+			<BtnInstall_Click>d__.<>4__this = this;
+			<BtnInstall_Click>d__.<>1__state = -1;
+			<BtnInstall_Click>d__.<>t__builder.Start<MainWindow.<BtnInstall_Click>d__48>(ref <BtnInstall_Click>d__);
+		}
+
+		// Token: 0x06000031 RID: 49 RVA: 0x0000384B File Offset: 0x00001A4B
+		private void BtnStopDataSystem_Click(object sender, RoutedEventArgs e)
+		{
+			if (this.cancellationTokenSource != null)
+			{
+				this.cancellationTokenSource.Cancel();
+				this.LogStatus("Data and System: Cancellation requested.");
+			}
+		}
+
+		// Token: 0x06000032 RID: 50 RVA: 0x0000386C File Offset: 0x00001A6C
+		private void BtnOpenDownloadLinks_Click(object sender, RoutedEventArgs e)
+		{
+			Window window = new Window
+			{
+				Title = "Download Links - Chọn số nút để tải",
+				Width = 600.0,
+				Height = 400.0,
+				WindowStartupLocation = WindowStartupLocation.CenterOwner,
+				Owner = this,
+				Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#202020")),
+				Foreground = Brushes.White
+			};
+			ScrollViewer scrollViewer = new ScrollViewer
+			{
+				VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+				Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#202020"))
+			};
+			StackPanel stackPanel = new StackPanel
+			{
+				Orientation = Orientation.Vertical,
+				Margin = new Thickness(10.0)
+			};
+			List<ValueTuple<int, string, string>> list = new List<ValueTuple<int, string, string>>();
+			list.Add(new ValueTuple<int, string, string>(1, "3DP Chip - all driver trừ internet", "https://github.com/ghostminhtoan/MMT/releases/download/v1.0/3DP_Chip_v2510.exe"));
+			list.Add(new ValueTuple<int, string, string>(2, "3DP Net - driver internet", "https://github.com/ghostminhtoan/MMT/releases/download/v1.0/3DP.Net.exe"));
+			list.Add(new ValueTuple<int, string, string>(3, "MMT Apps", "https://github.com/ghostminhtoan/MMT/releases/download/v1.0/MMT.Apps.exe"));
+			list.Add(new ValueTuple<int, string, string>(4, "DISM++", "https://github.com/ghostminhtoan/MMT/releases/download/WinPE/DISM++.exe"));
+			list.Add(new ValueTuple<int, string, string>(5, "Comfort Clipboard Pro", "https://github.com/ghostminhtoan/MMT/releases/download/v1.0/Comfort.Clipboard.Pro.7.0.2.exe"));
+			list.Add(new ValueTuple<int, string, string>(6, "Office Softmaker", "https://github.com/ghostminhtoan/MMT/releases/download/v1.0/Office.Softmaker.exe"));
+			list.Add(new ValueTuple<int, string, string>(7, "AOMEI Partition Assistant", "https://github.com/ghostminhtoan/MMT/releases/download/WinPE/AOMEI.Partition.Assistant.exe"));
+			TextBlock element = new TextBlock
+			{
+				Text = "Chọn nút bên dưới để mở trang download gốc (Github Releases):",
+				Foreground = Brushes.White,
+				Margin = new Thickness(0.0, 0.0, 0.0, 15.0),
+				FontSize = 14.0,
+				TextWrapping = TextWrapping.Wrap
+			};
+			stackPanel.Children.Add(element);
+			foreach (ValueTuple<int, string, string> valueTuple in list)
+			{
+				int item = valueTuple.Item1;
+				string item2 = valueTuple.Item2;
+				string item3 = valueTuple.Item3;
+				Button button = new Button
+				{
+					Content = string.Format("{0}. {1}", item, item2),
+					Width = 550.0,
+					Height = 40.0,
+					Margin = new Thickness(5.0, 5.0, 5.0, 5.0),
+					Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#3a3a3a")),
+					Foreground = Brushes.White,
+					BorderThickness = new Thickness(0.0),
+					HorizontalAlignment = HorizontalAlignment.Left,
+					Tag = item3
+				};
+				button.Click += delegate(object sender2, RoutedEventArgs e2)
+				{
+					try
+					{
+						Process.Start(new ProcessStartInfo
+						{
+							FileName = (string)((Button)sender2).Tag,
+							UseShellExecute = true
+						});
+					}
+					catch (Exception ex)
+					{
+						MessageBox.Show("Lỗi khi mở link: " + ex.Message, "Lỗi", MessageBoxButton.OK, MessageBoxImage.Hand);
+					}
+				};
+				button.MouseEnter += delegate(object sender2, MouseEventArgs e2)
+				{
+					((Button)sender2).Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#4a4a4a"));
+				};
+				button.MouseLeave += delegate(object sender2, MouseEventArgs e2)
+				{
+					((Button)sender2).Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#3a3a3a"));
+				};
+				stackPanel.Children.Add(button);
+			}
+			scrollViewer.Content = stackPanel;
+			window.Content = scrollViewer;
+			window.ShowDialog();
+		}
+
+		// Token: 0x06000033 RID: 51 RVA: 0x00003BDC File Offset: 0x00001DDC
+		private void BtnBackupRestoreMklinkMMT_Click(object sender, RoutedEventArgs e)
+		{
+			MainWindow.<BtnBackupRestoreMklinkMMT_Click>d__51 <BtnBackupRestoreMklinkMMT_Click>d__;
+			<BtnBackupRestoreMklinkMMT_Click>d__.<>t__builder = AsyncVoidMethodBuilder.Create();
+			<BtnBackupRestoreMklinkMMT_Click>d__.<>4__this = this;
+			<BtnBackupRestoreMklinkMMT_Click>d__.<>1__state = -1;
+			<BtnBackupRestoreMklinkMMT_Click>d__.<>t__builder.Start<MainWindow.<BtnBackupRestoreMklinkMMT_Click>d__51>(ref <BtnBackupRestoreMklinkMMT_Click>d__);
+		}
+
+		// Token: 0x06000034 RID: 52 RVA: 0x00003C13 File Offset: 0x00001E13
+		private Task Install3DPChipAsync(CancellationToken token)
+		{
+			return Task.Run(delegate()
+			{
+				MainWindow.<<Install3DPChipAsync>b__52_0>d <<Install3DPChipAsync>b__52_0>d;
+				<<Install3DPChipAsync>b__52_0>d.<>t__builder = AsyncTaskMethodBuilder.Create();
+				<<Install3DPChipAsync>b__52_0>d.<>4__this = this;
+				<<Install3DPChipAsync>b__52_0>d.<>1__state = -1;
+				<<Install3DPChipAsync>b__52_0>d.<>t__builder.Start<MainWindow.<<Install3DPChipAsync>b__52_0>d>(ref <<Install3DPChipAsync>b__52_0>d);
+				return <<Install3DPChipAsync>b__52_0>d.<>t__builder.Task;
+			}, token);
+		}
+
+		// Token: 0x06000035 RID: 53 RVA: 0x00003C27 File Offset: 0x00001E27
+		private Task Install3DPNetAsync(CancellationToken token)
+		{
+			return this.InstallDownloadAndRunAsync("https://github.com/ghostminhtoan/MMT/releases/download/v1.0/3DP.Net.exe", "3DP_Net_v2101.exe", "3DP Net Driver", "/y", token);
+		}
+
+		// Token: 0x06000036 RID: 54 RVA: 0x00003C44 File Offset: 0x00001E44
+		private Task InstallMMTAppsAsync(CancellationToken token)
+		{
+			return this.InstallWithUIOptionsAsync("https://github.com/ghostminhtoan/MMT/releases/download/v1.0/MMT.Apps.exe", "MMT.Apps.exe", "MMT Apps");
+		}
+
+		// Token: 0x06000037 RID: 55 RVA: 0x00003C5B File Offset: 0x00001E5B
+		private Task InstallDISMPPAsync(CancellationToken token)
+		{
+			return this.InstallWithUIOptionsAsync("https://github.com/ghostminhtoan/MMT/releases/download/WinPE/DISM++.exe", "DISM++.exe", "DISM++");
+		}
+
+		// Token: 0x06000038 RID: 56 RVA: 0x00003C72 File Offset: 0x00001E72
+		private Task InstallComfortClipboardProAsync(CancellationToken token)
+		{
+			return this.InstallWithUIOptionsAsync("https://github.com/ghostminhtoan/MMT/releases/download/v1.0/Comfort.Clipboard.Pro.7.0.2.exe", "Comfort.Clipboard.Pro.7.0.2.exe", "Comfort Clipboard Pro");
+		}
+
+		// Token: 0x06000039 RID: 57 RVA: 0x00003C89 File Offset: 0x00001E89
+		private Task InstallOfficeSoftmakerAsync(CancellationToken token)
+		{
+			return this.InstallWithUIOptionsAsync("https://github.com/ghostminhtoan/MMT/releases/download/v1.0/Office.Softmaker.exe", "Office.Softmaker.exe", "Office Softmaker");
+		}
+
+		// Token: 0x0600003A RID: 58 RVA: 0x00003CA0 File Offset: 0x00001EA0
+		private Task InstallAomeiPartitionAssistantAsync(CancellationToken token)
+		{
+			return this.InstallWithUIOptionsAsync("https://github.com/ghostminhtoan/MMT/releases/download/WinPE/AOMEI.Partition.Assistant.exe", "AOMEI.Partition.Assistant.exe", "AOMEI Partition Assistant");
+		}
+
+		// Token: 0x0600003B RID: 59 RVA: 0x00003CB8 File Offset: 0x00001EB8
+		private Task InstallDownloadAndRunAsync(string downloadUrl, string fileName, string displayName, string arguments, CancellationToken token)
+		{
+			MainWindow.<>c__DisplayClass59_0 CS$<>8__locals1 = new MainWindow.<>c__DisplayClass59_0();
+			CS$<>8__locals1.token = token;
+			CS$<>8__locals1.<>4__this = this;
+			CS$<>8__locals1.downloadUrl = downloadUrl;
+			CS$<>8__locals1.fileName = fileName;
+			CS$<>8__locals1.displayName = displayName;
+			CS$<>8__locals1.arguments = arguments;
+			return Task.Run(delegate()
+			{
+				MainWindow.<>c__DisplayClass59_0.<<InstallDownloadAndRunAsync>b__0>d <<InstallDownloadAndRunAsync>b__0>d;
+				<<InstallDownloadAndRunAsync>b__0>d.<>t__builder = AsyncTaskMethodBuilder.Create();
+				<<InstallDownloadAndRunAsync>b__0>d.<>4__this = CS$<>8__locals1;
+				<<InstallDownloadAndRunAsync>b__0>d.<>1__state = -1;
+				<<InstallDownloadAndRunAsync>b__0>d.<>t__builder.Start<MainWindow.<>c__DisplayClass59_0.<<InstallDownloadAndRunAsync>b__0>d>(ref <<InstallDownloadAndRunAsync>b__0>d);
+				return <<InstallDownloadAndRunAsync>b__0>d.<>t__builder.Task;
+			}, CS$<>8__locals1.token);
+		}
+
+		// Token: 0x0600003C RID: 60 RVA: 0x00003D10 File Offset: 0x00001F10
+		private void AddDefenderExclusion()
+		{
+			try
+			{
+				string winPEMMTPCFolder = this.GetWinPEMMTPCFolder();
+				Process process = Process.Start(new ProcessStartInfo
+				{
+					FileName = "powershell.exe",
+					Arguments = "-Command \"Add-MpPreference -ExclusionPath '" + winPEMMTPCFolder + "' -Force\"",
+					UseShellExecute = true,
+					Verb = "runas",
+					CreateNoWindow = true
+				});
+				if (process != null)
+				{
+					process.WaitForExit();
+				}
+			}
+			catch (Exception ex)
+			{
+				this.LogStatus("Lỗi khi thêm exclusion cho Windows Defender: " + ex.Message);
+			}
+		}
+
+		// Token: 0x0600003D RID: 61 RVA: 0x00003DA0 File Offset: 0x00001FA0
+		private void RemoveDefenderExclusion()
+		{
+			try
+			{
+				string winPEMMTPCFolder = this.GetWinPEMMTPCFolder();
+				Process process = Process.Start(new ProcessStartInfo
+				{
+					FileName = "powershell.exe",
+					Arguments = "-Command \"Remove-MpPreference -ExclusionPath '" + winPEMMTPCFolder + "' -Force\"",
+					UseShellExecute = true,
+					Verb = "runas",
+					CreateNoWindow = true
+				});
+				if (process != null)
+				{
+					process.WaitForExit();
+				}
+				if (Directory.Exists(winPEMMTPCFolder))
+				{
+					Directory.Delete(winPEMMTPCFolder, true);
+				}
+			}
+			catch
+			{
+			}
+		}
+
+		// Token: 0x0600003E RID: 62 RVA: 0x00003E28 File Offset: 0x00002028
+		private void MainWindow_Closing(object sender, CancelEventArgs e)
+		{
+			this.RemoveDefenderExclusion();
+		}
+
+		// Token: 0x0600003F RID: 63 RVA: 0x00003E30 File Offset: 0x00002030
+		[DebuggerNonUserCode]
+		[GeneratedCode("PresentationBuildTasks", "4.0.0.0")]
+		public void InitializeComponent()
+		{
+			if (this._contentLoaded)
+			{
+				return;
+			}
+			this._contentLoaded = true;
+			Uri resourceLocator = new Uri("/MMT.PE;component/mainwindow.xaml", UriKind.Relative);
+			Application.LoadComponent(this, resourceLocator);
+		}
+
+		// Token: 0x06000040 RID: 64 RVA: 0x00003E60 File Offset: 0x00002060
+		[DebuggerNonUserCode]
+		[GeneratedCode("PresentationBuildTasks", "4.0.0.0")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		void IComponentConnector.Connect(int connectionId, object target)
+		{
+			switch (connectionId)
+			{
+			case 1:
+				this.DriveSelectionComboBox = (ComboBox)target;
+				return;
+			case 2:
+				this.ShrinkSizeTextBox = (TextBox)target;
+				return;
+			case 3:
+				this.RefreshDrivesButton = (Button)target;
+				this.RefreshDrivesButton.Click += this.RefreshDrivesButton_Click;
+				return;
+			case 4:
+				this.ShrinkVolumeButton = (Button)target;
+				this.ShrinkVolumeButton.Click += this.ShrinkVolumeButton_Click;
+				return;
+			case 5:
+				this.SelectISOButton = (Button)target;
+				this.SelectISOButton.Click += this.SelectISOButton_Click;
+				return;
+			case 6:
+				this.DownloadISOButton = (Button)target;
+				this.DownloadISOButton.Click += this.DownloadISOButton_Click;
+				return;
+			case 7:
+				this.GoToSourceButton = (Button)target;
+				this.GoToSourceButton.Click += this.GoToSourceButton_Click;
+				return;
+			case 8:
+				this.ISOPathTextBox = (TextBox)target;
+				return;
+			case 9:
+				this.StopButton = (Button)target;
+				this.StopButton.Click += this.StopButton_Click;
+				return;
+			case 10:
+				this.ReclaimXDriveButton = (Button)target;
+				this.ReclaimXDriveButton.Click += this.ReclaimXDriveButton_Click;
+				return;
+			case 11:
+				this.MountISOButton = (Button)target;
+				this.MountISOButton.Click += this.MountISOButton_Click;
+				return;
+			case 12:
+				this.CreateBootButton = (Button)target;
+				this.CreateBootButton.Click += this.CreateBootButton_Click;
+				return;
+			case 13:
+				this.ActionProgressPanel = (StackPanel)target;
+				return;
+			case 14:
+				this.ActionProgressBar = (ProgressBar)target;
+				return;
+			case 15:
+				this.ActionTextBlock = (TextBlock)target;
+				return;
+			case 16:
+				this.ActionSpeedTextBlock = (TextBlock)target;
+				return;
+			case 17:
+				this.Chk3DPChip = (CheckBox)target;
+				this.Chk3DPChip.Click += this.UpdateInstallButtonState_Click;
+				return;
+			case 18:
+				this.Chk3DPNet = (CheckBox)target;
+				this.Chk3DPNet.Click += this.UpdateInstallButtonState_Click;
+				return;
+			case 19:
+				this.ChkMMTApps = (CheckBox)target;
+				this.ChkMMTApps.Click += this.UpdateInstallButtonState_Click;
+				return;
+			case 20:
+				this.ChkDISMPP = (CheckBox)target;
+				this.ChkDISMPP.Click += this.UpdateInstallButtonState_Click;
+				return;
+			case 21:
+				this.ChkComfortClipboardPro = (CheckBox)target;
+				this.ChkComfortClipboardPro.Click += this.UpdateInstallButtonState_Click;
+				return;
+			case 22:
+				this.ChkOfficeSoftmaker = (CheckBox)target;
+				this.ChkOfficeSoftmaker.Click += this.UpdateInstallButtonState_Click;
+				return;
+			case 23:
+				this.BtnBackupRestoreMklinkMMT = (Button)target;
+				this.BtnBackupRestoreMklinkMMT.Click += this.BtnBackupRestoreMklinkMMT_Click;
+				return;
+			case 24:
+				this.ChkAomeiPartitionAssistant = (CheckBox)target;
+				this.ChkAomeiPartitionAssistant.Click += this.UpdateInstallButtonState_Click;
+				return;
+			case 25:
+				this.BtnSelectAll = (Button)target;
+				this.BtnSelectAll.Click += this.BtnSelectAll_Click;
+				return;
+			case 26:
+				this.BtnSelectNone = (Button)target;
+				this.BtnSelectNone.Click += this.BtnSelectNone_Click;
+				return;
+			case 27:
+				this.BtnInstall = (Button)target;
+				this.BtnInstall.Click += this.BtnInstall_Click;
+				return;
+			case 28:
+				this.BtnStopDataSystem = (Button)target;
+				this.BtnStopDataSystem.Click += this.BtnStopDataSystem_Click;
+				return;
+			case 29:
+				this.BtnOpenDownloadLinks = (Button)target;
+				this.BtnOpenDownloadLinks.Click += this.BtnOpenDownloadLinks_Click;
+				return;
+			case 30:
+				this.DataSystemProgressBar = (ProgressBar)target;
+				return;
+			case 31:
+				this.DataSystemProgressTextBlock = (TextBlock)target;
+				return;
+			case 32:
+				this.DataSystemSpeedTextBlock = (TextBlock)target;
+				return;
+			case 33:
+				this.ProgressPanel = (StackPanel)target;
+				return;
+			case 34:
+				this.InstallProgressBar = (ProgressBar)target;
+				return;
+			case 35:
+				this.ProgressTextBlock = (TextBlock)target;
+				return;
+			case 36:
+				this.InstallSpeedTextBlock = (TextBlock)target;
+				return;
+			case 37:
+				this.StatusTextBox = (TextBox)target;
+				return;
+			default:
+				this._contentLoaded = true;
+				return;
+			}
+		}
+
+		// Token: 0x04000001 RID: 1
+		private string selectedDrive = string.Empty;
+
+		// Token: 0x04000002 RID: 2
+		private string isoPath = string.Empty;
+
+		// Token: 0x04000003 RID: 3
+		private string mountedDrive = string.Empty;
+
+		// Token: 0x04000004 RID: 4
+		private CancellationTokenSource cancellationTokenSource;
+
+		// Token: 0x04000005 RID: 5
+		internal ComboBox DriveSelectionComboBox;
+
+		// Token: 0x04000006 RID: 6
+		internal TextBox ShrinkSizeTextBox;
+
+		// Token: 0x04000007 RID: 7
+		internal Button RefreshDrivesButton;
+
+		// Token: 0x04000008 RID: 8
+		internal Button ShrinkVolumeButton;
+
+		// Token: 0x04000009 RID: 9
+		internal Button SelectISOButton;
+
+		// Token: 0x0400000A RID: 10
+		internal Button DownloadISOButton;
+
+		// Token: 0x0400000B RID: 11
+		internal Button GoToSourceButton;
+
+		// Token: 0x0400000C RID: 12
+		internal TextBox ISOPathTextBox;
+
+		// Token: 0x0400000D RID: 13
+		internal Button StopButton;
+
+		// Token: 0x0400000E RID: 14
+		internal Button ReclaimXDriveButton;
+
+		// Token: 0x0400000F RID: 15
+		internal Button MountISOButton;
+
+		// Token: 0x04000010 RID: 16
+		internal Button CreateBootButton;
+
+		// Token: 0x04000011 RID: 17
+		internal StackPanel ActionProgressPanel;
+
+		// Token: 0x04000012 RID: 18
+		internal ProgressBar ActionProgressBar;
+
+		// Token: 0x04000013 RID: 19
+		internal TextBlock ActionTextBlock;
+
+		// Token: 0x04000014 RID: 20
+		internal TextBlock ActionSpeedTextBlock;
+
+		// Token: 0x04000015 RID: 21
+		internal CheckBox Chk3DPChip;
+
+		// Token: 0x04000016 RID: 22
+		internal CheckBox Chk3DPNet;
+
+		// Token: 0x04000017 RID: 23
+		internal CheckBox ChkMMTApps;
+
+		// Token: 0x04000018 RID: 24
+		internal CheckBox ChkDISMPP;
+
+		// Token: 0x04000019 RID: 25
+		internal CheckBox ChkComfortClipboardPro;
+
+		// Token: 0x0400001A RID: 26
+		internal CheckBox ChkOfficeSoftmaker;
+
+		// Token: 0x0400001B RID: 27
+		internal Button BtnBackupRestoreMklinkMMT;
+
+		// Token: 0x0400001C RID: 28
+		internal CheckBox ChkAomeiPartitionAssistant;
+
+		// Token: 0x0400001D RID: 29
+		internal Button BtnSelectAll;
+
+		// Token: 0x0400001E RID: 30
+		internal Button BtnSelectNone;
+
+		// Token: 0x0400001F RID: 31
+		internal Button BtnInstall;
+
+		// Token: 0x04000020 RID: 32
+		internal Button BtnStopDataSystem;
+
+		// Token: 0x04000021 RID: 33
+		internal Button BtnOpenDownloadLinks;
+
+		// Token: 0x04000022 RID: 34
+		internal ProgressBar DataSystemProgressBar;
+
+		// Token: 0x04000023 RID: 35
+		internal TextBlock DataSystemProgressTextBlock;
+
+		// Token: 0x04000024 RID: 36
+		internal TextBlock DataSystemSpeedTextBlock;
+
+		// Token: 0x04000025 RID: 37
+		internal StackPanel ProgressPanel;
+
+		// Token: 0x04000026 RID: 38
+		internal ProgressBar InstallProgressBar;
+
+		// Token: 0x04000027 RID: 39
+		internal TextBlock ProgressTextBlock;
+
+		// Token: 0x04000028 RID: 40
+		internal TextBlock InstallSpeedTextBlock;
+
+		// Token: 0x04000029 RID: 41
+		internal TextBox StatusTextBox;
+
+		// Token: 0x0400002A RID: 42
+		private bool _contentLoaded;
+	}
+}

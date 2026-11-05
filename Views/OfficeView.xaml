@@ -1,0 +1,600 @@
+<UserControl x:Class="HyperLisUI.Views.OfficeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:HyperLisUI.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="1200" d:DesignWidth="900" Background="Transparent">
+
+    <UserControl.Resources>
+        <!-- Biá»ƒu tÆ°á»£ng Checkmark Vector -->
+        <PathGeometry x:Key="CheckmarkIcon">M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z</PathGeometry>
+
+        <!-- Style dÃ nh cho tháº» RadioButton Office -->
+        <Style x:Key="OfficeCardRadioButtonStyle" TargetType="RadioButton">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#E5E5E5"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Foreground" Value="#333333"/>
+            <Setter Property="Padding" Value="15,10"/>
+            <Setter Property="Margin" Value="0,0,10,10"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="8">
+                            <Grid>
+                                <ContentPresenter Margin="{TemplateBinding Padding}" 
+                                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                
+                                <!-- Dáº¥u Check mÃ u xanh (GÃ³c trÃªn pháº£i) -->
+                                <Path x:Name="CheckIcon" 
+                                      Data="{StaticResource CheckmarkIcon}" 
+                                      Fill="#0078D4" 
+                                      Width="16" Height="16" 
+                                      Stretch="Uniform" 
+                                      HorizontalAlignment="Right" 
+                                      VerticalAlignment="Top" 
+                                      Margin="0,8,8,0" 
+                                      Visibility="Collapsed"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#F9F9F9"/>
+                                <Setter Property="BorderBrush" Value="#D0D0D0"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter Property="Background" Value="#EAF3FF"/>
+                                <Setter Property="BorderBrush" Value="#0078D4"/>
+                                <Setter Property="BorderThickness" Value="1"/>
+                                <Setter TargetName="CheckIcon" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Style dÃ nh cho CheckBox kÃ¨m Icon -->
+        <Style x:Key="IconCheckBoxStyle" TargetType="CheckBox">
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="#CBD5E1"/>
+            <Setter Property="BorderThickness" Value="1.5"/>
+            <Setter Property="Foreground" Value="#333333"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Margin" Value="0,0,0,14"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CheckBox">
+                        <StackPanel Orientation="Horizontal" Background="Transparent">
+                            <!-- Box -->
+                            <Border x:Name="checkBoxBorder" Width="18" Height="18" 
+                                    Background="White" 
+                                    BorderBrush="{TemplateBinding BorderBrush}" 
+                                    BorderThickness="{TemplateBinding BorderThickness}" 
+                                    CornerRadius="4" 
+                                    VerticalAlignment="Center">
+                                <Path x:Name="checkMark" Stretch="Uniform" Width="9" Height="7"
+                                      Data="M 0,4 L 3,7 L 9,0" 
+                                      Stroke="White" StrokeThickness="2" 
+                                      StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round"
+                                      Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,1,0,0"/>
+                            </Border>
+                            
+                            <!-- Icon -->
+                            <Image Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}" Width="20" Height="20" Margin="12,0,0,0" VerticalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"/>
+                            
+                            <!-- Text -->
+                            <ContentPresenter Margin="8,0,0,0" VerticalAlignment="Center" TextElement.FontSize="14"/>
+                        </StackPanel>
+                        
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="checkBoxBorder" Property="BorderBrush" Value="#1C69FF"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="checkBoxBorder" Property="Background" Value="#1C69FF"/>
+                                <Setter TargetName="checkBoxBorder" Property="BorderBrush" Value="#1C69FF"/>
+                                <Setter TargetName="checkMark" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Style checkbox xanh (khÃ´ng icon) -->
+        <Style x:Key="BlueConfirmCheckBoxStyle" TargetType="CheckBox">
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="#A0A0A0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Foreground" Value="#333333"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CheckBox">
+                        <StackPanel Orientation="Horizontal" Background="Transparent">
+                            <Border x:Name="checkBoxBorder" Width="18" Height="18"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    CornerRadius="4"
+                                    VerticalAlignment="Top"
+                                    Margin="0,1,0,0">
+                                <Path x:Name="checkMark" Stretch="None"
+                                      Data="M 4,9 L 8,13 L 14,4"
+                                      Stroke="White" StrokeThickness="2"
+                                      StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round"
+                                      Visibility="Collapsed"/>
+                            </Border>
+                            <ContentPresenter Margin="8,0,0,0"
+                                              VerticalAlignment="Center"
+                                              TextElement.FontSize="13"
+                                              TextElement.Foreground="{TemplateBinding Foreground}"/>
+                        </StackPanel>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="checkBoxBorder" Property="Background" Value="#F3F3F3"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="checkBoxBorder" Property="Background" Value="#0067C0"/>
+                                <Setter TargetName="checkBoxBorder" Property="BorderBrush" Value="#0067C0"/>
+                                <Setter TargetName="checkMark" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Style dÃ nh cho Quick Select Button -->
+        <Style x:Key="QuickSelectButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="#333"/>
+            <Setter Property="BorderBrush" Value="#D0D0D0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="14,6"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#F5F5F5"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#E5E5E5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Style dÃ nh cho Action Button -->
+        <Style x:Key="RoundedActionButtonStyle" TargetType="Button">
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="5,0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="6" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Opacity" Value="0.85"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Opacity" Value="0.7"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Margin="20,20,20,15">
+        <Grid.ColumnDefinitions>
+            <!-- Cá»™t trÃ¡i (Thiáº¿t láº­p) -->
+            <ColumnDefinition Width="6.5*" />
+            <!-- Khoáº£ng trá»‘ng giá»¯a 2 cá»™t -->
+            <ColumnDefinition Width="0.3*" />
+            <!-- Cá»™t pháº£i (HÃ nh Ä‘á»™ng & Xem trÆ°á»›c XML) -->
+            <ColumnDefinition Width="3.5*" />
+        </Grid.ColumnDefinitions>
+
+        <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Disabled">
+            <StackPanel Margin="0,0,5,0">
+                <TextBlock x:Name="lblOfficeTabTitle" Text="Office Settings" FontSize="29" FontWeight="SemiBold" Margin="0,0,0,20"/>
+
+                <!-- 1. PhiÃªn báº£n Office -->
+                <Border Background="White" CornerRadius="8" Padding="15" Margin="0,0,0,20">
+                    <StackPanel>
+                        <TextBlock x:Name="lblOfficeSection1" Text="1. Microsoft 365 / Office" FontWeight="SemiBold" FontSize="16" Margin="0,0,0,10"/>
+                        <WrapPanel x:Name="PanelOfficeMainVersion">
+                            <RadioButton x:Name="rbOffice365" Style="{StaticResource OfficeCardRadioButtonStyle}" IsChecked="True" Checked="OfficeVersion_Checked">
+                                <StackPanel Orientation="Horizontal" Width="200">
+                                    <Image Source="/Images/Office/office365.png" Width="36" Height="36" Margin="0,0,12,0"/>
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock Text="Microsoft 365" FontWeight="SemiBold" FontSize="14" Foreground="#1E1E1E"/>
+                                        <TextBlock Text="Apps for enterprise" FontSize="12" Foreground="#6C6C6C"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </RadioButton>
+                            
+                            <RadioButton x:Name="rbOffice2024" Style="{StaticResource OfficeCardRadioButtonStyle}" Checked="OfficeVersion_Checked">
+                                <StackPanel Orientation="Horizontal" Width="200">
+                                    <Image Source="/Images/Office/office2024.png" Width="36" Height="36" Margin="0,0,12,0"/>
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock Text="Office 2024" FontWeight="SemiBold" FontSize="14" Foreground="#1E1E1E"/>
+                                        <TextBlock Text="Standard / Pro Plus" FontSize="12" Foreground="#6C6C6C"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </RadioButton>
+
+                            <RadioButton x:Name="rbOffice2021" Style="{StaticResource OfficeCardRadioButtonStyle}" Checked="OfficeVersion_Checked">
+                                <StackPanel Orientation="Horizontal" Width="200">
+                                    <Image Source="/Images/Office/office2021.png" Width="36" Height="36" Margin="0,0,12,0"/>
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock Text="Office LTSC 2021" FontWeight="SemiBold" FontSize="14" Foreground="#1E1E1E"/>
+                                        <TextBlock Text="Enterprise / Pro Plus" FontSize="12" Foreground="#6C6C6C"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </RadioButton>
+
+                            <RadioButton x:Name="rbOffice2019" Style="{StaticResource OfficeCardRadioButtonStyle}" Checked="OfficeVersion_Checked">
+                                <StackPanel Orientation="Horizontal" Width="200">
+                                    <Image Source="/Images/Office/Office2019.png" Width="36" Height="36" Margin="0,0,12,0"/>
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock Text="Office 2019" FontWeight="SemiBold" FontSize="14" Foreground="#1E1E1E"/>
+                                        <TextBlock Text="Standard / Pro Plus" FontSize="12" Foreground="#6C6C6C"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </RadioButton>
+                            
+                            <RadioButton x:Name="rbOffice2016" Style="{StaticResource OfficeCardRadioButtonStyle}" Checked="OfficeVersion_Checked">
+                                <StackPanel Orientation="Horizontal" Width="200">
+                                    <Image Source="/Images/Office/Office2016.png" Width="36" Height="36" Margin="0,0,12,0"/>
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock Text="Office 2016" FontWeight="SemiBold" FontSize="14" Foreground="#1E1E1E"/>
+                                        <TextBlock Text="Standard / Pro Plus" FontSize="12" Foreground="#6C6C6C"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </RadioButton>
+
+                            <RadioButton x:Name="rbOffice2013" Style="{StaticResource OfficeCardRadioButtonStyle}" Checked="OfficeVersion_Checked">
+                                <StackPanel Orientation="Horizontal" Width="200">
+                                    <Image Source="/Images/Office/Office2013.png" Width="36" Height="36" Margin="0,0,12,0"/>
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock Text="Office 2013" FontWeight="SemiBold" FontSize="14" Foreground="#1E1E1E"/>
+                                        <TextBlock Text="Standard / Pro Plus" FontSize="12" Foreground="#6C6C6C"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </RadioButton>
+                        </WrapPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- 2. Phiên bản chi tiết -->
+                <Border Background="White" CornerRadius="8" Padding="15" Margin="0,0,0,20">
+                    <StackPanel>
+                        <TextBlock x:Name="lblOfficeSection2" Text="2. Detailed Version" FontWeight="SemiBold" FontSize="16" Margin="0,0,0,10"/>
+                        <WrapPanel x:Name="PanelOfficeSubVersion">
+                            <!-- Các RadioButton ở đây sẽ được sinh tự động hoặc hiện/ẩn bằng C# -->
+                        </WrapPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- 3. Kiến trúc & Channel -->
+                <Grid Margin="0,0,0,20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <!-- Kiến trúc -->
+                    <Border Grid.Column="0" Background="White" CornerRadius="8" Padding="15">
+                        <StackPanel>
+                            <TextBlock x:Name="lblOfficeSection3" Text="3. Architecture" FontWeight="SemiBold" FontSize="16" Margin="0,0,0,10"/>
+                            <WrapPanel>
+                                <RadioButton x:Name="rbArch64" Content="64-bit" Style="{StaticResource ModernRadioButtonStyle}" IsChecked="True" Checked="Config_Changed"/>
+                                <RadioButton x:Name="rbArch32" Content="32-bit" Style="{StaticResource ModernRadioButtonStyle}" Checked="Config_Changed"/>
+                            </WrapPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Channel -->
+                    <Border Grid.Column="2" Background="White" CornerRadius="8" Padding="15">
+                        <StackPanel>
+                            <TextBlock x:Name="lblOfficeSection4" Text="4. Update Channel" FontWeight="SemiBold" FontSize="16" Margin="0,0,0,10"/>
+                            <ComboBox x:Name="cboUpdateChannel" Style="{StaticResource WinUIComboBoxStyle}" Margin="0,0,0,10" SelectionChanged="Config_Changed" BorderThickness="1" BorderBrush="#D0D0D0"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <!-- 5. Ứng dụng -->
+                <Border Background="White" CornerRadius="8" Padding="15" Margin="0,0,0,20">
+                    <StackPanel>
+                        <TextBlock x:Name="lblOfficeSection5" Text="5. Applications" FontWeight="SemiBold" FontSize="16" Margin="0,0,0,15"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <!-- Cột trái (7 mục) -->
+                            <StackPanel Grid.Column="0">
+                                <CheckBox x:Name="chkWord" Content="Word" Tag="pack://application:,,,/Images/Office/word.png" Style="{StaticResource IconCheckBoxStyle}" IsChecked="True" Checked="Config_Changed" Unchecked="Config_Changed"/>
+                                <CheckBox x:Name="chkExcel" Content="Excel" Tag="pack://application:,,,/Images/Office/excel.png" Style="{StaticResource IconCheckBoxStyle}" IsChecked="True" Checked="Config_Changed" Unchecked="Config_Changed"/>
+                                <CheckBox x:Name="chkPowerPoint" Content="PowerPoint" Tag="pack://application:,,,/Images/Office/powerpoint.png" Style="{StaticResource IconCheckBoxStyle}" IsChecked="True" Checked="Config_Changed" Unchecked="Config_Changed"/>
+                                <CheckBox x:Name="chkOutlook" Content="Outlook" Tag="pack://application:,,,/Images/Office/outlook.png" Style="{StaticResource IconCheckBoxStyle}" IsChecked="True" Checked="Config_Changed" Unchecked="Config_Changed"/>
+                                <CheckBox x:Name="chkOneNote" Content="OneNote" Tag="pack://application:,,,/Images/Office/onenote.png" Style="{StaticResource IconCheckBoxStyle}" Checked="Config_Changed" Unchecked="Config_Changed"/>
+                                <CheckBox x:Name="chkAccess" Content="Access" Tag="pack://application:,,,/Images/Office/access.png" Style="{StaticResource IconCheckBoxStyle}" Checked="Config_Changed" Unchecked="Config_Changed"/>
+                                <CheckBox x:Name="chkPublisher" Content="Publisher" Tag="pack://application:,,,/Images/Office/publisher.png" Style="{StaticResource IconCheckBoxStyle}" Checked="Config_Changed" Unchecked="Config_Changed"/>
+                            </StackPanel>
+                            
+                            <!-- Cột phải (7 mục) -->
+                            <StackPanel Grid.Column="1">
+                                <CheckBox x:Name="chkTeams" Content="Teams" Tag="pack://application:,,,/Images/Office/teams.png" Style="{StaticResource IconCheckBoxStyle}" Checked="Config_Changed" Unchecked="Config_Changed"/>
+                                <CheckBox x:Name="chkOneDrive" Content="OneDrive" Tag="pack://application:,,,/Images/Office/onedrive.png" Style="{StaticResource IconCheckBoxStyle}" Checked="Config_Changed" Unchecked="Config_Changed"/>
+                                <CheckBox x:Name="chkSkype" Content="Skype for Business" Tag="pack://application:,,,/Images/Office/skype.png" Style="{StaticResource IconCheckBoxStyle}" Checked="Config_Changed" Unchecked="Config_Changed"/>
+                                <CheckBox x:Name="chkVisioPro" Content="Visio Pro" Tag="pack://application:,,,/Images/Office/visio.png" Style="{StaticResource IconCheckBoxStyle}" Checked="VisioPro_Checked" Unchecked="VisioPro_Checked"/>
+                                <CheckBox x:Name="chkVisioStd" Content="Visio Standard" Tag="pack://application:,,,/Images/Office/visio.png" Style="{StaticResource IconCheckBoxStyle}" Checked="VisioStd_Checked" Unchecked="VisioStd_Checked"/>
+                                <CheckBox x:Name="chkProjectPro" Content="Project Pro" Tag="pack://application:,,,/Images/Office/project.png" Style="{StaticResource IconCheckBoxStyle}" Checked="ProjectPro_Checked" Unchecked="ProjectPro_Checked"/>
+                                <CheckBox x:Name="chkProjectStd" Content="Project Standard" Tag="pack://application:,,,/Images/Office/project.png" Style="{StaticResource IconCheckBoxStyle}" Checked="ProjectStd_Checked" Unchecked="ProjectStd_Checked"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- Chọn nhanh -->
+                        <StackPanel Orientation="Horizontal" Margin="0,10,0,0" VerticalAlignment="Center">
+                            <TextBlock x:Name="lblQuickSelect" Text="Chọn nhanh:" VerticalAlignment="Center" Margin="0,0,15,0" Foreground="#666" FontSize="13"/>
+                            <StackPanel Orientation="Horizontal">
+                                <Button x:Name="btnSelectMin" Content="Tối thiểu" Style="{StaticResource QuickSelectButtonStyle}" Click="QuickSelect_Click"/>
+                                <Button x:Name="btnSelectRecommended" Content="Đề xuất" Style="{StaticResource QuickSelectButtonStyle}" Margin="8,0" Background="#EAF3FF" Foreground="#0067C0" BorderBrush="#0067C0" Click="QuickSelect_Click"/>
+                                <Button x:Name="btnSelectFull" Content="Đầy đủ" Style="{StaticResource QuickSelectButtonStyle}" Click="QuickSelect_Click"/>
+                                <Button x:Name="btnSelectNone" Content="Bỏ chọn tất cả" Style="{StaticResource QuickSelectButtonStyle}" Margin="8,0,0,0" Click="QuickSelect_Click"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- 6 & 7. NgÃ´n ngá»¯ & License Type -->
+                <Grid Margin="0,0,0,20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <!-- 6. NgÃ´n ngá»¯ -->
+                    <Border Grid.Column="0" Background="White" CornerRadius="8" Padding="15">
+                        <StackPanel>
+                            <TextBlock x:Name="lblOfficeSection6" Text="6. Language" FontWeight="SemiBold" FontSize="16" Margin="0,0,0,10"/>
+                            <ComboBox x:Name="cboLanguage" Style="{StaticResource WinUIComboBoxStyle}" Margin="0,0,0,10" SelectionChanged="Config_Changed" BorderThickness="1" BorderBrush="#D0D0D0">
+                                <ComboBoxItem Content="English" Tag="en-us" IsSelected="True"/>
+                                <ComboBoxItem Content="Japanese" Tag="ja-jp"/>
+                                <ComboBoxItem Content="Korean" Tag="ko-kr"/>
+                                <ComboBoxItem Content="Chinese" Tag="zh-cn"/>
+                                <ComboBoxItem Content="French" Tag="fr-fr"/>
+                                <ComboBoxItem Content="Spanish" Tag="es-es"/>
+                                <ComboBoxItem Content="Hindi" Tag="hi-in"/>
+                                <ComboBoxItem Content="German" Tag="de-de"/>
+                                <ComboBoxItem Content="Vietnamese" Tag="vi-vn"/>
+                            </ComboBox>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- 7. License Type -->
+                    <Border Grid.Column="2" Background="White" CornerRadius="8" Padding="15">
+                        <StackPanel>
+                            <TextBlock x:Name="lblOfficeSection7" Text="7. License Type" FontWeight="SemiBold" FontSize="16" Margin="0,0,0,10"/>
+                            <WrapPanel>
+                                <RadioButton x:Name="rdoLicenseVolume" Content="Volume" Style="{StaticResource ModernRadioButtonStyle}" ToolTipService.ShowOnDisabled="True" ToolTipService.InitialShowDelay="0" IsChecked="True" Checked="Config_Changed" Unchecked="Config_Changed"/>
+                                <RadioButton x:Name="rdoLicenseRetail" Content="Retail" Style="{StaticResource ModernRadioButtonStyle}" Checked="Config_Changed" Unchecked="Config_Changed"/>
+                            </WrapPanel>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <!-- 8. TÃ¹y chá»n nÃ¢ng cao -->
+                <Border Background="White" CornerRadius="8" Padding="15" Margin="0,0,0,20">
+                    <StackPanel>
+                        <TextBlock x:Name="lblOfficeSection8" Text="8. Advanced Options" FontWeight="SemiBold" FontSize="16" Margin="0,0,0,10"/>
+                        <CheckBox x:Name="chkRemoveOffice" Content="Remove existing Office" Style="{StaticResource ToggleSwitchStyle}" IsChecked="True" Checked="Config_Changed" Unchecked="Config_Changed" Margin="0,0,0,10"/>
+                        <CheckBox x:Name="chkCreateDesktopShortcut" Content="Create Desktop Shortcut" Style="{StaticResource ToggleSwitchStyle}" IsChecked="True" Checked="Config_Changed" Unchecked="Config_Changed" Margin="0,0,0,10"/>
+                    </StackPanel>
+                </Border>
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Cá»™t pháº£i (Preview, Overview & Action) -->
+        <ScrollViewer Grid.Column="2" VerticalScrollBarVisibility="Auto" Margin="0,0,-10,0" Padding="0,0,10,0">
+            <StackPanel>
+                
+                <!-- 9. Xem trước cấu hình -->
+                <Border Background="White" CornerRadius="8" Padding="15" Margin="0,0,0,20">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock x:Name="lblOfficeSection9" Grid.Column="0" Text="9. Xem trÆ°á»›c cáº¥u hÃ¬nh (configuration.xml)" FontWeight="SemiBold" FontSize="16" Foreground="#1E293B" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                            <Button x:Name="btnCopyXml" Grid.Column="1" Padding="8,6" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1" Foreground="#334155" Cursor="Hand" Click="btnCopyXml_Click">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="6" Padding="{TemplateBinding Padding}">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="border" Property="Background" Value="#F1F5F9"/>
+                                            </Trigger>
+                                            <Trigger Property="IsPressed" Value="True">
+                                                <Setter TargetName="border" Property="Background" Value="#E2E8F0"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Button.Template>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="&#xE8C8;" FontFamily="Segoe MDL2 Assets" Margin="0,0,5,0" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="txtCopyXml" Text="Sao chép" VerticalAlignment="Center" FontSize="13"/>
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+                        
+                        <Border Background="#F8FAFC" CornerRadius="6" BorderBrush="#E2E8F0" BorderThickness="1" Padding="15">
+                            <TextBlock x:Name="txtXmlPreview" FontFamily="Consolas" FontSize="13" TextWrapping="Wrap" Foreground="#334155"/>
+                        </Border>
+                    </StackPanel>
+                </Border>
+
+                <!-- 10. Tá»•ng quan cáº¥u hÃ¬nh -->
+                <Border Background="White" CornerRadius="8" Padding="15" Margin="0,0,0,20">
+                    <StackPanel>
+                        <TextBlock x:Name="lblOfficeSection10" Text="10. Tá»•ng quan cáº¥u hÃ¬nh" FontWeight="SemiBold" FontSize="16" Foreground="#1E293B" Margin="0,0,0,15"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="90"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            
+                            <TextBlock x:Name="lblOverviewTitleVersion" Grid.Row="0" Grid.Column="0" Text="PhiÃªn báº£n:" FontWeight="SemiBold" Margin="0,0,0,8" Foreground="#1E293B"/>
+                            <TextBlock Grid.Row="0" Grid.Column="1" x:Name="lblOverviewVersion" Text="Microsoft 365 Enterprise" Margin="0,0,0,8" Foreground="#475569"/>
+                            
+                            <TextBlock x:Name="lblOverviewTitleArch" Grid.Row="1" Grid.Column="0" Text="Kiáº¿n trÃºc:" FontWeight="SemiBold" Margin="0,0,0,8" Foreground="#1E293B"/>
+                            <TextBlock Grid.Row="1" Grid.Column="1" x:Name="lblOverviewArch" Text="x64 (64-bit)" Margin="0,0,0,8" Foreground="#475569"/>
+                            
+                            <TextBlock x:Name="lblOverviewTitleChannel" Grid.Row="2" Grid.Column="0" Text="Channel:" FontWeight="SemiBold" Margin="0,0,0,8" Foreground="#1E293B"/>
+                            <TextBlock Grid.Row="2" Grid.Column="1" x:Name="lblOverviewChannel" Text="Current Channel" Margin="0,0,0,8" Foreground="#475569"/>
+                            
+                            <TextBlock x:Name="lblOverviewTitleLang" Grid.Row="3" Grid.Column="0" Text="NgÃ´n ngá»¯:" FontWeight="SemiBold" Margin="0,0,0,8" Foreground="#1E293B"/>
+                            <TextBlock Grid.Row="3" Grid.Column="1" x:Name="lblOverviewLang" Text="Vietnamese (vi-vn)" Margin="0,0,0,8" Foreground="#475569"/>
+                            
+                            <TextBlock x:Name="lblOverviewTitleApps" Grid.Row="4" Grid.Column="0" Text="á»¨ng dá»¥ng:" FontWeight="SemiBold" Margin="0,0,0,8" Foreground="#1E293B"/>
+                            <TextBlock Grid.Row="4" Grid.Column="1" x:Name="lblOverviewApps" Text="Word, Excel, PowerPoint, Outlook, Teams, OneDrive" TextWrapping="Wrap" Margin="0,0,0,8" Foreground="#475569"/>
+                            
+                            <TextBlock x:Name="lblOverviewTitleOpts" Grid.Row="5" Grid.Column="0" Text="TÃ¹y chá»n:" FontWeight="SemiBold" Margin="0,0,0,0" Foreground="#1E293B"/>
+                            <TextBlock Grid.Row="5" Grid.Column="1" x:Name="lblOverviewOpts" Text="Remove existing Office, Activate, Shortcuts, Include Updates" TextWrapping="Wrap" Margin="0,0,0,0" Foreground="#475569"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- 11. HÃ nh Ä‘á»™ng -->
+                <Border Background="White" CornerRadius="8" Padding="15" Margin="0,0,0,20">
+                    <StackPanel>
+                        <TextBlock x:Name="lblOfficeSection11" Text="11. HÃ nh Ä‘á»™ng" FontWeight="SemiBold" FontSize="16" Foreground="#1E293B" Margin="0,0,0,15"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="10"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="10"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <!-- Download Button -->
+                            <Button x:Name="btnDownloadOffice" Grid.Column="0" Height="40" Background="#0A6ED1" Foreground="White" BorderThickness="0" Style="{StaticResource RoundedActionButtonStyle}" Click="btnDownloadOffice_ExecuteClick">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="&#xE896;" FontFamily="Segoe MDL2 Assets" FontSize="16" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="txtDownloadOffice" Text="Download" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                            
+                            <!-- Install Button -->
+                            <Button x:Name="btnInstallOffice" Grid.Column="2" Height="40" Background="#1D904E" Foreground="White" BorderThickness="0" Style="{StaticResource RoundedActionButtonStyle}" Click="btnInstallOffice_Click">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets" FontSize="16" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="txtInstallOffice" Text="Install" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                            
+                            <!-- Export XML Button -->
+                            <Button x:Name="btnExportXml" Grid.Column="4" Height="40" Background="#FFFFFF" Foreground="#1E293B" BorderBrush="#E2E8F0" BorderThickness="1" Style="{StaticResource RoundedActionButtonStyle}" Click="btnExportXml_Click">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="&#xE943;" FontFamily="Segoe MDL2 Assets" FontSize="16" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="txtExportXml" Text="Export XML" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+                        
+                        <TextBlock x:Name="lblInternetReq" Text="* YÃªu cáº§u káº¿t ná»‘i Internet Ä‘á»ƒ táº£i vÃ  cÃ i Ä‘áº·t." FontSize="12" Foreground="#94A3B8" Margin="0,20,0,0" FontStyle="Italic"/>
+                    </StackPanel>
+                </Border>
+                <!-- 12. Uninstall Office -->
+                <Border Background="#FFF7F7" BorderBrush="#FECACA" BorderThickness="1" CornerRadius="8" Padding="15" Margin="0,0,0,20">
+                    <StackPanel>
+                        <TextBlock x:Name="lblOfficeSection12" Text="12. Uninstall Office" FontWeight="SemiBold" FontSize="16" Foreground="#B91C1C" Margin="0,0,0,10"/>
+
+                        <Grid Margin="0,0,0,6">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="&#xE814;" FontFamily="Segoe MDL2 Assets" Foreground="#DC2626" Margin="0,0,6,0" VerticalAlignment="Top"/>
+                            <TextBlock Grid.Column="1"
+                                       x:Name="txtUninstallWarning"
+                                       Text="Remove Microsoft Office, Visio, and Project currently installed on this machine."
+                                       Foreground="#7F1D1D"
+                                       FontSize="13"
+                                       TextWrapping="Wrap"/>
+                        </Grid>
+
+                        <CheckBox x:Name="chkConfirmUninstall"
+                                  Style="{StaticResource BlueConfirmCheckBoxStyle}"
+                                  Foreground="#7F1D1D"
+                                  Margin="0,0,0,12"
+                                  Checked="chkConfirmUninstall_CheckedChanged"
+                                  Unchecked="chkConfirmUninstall_CheckedChanged">
+                            <TextBlock Text="I understand this action will uninstall all Office products"
+                                       TextWrapping="Wrap"
+                                       MaxWidth="280"
+                                       Foreground="#7F1D1D"/>
+                        </CheckBox>
+
+                        <Button x:Name="btnUninstallOffice"
+                                Width="170"
+                                Height="36"
+                                HorizontalAlignment="Left"
+                                IsEnabled="False"
+                                Background="#EF4444"
+                                Foreground="White"
+                                BorderThickness="0"
+                                Style="{StaticResource RoundedActionButtonStyle}"
+                                Click="btnUninstallOffice_ExecuteClick">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="14" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                <TextBlock x:Name="txtUninstallOffice" Text="Uninstall Office" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+
+    </Grid>
+</UserControl>

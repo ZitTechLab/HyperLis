@@ -1,0 +1,51 @@
+<UserControl x:Class="HyperLisUI.Views.Components.CircularProgressBar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="150" d:DesignWidth="150">
+    <Grid>
+        <Viewbox>
+            <!-- Container for the circular gauge, fixed at 100x100 to match coordinate system -->
+            <Grid Width="100" Height="100" VerticalAlignment="Center" HorizontalAlignment="Center">
+                
+                <!-- Background Circle -->
+                <!-- Use Path with EllipseGeometry to ensure exact coordinate match with the Progress Path -->
+                <Path Stroke="#E2E8F0" StrokeThickness="12" VerticalAlignment="Top" HorizontalAlignment="Left" Stretch="None">
+                    <Path.Data>
+                        <EllipseGeometry Center="50,50" RadiusX="44" RadiusY="44"/>
+                    </Path.Data>
+                </Path>
+
+                <!-- Progress Arc -->
+                <Path x:Name="ProgressPath" StrokeThickness="12" StrokeEndLineCap="Round"
+                      Width="100" Height="100" VerticalAlignment="Top" HorizontalAlignment="Left" Stretch="None">
+                    <Path.Stroke>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Color="#4FD4D8" Offset="0.0"/>
+                            <GradientStop Color="#2997D6" Offset="1.0"/>
+                        </LinearGradientBrush>
+                    </Path.Stroke>
+                    <Path.Data>
+                        <PathGeometry>
+                            <!-- StartPoint match: 50, 6 (50-44) -->
+                            <PathFigure StartPoint="50,6">
+                                <ArcSegment x:Name="ProgressArc" Point="50,6" Size="44,44" 
+                                            IsLargeArc="True" SweepDirection="Clockwise"/>
+                            </PathFigure>
+                        </PathGeometry>
+                    </Path.Data>
+                </Path>
+                
+                <!-- Text Content -->
+                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <TextBlock x:Name="ValueText" Text="0%" FontSize="21" FontWeight="SemiBold" HorizontalAlignment="Center" 
+                               Foreground="#0F172A" Margin="0,0,0,-1"/>
+                    <TextBlock x:Name="SubText" Text="Loading..." FontSize="11" FontWeight="Normal" 
+                               Foreground="#64748B" HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Grid>
+        </Viewbox>
+    </Grid>
+</UserControl>

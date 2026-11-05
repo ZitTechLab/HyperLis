@@ -1,0 +1,19 @@
+<UserControl x:Class="HyperLisUI.Views.PrinterErrorsDescriptionView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="500" d:DesignWidth="300">
+    <StackPanel>
+        <TextBlock Text="Description:" FontSize="19" FontWeight="SemiBold" Margin="0,0,0,15"/>
+        <TextBlock Text="Effortlessly diagnose and repair common LAN printer sharing issues (like 0x0000011b or 0x00000709). Sit back and watch the live execution logs to see exactly what fixes are applied to your system." 
+                   TextWrapping="Wrap" FontSize="17" LineHeight="22" Margin="0,0,0,25" Foreground="Black"/>
+
+        <Separator Background="#80FFFFFF" Margin="0,0,0,20"/>
+
+        <TextBlock Text="Mô tả:" FontSize="19" FontWeight="SemiBold" Margin="0,0,0,15"/>
+        <TextBlock Text="Dễ dàng chẩn đoán và khắc phục nhanh các lỗi chia sẻ máy in mạng LAN phổ biến (như 0x0000011b hay 0x00000709). Bạn có thể xem trực tiếp nhật ký thực thi để biết phần mềm đang thay đổi cấu hình gì cho hệ thống của bạn." 
+                   TextWrapping="Wrap" FontSize="17" LineHeight="22" Margin="0,0,0,25" Foreground="Black"/>
+    </StackPanel>
+</UserControl>

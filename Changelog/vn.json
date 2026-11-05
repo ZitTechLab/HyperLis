@@ -1,0 +1,167 @@
+{
+    "v0.1.0 BETA": {
+        "title": "HYPERLIS - Nhật ký thay đổi v0.1.0 BETA",
+        "summary_title": "TÓM TẮT PHÁT HÀNH",
+        "content": [
+            "Bản demo đầu tiên."
+        ],
+        "version_label": "THÔNG TIN PHIÊN BẢN",
+        "version_value": "v0.1.0 BETA"
+    },
+    "v0.1.1 BETA": {
+        "title": "HYPERLIS - Nhật ký thay đổi v0.1.1 BETA",
+        "summary_title": "TÓM TẮT PHÁT HÀNH",
+        "content": [
+            "Tối ưu hóa hiệu năng hệ thống.",
+            "Tích hợp giao diện Dashboard mới.",
+            "Tích hợp Tính năng mở rộng.",
+            "Thêm một số ứng dụng vào Tải xuống: Canva, Spotify, CapCut, ChatGPT, iCloud,...",
+            "Cải thiện độ ổn định và sửa lỗi.",
+            "Thêm cài đặt ngôn ngữ."
+        ],
+        "version_label": "THÔNG TIN PHIÊN BẢN",
+        "version_value": "v0.1.1 BETA"
+    },
+    "v1.0.0 Chính thức": {
+        "title": "HYPERLIS - Nhật ký thay đổi v1.0.0 Chính thức",
+        "summary_title": "TÓM TẮT PHÁT HÀNH",
+        "content": [
+            "Tối ưu hóa hiệu năng hệ thống.",
+            "Cải thiện độ ổn định và sửa lỗi.",
+            "Cải thiện tốc độ load của Dashboard, tốc độ phản hồi chung",
+            "Tích hợp Tính năng WSAP.",
+            "Thêm một số ứng dụng thuộc AI Agent vào Tải xuống: Antigravity, Claude Chat, Claude Code, Cursor",
+            "Thêm một số ứng dụng vào Tải xuống: DeskIn, CloudFlare WARP (1.1.1.1),...",
+            "Bổ sung thêm nguồn tải ISO Windows: PITVN, 21AK22, Anhdv Boot, Quanghuyblog,..."
+        ],
+        "version_label": "THÔNG TIN PHIÊN BẢN",
+        "version_value": "v1.0.0 Chính thức"
+    },
+    "v1.0.1 Chính thức": {
+        "title": "HYPERLIS - Nhật ký thay đổi v1.0.1 Chính thức",
+        "summary_title": "TÓM TẮT PHÁT HÀNH",
+        "content": [
+            "Cải thiện độ ổn định và sửa lỗi: Một số dòng máy sử dụng CPU hoặc VGA của AMD không thể khởi động được HyperLis",
+            "Sửa lỗi một số ứng dụng không thể tải ở mục Tải xuống",
+            "Sửa lỗi ScaleDPI: Giúp cho HyperLis có thể luôn hiển thị đủ nội dung bất kể độ phân giải màn hình và % scale layout",
+            "Sửa lỗi không thể tải file ISO Windows Optimized từ Page Zịt's Tech Lab ở mục USB Boot",
+            "Thêm tính năng Disable Copilot AI vào mục System dành cho Windows 10",
+            "Thêm một số ứng dụng thuộc AI Agent vào Tải xuống: Codex GPT, Codex CLI",
+            "Thêm một số ứng dụng thuộc Browser vào Tải xuống: Opera, OperaGX",
+            "Thêm một số ứng dụng thuộc Development vào Tải xuống: DBeaver",
+            "Thêm một số ứng dụng thuộc Communication vào Tải xuống: Zalo, Facebook, Instagram, Threads, LinkedIn",
+            "Thêm một số ứng dụng thuộc Utilities vào Tải xuống: Notion, Process Hacker, Stardesk",
+            "Thêm một số ứng dụng thuộc Gaming vào Tải xuống: Razer Cortex, Razer Synapse 2, Razer Synapse 3, Razer Synapse 4",
+            "Thêm một số ứng dụng thuộc Ping & Latency Tools vào Tải xuống: GearUp Booster, LagoFast"
+        ],
+        "version_label": "THÔNG TIN PHIÊN BẢN",
+        "version_value": "v1.0.1 Chính thức"
+    },
+    "v1.0.2 Chính thức": {
+        "title": "HYPERLIS - Nhật ký thay đổi v1.0.2 Chính thức",
+        "summary_title": "TÓM TẮT PHÁT HÀNH",
+        "content": [
+            "Sửa lỗi HyperLis đang kích hoạt nhiều file powershell và bat bất thường",
+            "Sửa lỗi nhận diện RAM ở dashboard từ DDR5 thành DDR4",
+            "Sửa lỗi Widget Taskbar",
+            "Sửa lỗi treo loading khi tải app hoặc gỡ app",
+            "Sửa lỗi khi nhấn Clear selection trong mục Download chỉ xoá tick của những ứng dụng đang hiển thị thay vì xoá tất cả",
+            "Chỉnh sửa tính năng ghi lại log: Không còn ghi mỗi khi bắt đầu chạy nữa mà sẽ ghi lại những chỉnh sửa đã thao tác bởi người dùng và những thứ đang được chạy hoặc đang được kích hoạt (bao gồm cả ps1 và bat)",
+            "Bổ sung tính năng xoá AI ra khỏi trình duyệt",
+            "Bổ sung thêm tính năng Import Driver đã được xuất bằng tính năng Driver Exported",
+            "Thêm một số ứng dụng thuộc Utilities vào Tải xuống: Microsoft PC Manager, AIDA 64 (Bao gồm các phiên bản: Extreme, Engineer, Business, Network Audit), OCCT, Vencord (Bao gồm các phiên bản: Discord, Discord canary, Discord PTB)",
+            "Thêm một số ứng dụng thuộc Development vào Tải xuống: CodeBlock, WinUI 3, WinUI 2, WPF Gallery, ViveTool, Ubuntu Pro for WSL,...",
+            "Thêm một số ứng dụng thuộc Multimedia Tools vào Tải xuống: Netflix",
+            "Chỉnh sửa lại thuật toán dọn dẹp trong Cleaning"
+        ],
+        "version_label": "THÔNG TIN PHIÊN BẢN",
+        "version_value": "v1.0.2 Chính thức"
+    },
+    "v1.0.3 Chính thức": {
+        "title": "HYPERLIS - Nhật ký thay đổi v1.0.3 Chính thức",
+        "summary_title": "TÓM TẮT PHÁT HÀNH",
+        "content": [
+            "Sửa lỗi hiển thị cho tab Hardware Infor, Download (Nút tick to hơn)",
+            "Sửa lỗi không tìm thấy USB Boot sau khi cài đặt Bootloader",
+            "Sửa lỗi tab Download không thể tải app winget sau khi cài lại Windows: Bổ sung tính năng kiểm tra và cài đặt winget",
+            "Sửa lỗi nhận diện RAM ở dashboard từ DDR5 thành DDR4",
+            "Bổ sung fix lỗi máy in",
+            "Bổ sung tính năng Popup: Hiển thị thông tin khi người dùng lia chuột vào mục nào đó (Tab General, Windows)",
+            "Bổ sung tính năng check sức khoẻ ổ cứng và pin cho laptop",
+            "Bổ sung tính năng tìm Driver phù hợp tuỳ theo dòng máy ",
+            "Bổ sung Tính năng Gỡ driver máy in, mở Devices Printers, Print Management",
+            "Bổ sung thêm tính năng chỉ tải mỗi file iso, chỉ tạo bootloader và copy thêm iso vào usb boot đã có sẵn",
+            "Bổ sung tính năng Fix lỗi Windows",
+            "Bổ sung tính năng chặn Update Windows",
+            "Loại bỏ 2 nút Sao lưu và Khôi phục trong Startup"
+        ],
+        "version_label": "THÔNG TIN PHIÊN BẢN",
+        "version_value": "v1.0.3 Chính thức"
+    },
+    "v1.0.4 Chính thức": {
+        "title": "HYPERLIS - Nhật ký thay đổi v1.0.4 Chính thức",
+        "summary_title": "TÓM TẮT PHÁT HÀNH",
+        "content": [
+            "Loại bỏ tính năng Activate bằng MAS (Theo công văn số 314/BQTG-QL&HTQT) ",
+            "Loại bỏ tính năng tải Office trong mục Extend Features, thay thế thành Office Setup",
+            "Loại bỏ 2 tab Game Configs và Fix game errors",
+            "Bổ sung tính năng Chuyển đổi Phiên bản Windows thông qua SKUs: Có thể chuyển đổi sang bất kì phiên bản Windows nào mà không cần phải cài lại Windows",
+            "Thay đổi giao diện của mục tải và cài đặt Office: Được tách thành 1 tab riêng biệt và hỗ trợ đa dạng phiên bản Office",
+            "Bổ sung app Download: Clipchamp, OpenShot, WPS, Polaris, Only Office",
+            "Sửa lỗi một số máy không mở được tính năng Enhance Privacy",
+            "Sửa lỗi mở lịch khi kích hoạt tính năng Optimize for Extreme Gaming: Khi sử dụng sẽ tự động bật tính năng Disable Notification Center mục Taskbar",
+            "Cải thiện thuật toán lưu log",
+            "Cải thiện giao diện Dashboard: UX UI mượt mà hơn, không còn tình trạng giật lag"
+        ],
+        "version_label": "THÔNG TIN PHIÊN BẢN",
+        "version_value": "v1.0.4 Chính thức"
+    },
+    "v1.0.5 Chính thức": {
+        "title": "HYPERLIS - Nhật ký thay đổi v1.0.5 Chính thức",
+        "summary_title": "TÓM TẮT PHÁT HÀNH",
+        "content": [
+            "Bổ sung tính năng Cập nhật tự động và Kiểm tra bản cập nhật: Từ v1.0.5 người dùng có thể kiểm tra phiên bản cập nhật hoặc HyperLis sẽ tự động kiểm tra và hiển thị 1 pop-up thông báo khi có phiên bản mới",
+            "Bổ sung tính năng Sao lưu và Khôi phục bản quyền Windows trong mục License",
+            "Thay đổi giao diện và thuật toán hoạt động của tính năng gỡ apps: UWP Apps từ nay thêm script gỡ Bloatwares theo Preset có sẵn",
+            "Bổ sung thêm Winget CLI vào thuật toán Tải xuống ứng dụng: Dự phòng trong trường hợp chưa cập nhật kịp Winget phiên bản mới",
+            "Bổ sung tính năng xác định Key OEM có trong máy",
+            "Bổ sung tính năng Import High và Ultimate Powerplan vào mục Windows",
+            "Sửa một số lỗi nhỏ liên quan đến giao diện của Office Setup"
+        ],
+        "version_label": "THÔNG TIN PHIÊN BẢN",
+        "version_value": "v1.0.5 Chính thức"
+    },
+    "v1.0.6 Chính thức": {
+        "title": "HYPERLIS - Nhật ký thay đổi v1.0.6 Chính thức",
+        "summary_title": "TÓM TẮT PHÁT HÀNH",
+        "content": [
+            "Chỉnh sửa thuật toán S.M.A.R.T khi đọc thông tin ổ cứng, giúp đọc và xuất thông tin chính xác hơn.",
+            "Sửa lỗi giao diện cho Pop-up Import và Export Presets trong UWP Apps",
+            "Chỉnh sửa thuật toán của Startup: Quét shell:startup và Task Schedule",
+            "Bổ sung tính năng Xoá crack của Windows và Office",
+            "Chỉnh sửa lại thuật toán đọc Key OEM, trạng thái bản quyền trong Quản lí bản quyền và Đổi phiên bản SKUs",
+            "Thay đổi thông báo trạng thái bản quyền: Có thể phân biệt bản quyền kích hoạt trái phép bằng MAS hoặc bản quyền thật sự",
+            "Chỉnh sửa lại thuật toán của Sửa lỗi máy in, khắc phục lỗi 0x00000709, Cannot Connect,... triệt để hơn",
+            "Loại bỏ tuỳ chọn chuyển đổi phiên bản lên IoT Enterprise LTSC do hạn chế từ hệ thống",
+            "Chỉnh sửa lại thuật toán để có thể chuyển đổi từ phiên bản Home lên LTSC trên Windows 11",
+            "Sửa lỗi thuật toán khi chuyển đổi từ Enterprise LTSC về Home không nhận key OEM, mã lỗi: 0xC004F012 "
+        ],
+        "version_label": "THÔNG TIN PHIÊN BẢN",
+        "version_value": "v1.0.6 Chính thức"
+    },
+    "v1.0.7 Chính thức": {
+        "title": "HYPERLIS - Nhật ký thay đổi v1.0.7 Chính thức",
+        "summary_title": "TÓM TẮT PHÁT HÀNH",
+        "content": [
+            "Chỉnh sửa giao diện Dashboard, Quản lý bản quyền, UWP Apps ",
+            "Cập nhật thuật toán Tối ưu mới cho Gaming",
+            "Cập nhật và bổ sung thêm tính năng mới cho WSAP",
+            "Tối ưu lại toàn bộ thuật toán trong WSAP, khắc phục một số lỗi còn tồn đọng, hỗ trợ đầy đủ: Unattend và Driver.",
+            "Chỉnh sửa lại thuật toán WSAP: Tự động phát hiện Bitlocker và Secure Boot",
+            "Chỉnh sửa lại thuật toán của UWP Apps",
+            "Sửa lỗi thuật toán tối ưu cho Gaming làm đen nền Explorer trên Windows 25H2, 26H2 gây lag máy"
+        ],
+        "version_label": "THÔNG TIN PHIÊN BẢN",
+        "version_value": "v1.0.7 Chính thức"
+    }
+}

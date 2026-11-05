@@ -1,0 +1,1151 @@
+<UserControl x:Class="HyperLisUI.Views.ConvertSKUView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:HyperLisUI.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="1200" d:DesignWidth="1100" Background="Transparent"
+             RenderOptions.BitmapScalingMode="HighQuality"
+             UseLayoutRounding="True"
+             SnapsToDevicePixels="True">
+
+    <UserControl.Resources>
+        <PathGeometry x:Key="CheckmarkIcon">M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z</PathGeometry>
+
+        <!-- OS Selection RadioButton Style -->
+        <Style x:Key="SKUCardRadioButtonStyle" TargetType="RadioButton">
+            <Setter Property="Background" Value="#fdfcfd"/>
+            <Setter Property="BorderBrush" Value="#E5E5E5"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Foreground" Value="#333333"/>
+            <Setter Property="Padding" Value="15,15"/>
+            <Setter Property="Margin" Value="0,0,15,10"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="8">
+                            <Grid>
+                                <ContentPresenter Margin="{TemplateBinding Padding}" 
+                                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                <Path x:Name="CheckIcon" 
+                                      Data="{StaticResource CheckmarkIcon}" 
+                                      Fill="#0078D4" Width="18" Height="18" Stretch="Uniform" 
+                                      HorizontalAlignment="Right" VerticalAlignment="Top" 
+                                      Margin="0,10,10,0" Visibility="Collapsed"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#F9F9F9"/>
+                                <Setter Property="BorderBrush" Value="#D0D0D0"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter Property="Background" Value="#F0F6FF"/>
+                                <Setter Property="BorderBrush" Value="#0078D4"/>
+                                <Setter Property="BorderThickness" Value="1"/>
+                                <Setter TargetName="CheckIcon" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Edition Selection RadioButton Style -->
+        <Style x:Key="EditionRadioButtonStyle" TargetType="RadioButton">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#E5E5E5"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Foreground" Value="#333333"/>
+            <Setter Property="Padding" Value="12,10"/>
+            <Setter Property="Margin" Value="0,0,10,10"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="6">
+                            <Grid>
+                                <ContentPresenter Margin="{TemplateBinding Padding}" 
+                                                  HorizontalAlignment="Left" 
+                                                  VerticalAlignment="Center"/>
+                                <Image x:Name="RadioIcon" Source="/Images/unselect.png" Width="20" Height="20" RenderOptions.BitmapScalingMode="HighQuality" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#F9F9F9"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter Property="Background" Value="#F0F6FF"/>
+                                <Setter Property="BorderBrush" Value="#0078D4"/>
+                                <Setter TargetName="RadioIcon" Property="Source" Value="/Images/selected.png"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ActionButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#0078D4"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="15,10"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="6" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#005A9E"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#004578"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Background" Value="#CCCCCC"/>
+                                <Setter Property="Foreground" Value="#888888"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <Style x:Key="SecondaryActionButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="#0078D4"/>
+            <Setter Property="BorderBrush" Value="#0078D4"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="15,10"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="6" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#F0F6FF"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#E5F0FF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid Margin="20,20,20,15">
+            <Grid.ColumnDefinitions>
+            <!-- Left Column (Settings) -->
+            <ColumnDefinition Width="6*" />
+            <!-- Spacing -->
+            <ColumnDefinition Width="0.3*" />
+            <!-- Right Column (Preview & Action) -->
+            <ColumnDefinition Width="4*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- LEFT COLUMN -->
+        <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Disabled">
+            <Grid Margin="0,0,5,0" MinHeight="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=ScrollViewer}}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/> <!-- Title & Subtitle -->
+                    <RowDefinition Height="Auto"/> <!-- Section 1 -->
+                    <RowDefinition Height="Auto"/> <!-- Section 2 -->
+                    <RowDefinition Height="*"/>    <!-- Section 3 -->
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0">
+                    <TextBlock x:Name="lblConvertSKU_Title" Text="Convert SKUs - Change Windows Edition" FontSize="26" FontWeight="Bold" Foreground="#1E1E1E" Margin="0,0,0,5"/>
+                    <TextBlock x:Name="lblConvertSKU_SubTitle" Text="Changing the current Edition of Windows to another Edition quickly and safely." FontSize="13" Foreground="#6C6C6C" Margin="0,0,0,25"/>
+                </StackPanel>
+
+                <!-- Section 1: Current Windows Info -->
+                <Border Grid.Row="1" Background="White" CornerRadius="8" Padding="20" Margin="0,0,0,25">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,15">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock x:Name="lblSection1Title" Text="1. Current Windows Info" FontSize="15" FontWeight="SemiBold" Foreground="#005A9E" VerticalAlignment="Center"/>
+                            <!-- Shield Icon inside rounded button -->
+                            <Border Grid.Column="1" BorderBrush="#E5E5E5" BorderThickness="1" CornerRadius="6" Background="White" Padding="8">
+                                <TextBlock Text="&#xEAC9;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" FontSize="18" Foreground="#0078D4" VerticalAlignment="Center"/>
+                            </Border>
+                        </Grid>
+
+                        <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="20"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="10"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        
+                        <!-- Top part: Logo & OS Name -->
+                        <Grid Grid.Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <Border Grid.Column="0" Background="#F4F8FE" CornerRadius="8" Width="72" Height="72" Margin="0,0,20,0">
+                                <Image x:Name="imgOsLogo" Source="/Images/windows11.png" Width="42" Height="42" VerticalAlignment="Center" HorizontalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"/>
+                            </Border>
+                            
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                <TextBlock x:Name="txtOsName" Text="Windows 11 Pro" FontSize="20" FontWeight="Bold" Foreground="#1E1E1E" Margin="0,0,0,8"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <Border Background="#F4FCF7" BorderBrush="#D4EDDC" BorderThickness="1" CornerRadius="6" Padding="12,4" Margin="0,0,10,0">
+                                        <TextBlock x:Name="txtActivationTag" Text="Activated" FontSize="12" FontWeight="SemiBold" Foreground="#1A7C36"/>
+                                    </Border>
+                                    <Border Background="#F2F6FE" BorderBrush="#DCE6F9" BorderThickness="1" CornerRadius="6" Padding="12,4">
+                                        <TextBlock x:Name="txtChannelTag" Text="Retail" FontSize="12" FontWeight="SemiBold" Foreground="#2A68CC"/>
+                                    </Border>
+                                </StackPanel>
+                            </StackPanel>
+                        </Grid>
+                        
+                        <Separator Grid.Row="1" Background="#EFEFEF" Margin="0,10"/>
+                        
+                        <!-- Details Grid -->
+                        <Grid Grid.Row="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="10"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="10"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="10"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            
+                            <!-- Col 1 -->
+                            <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
+                                <TextBlock Text="&#xF4A2;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" Width="20" Foreground="#888" Margin="0,2,0,0"/>
+                                <TextBlock x:Name="lblVersion" Text="Version" Width="105" Foreground="#666"/>
+                                <TextBlock x:Name="txtVersion" Text="24H2" FontWeight="Medium" Foreground="#333"/>
+                            </StackPanel>
+                            
+                            <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal">
+                                <TextBlock Text="&#xE216;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" Width="20" Foreground="#888" Margin="0,2,0,0"/>
+                                <TextBlock x:Name="lblBuild" Text="Build" Width="105" Foreground="#666"/>
+                                <TextBlock x:Name="txtBuild" Text="26100.2605" FontWeight="Medium" Foreground="#333"/>
+                            </StackPanel>
+                            
+                            <StackPanel Grid.Row="4" Grid.Column="0" Orientation="Horizontal">
+                                <TextBlock Text="&#xE498;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" Width="20" Foreground="#888" Margin="0,2,0,0"/>
+                                <TextBlock x:Name="lblArchitecture" Text="Architecture" Width="105" Foreground="#666"/>
+                                <TextBlock x:Name="txtArchitecture" Text="64-bit (x64)" FontWeight="Medium" Foreground="#333"/>
+                            </StackPanel>
+                            
+                            <StackPanel Grid.Row="6" Grid.Column="0" Orientation="Horizontal">
+                                <TextBlock Text="&#xE740;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" Width="20" Foreground="#888" VerticalAlignment="Center"/>
+                                <TextBlock x:Name="lblProductID" Text="Product ID" Width="105" Foreground="#666" VerticalAlignment="Center"/>
+                                <TextBlock x:Name="txtProductId" Text="00330-80000-00000-AA676" FontWeight="Medium" Foreground="#333" VerticalAlignment="Center"/>
+                            </StackPanel>
+                            
+                            <!-- Col 2 -->
+                            <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
+                                <TextBlock Text="&#xE24D;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" Width="20" Foreground="#888" Margin="0,2,0,0"/>
+                                <TextBlock x:Name="lblInstallDate" Text="Install date" Width="105" Foreground="#666"/>
+                                <TextBlock x:Name="txtInstallDate" Text="12/09/2024" FontWeight="Medium" Foreground="#333"/>
+                            </StackPanel>
+                            
+                            <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal">
+                                <TextBlock Text="&#xF2DC;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" Width="20" Foreground="#888" Margin="0,2,0,0"/>
+                                <TextBlock x:Name="lblLastBoot" Text="Last boot" Width="105" Foreground="#666"/>
+                                <TextBlock x:Name="txtLastBoot" Text="20/05/2025 09:12" FontWeight="Medium" Foreground="#333"/>
+                            </StackPanel>
+                            
+                            <Grid Grid.Row="4" Grid.Column="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="20"/>
+                                    <ColumnDefinition Width="105"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="&#xF297;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" Width="20" Foreground="#1A7C36" Margin="0,2,0,0" VerticalAlignment="Top"/>
+                                <TextBlock Grid.Column="1" x:Name="lblLicenseStatus" Text="License status" Width="105" Foreground="#666" VerticalAlignment="Top"/>
+                                <TextBlock Grid.Column="2" x:Name="txtLicenseStatus" Text="Loading..." FontWeight="Medium" Foreground="#1A7C36" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                            </Grid>
+                        </Grid>
+                        
+                        <Grid Grid.Row="4" x:Name="panelKeysInfo" Margin="0">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="20"/>
+                                    <ColumnDefinition Width="105"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="&#xF4A2;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" Width="20" Foreground="#888" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="1" x:Name="lblConvertSKU_OEMEdition" Text="OEM Edition:" Width="105" Foreground="#666" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="2" x:Name="txtOemEdition" Text="Loading..." FontWeight="Medium" Foreground="#333" VerticalAlignment="Center" TextWrapping="Wrap"/>
+                            </Grid>
+                        </Grid>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Section 2: Choose Windows Version -->
+                <Border Grid.Row="2" Background="White" CornerRadius="8" Padding="20" Margin="0,0,0,20">
+                    <StackPanel>
+                        <TextBlock x:Name="lblSection2Title" Text="2. Choose Windows Version" FontSize="15" FontWeight="SemiBold" Foreground="#005A9E" Margin="0,0,0,15"/>
+                        <UniformGrid Columns="2" Margin="0,0,0,5">
+                            <!-- Windows 10 -->
+                            <RadioButton x:Name="rbWin10" GroupName="OSVersion" Style="{StaticResource SKUCardRadioButtonStyle}" Checked="rbOSVersion_Checked" Visibility="Collapsed">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Image Source="/Images/windows10.png" Width="36" Height="36" RenderOptions.BitmapScalingMode="HighQuality" Margin="0,0,12,0" VerticalAlignment="Top"/>
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock Text="Windows 10" FontWeight="Bold" FontSize="15" Margin="0,0,0,4"/>
+                                        <TextBlock Text="Home, Pro, Enterprise,..." FontSize="11" Foreground="#666" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                </Grid>
+                            </RadioButton>
+
+                            <!-- Windows 10 LTS -->
+                            <RadioButton x:Name="rbWin10LTS" GroupName="OSVersion" Style="{StaticResource SKUCardRadioButtonStyle}" Checked="rbOSVersion_Checked" Visibility="Collapsed" Margin="0,0,0,10">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Image Source="/Images/windows10.png" Width="36" Height="36" RenderOptions.BitmapScalingMode="HighQuality" Margin="0,0,12,0" VerticalAlignment="Top"/>
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock Text="Windows 10 LTS" FontWeight="Bold" FontSize="15" Margin="0,0,0,4"/>
+                                        <TextBlock Text="LTSB, LTSC" FontSize="11" Foreground="#666" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                </Grid>
+                            </RadioButton>
+
+                            <!-- Windows 11 -->
+                            <RadioButton x:Name="rbWin11" GroupName="OSVersion" Style="{StaticResource SKUCardRadioButtonStyle}" Checked="rbOSVersion_Checked" Visibility="Collapsed">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Image Source="/Images/windows11.png" Width="36" Height="36" RenderOptions.BitmapScalingMode="HighQuality" Margin="0,0,12,0" VerticalAlignment="Top"/>
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock Text="Windows 11" FontWeight="Bold" FontSize="15" Margin="0,0,0,4"/>
+                                        <TextBlock Text="Home, Pro, Enterprise,..." FontSize="11" Foreground="#666" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                </Grid>
+                            </RadioButton>
+
+                            <!-- Windows 11 LTSC -->
+                            <RadioButton x:Name="rbWin11LTSC" GroupName="OSVersion" Style="{StaticResource SKUCardRadioButtonStyle}" Checked="rbOSVersion_Checked" Visibility="Collapsed" Margin="0,0,0,10">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Image Source="/Images/windows11.png" Width="36" Height="36" RenderOptions.BitmapScalingMode="HighQuality" Margin="0,0,12,0" VerticalAlignment="Top"/>
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock Text="Windows 11 LTSC" FontWeight="Bold" FontSize="15" Margin="0,0,0,4"/>
+                                        <TextBlock Text="Enterprise LTSC" FontSize="11" Foreground="#666" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                </Grid>
+                            </RadioButton>
+                        </UniformGrid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Section 3: Choose Target Edition -->
+                <Border Grid.Row="3" Background="White" CornerRadius="8" Padding="20" Margin="0,0,0,20" VerticalAlignment="Stretch">
+                    <StackPanel>
+                        <TextBlock x:Name="lblSection3Title" Text="3. Choose Target Edition" FontSize="15" FontWeight="SemiBold" Foreground="#005A9E" Margin="0,0,0,15"/>
+                        <StackPanel x:Name="panelRegularEditions" Margin="0,0,0,5">
+                            <!-- HOME CATEGORY -->
+                            <TextBlock Text="Home" FontSize="12" FontWeight="SemiBold" Foreground="#777" Margin="0,0,0,8"/>
+                            <UniformGrid Columns="3" Margin="0,0,0,10">
+                                <RadioButton GroupName="Edition" Style="{StaticResource EditionRadioButtonStyle}" Checked="Edition_Checked">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xF481;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" FontSize="16" Foreground="#555" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Home" FontSize="14" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </RadioButton>
+                                <RadioButton GroupName="Edition" Style="{StaticResource EditionRadioButtonStyle}" Checked="Edition_Checked">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xF481;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" FontSize="16" Foreground="#555" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Home Single Language" FontSize="14" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </RadioButton>
+                            </UniformGrid>
+
+                            <!-- PRO CATEGORY -->
+                            <TextBlock Text="Pro" FontSize="12" FontWeight="SemiBold" Foreground="#777" Margin="0,0,0,8"/>
+                            <UniformGrid Columns="3" Margin="0,0,0,10">
+                                <RadioButton GroupName="Edition" IsChecked="True" Style="{StaticResource EditionRadioButtonStyle}" Checked="Edition_Checked">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xF710;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" FontSize="16" Foreground="#555" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Pro" FontSize="14" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </RadioButton>
+                                <RadioButton GroupName="Edition" Style="{StaticResource EditionRadioButtonStyle}" Checked="Edition_Checked">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xF35A;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" FontSize="16" Foreground="#555" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Pro for Workstations" FontSize="14" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </RadioButton>
+                                <RadioButton GroupName="Edition" Style="{StaticResource EditionRadioButtonStyle}" Checked="Edition_Checked">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xE6E7;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" FontSize="16" Foreground="#555" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Pro Education" FontSize="14" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </RadioButton>
+                                <RadioButton GroupName="Edition" Style="{StaticResource EditionRadioButtonStyle}" Checked="Edition_Checked">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xF710;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" FontSize="16" Foreground="#555" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Pro Single Language" FontSize="14" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </RadioButton>
+                            </UniformGrid>
+
+                            <!-- EDUCATION CATEGORY -->
+                            <TextBlock Text="Education" FontSize="12" FontWeight="SemiBold" Foreground="#777" Margin="0,0,0,8"/>
+                            <UniformGrid Columns="3" Margin="0,0,0,10">
+                                <RadioButton GroupName="Edition" Style="{StaticResource EditionRadioButtonStyle}" Checked="Edition_Checked">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xE6E7;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" FontSize="16" Foreground="#555" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Education" FontSize="14" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </RadioButton>
+                                
+                            </UniformGrid>
+
+                            <!-- ENTERPRISE CATEGORY -->
+                            <TextBlock Text="Enterprise" FontSize="12" FontWeight="SemiBold" Foreground="#777" Margin="0,0,0,8"/>
+                            <UniformGrid Columns="3" Margin="0,0,0,0">
+                                <RadioButton GroupName="Edition" Style="{StaticResource EditionRadioButtonStyle}" Checked="Edition_Checked">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xF205;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" FontSize="16" Foreground="#555" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Enterprise" FontSize="14" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </RadioButton>
+                                <RadioButton GroupName="Edition" Style="{StaticResource EditionRadioButtonStyle}" Checked="Edition_Checked">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xE99A;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" FontSize="16" Foreground="#555" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="IoT Enterprise" FontSize="14" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </RadioButton>
+                            </UniformGrid>
+                        </StackPanel>
+
+                        <!-- LTS Windows 10 PANEL -->
+                        <StackPanel x:Name="panelWin10LTS" Visibility="Collapsed" Margin="0,0,0,5">
+                            <TextBlock Text="Long Term Servicing (LTS/LTSB/LTSC)" FontSize="12" FontWeight="SemiBold" Foreground="#777" Margin="0,0,0,8"/>
+                            <UniformGrid Columns="3" Margin="0,0,0,10">
+                                <RadioButton GroupName="Edition" Style="{StaticResource EditionRadioButtonStyle}" Checked="Edition_Checked">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xF205;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" FontSize="16" Foreground="#555" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="LTSB 2015" FontSize="14" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </RadioButton>
+                                <RadioButton GroupName="Edition" Style="{StaticResource EditionRadioButtonStyle}" Checked="Edition_Checked">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xF205;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" FontSize="16" Foreground="#555" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="LTSB 2016" FontSize="14" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </RadioButton>
+                                <RadioButton GroupName="Edition" Style="{StaticResource EditionRadioButtonStyle}" Checked="Edition_Checked">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xF205;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" FontSize="16" Foreground="#555" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="LTSC 2019" FontSize="14" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </RadioButton>
+                                <RadioButton GroupName="Edition" Style="{StaticResource EditionRadioButtonStyle}" Checked="Edition_Checked">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xF205;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" FontSize="16" Foreground="#555" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="LTSC 2021" FontSize="14" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </RadioButton>
+                            </UniformGrid>
+                        </StackPanel>
+
+                        <!-- LTSC Windows 11 PANEL -->
+                        <StackPanel x:Name="panelWin11LTSC" Visibility="Collapsed" Margin="0,0,0,5">
+                            <TextBlock Text="Long Term Servicing (LTSC)" FontSize="12" FontWeight="SemiBold" Foreground="#777" Margin="0,0,0,8"/>
+                            <UniformGrid Columns="3" Margin="0,0,0,10">
+                                <RadioButton GroupName="Edition" Style="{StaticResource EditionRadioButtonStyle}" Checked="Edition_Checked">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xF205;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" FontSize="16" Foreground="#555" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Enterprise LTSC" FontSize="14" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </RadioButton>
+                            </UniformGrid>
+                        </StackPanel>
+                
+                <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                    <TextBlock Text="&#xF86A;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" FontSize="14" Foreground="#888" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                    <TextBlock x:Name="lblConvertSKU_EditionWarning" Text="Note: Some Editions may require a valid key for activation after conversion." FontSize="12" Foreground="#888" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    </StackPanel>
+                </Border>
+                
+            </Grid>
+        </ScrollViewer>
+
+        <!-- RIGHT COLUMN -->
+        <ScrollViewer Grid.Column="2" VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Disabled">
+            <Grid MinHeight="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=ScrollViewer}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/> <!-- Preview -->
+                <RowDefinition Height="Auto"/> <!-- Overview -->
+                <RowDefinition Height="Auto"/>    <!-- Logs -->
+                <RowDefinition Height="*"/> <!-- Actions -->
+            </Grid.RowDefinitions>
+            
+            <!-- Section 4: Preview -->
+            <StackPanel Grid.Row="0" Margin="0,0,0,20">
+                <Border Background="White" CornerRadius="8" Padding="20">
+                    <StackPanel>
+                        <TextBlock x:Name="lblSection4Title" Text="4. Conversion Preview" FontSize="15" FontWeight="SemiBold" Foreground="#005A9E" Margin="0,0,0,15"/>
+                        <!-- Before -> After visual -->
+                        <Grid Margin="0,0,0,15">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <!-- Current -->
+                            <Border Grid.Column="0" Background="#F9F9F9" BorderBrush="#E5E5E5" BorderThickness="1" CornerRadius="6" Padding="10">
+                                <StackPanel>
+                                    <TextBlock x:Name="lblPreviewCurrent" Text="Current" FontSize="12" Foreground="#888" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+                                    <Grid HorizontalAlignment="Center">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Image x:Name="imgPreviewCurrentLogo" Source="/Images/windows11.png" Width="36" Height="36" Margin="0,0,12,0" VerticalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                        <TextBlock Grid.Column="1" x:Name="txtPreviewCurrentName" Text="Loading..." FontSize="12" FontWeight="SemiBold" Foreground="#333" VerticalAlignment="Center" TextWrapping="Wrap" MaxWidth="160"/>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+                            
+                            <!-- Arrow -->
+                            <TextBlock Grid.Column="1" Text="&#xF182;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" FontSize="16" Foreground="#888" VerticalAlignment="Center" Margin="15,0"/>
+                            
+                            <!-- Target -->
+                            <Border Grid.Column="2" Background="#F0F6FF" BorderBrush="#0078D4" BorderThickness="1" CornerRadius="6" Padding="10">
+                                <StackPanel>
+                                    <TextBlock x:Name="lblPreviewTarget" Text="Target" FontSize="12" Foreground="#0078D4" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+                                    <Grid HorizontalAlignment="Center">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Image x:Name="imgPreviewTargetLogo" Source="/Images/windows11.png" Width="36" Height="36" Margin="0,0,12,0" VerticalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                        <TextBlock Grid.Column="1" x:Name="txtPreviewTargetName" Text="Select target edition" FontSize="12" FontWeight="SemiBold" Foreground="#0078D4" VerticalAlignment="Center" TextWrapping="Wrap" MaxWidth="160"/>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                        <Border Background="#F3FAF4" BorderBrush="#D5EAD8" BorderThickness="1" CornerRadius="6" Padding="15,10" Margin="0,15,0,0">
+                            <StackPanel>
+                                <TextBlock x:Name="lblCompatTitle" Text="Compatibility check" FontWeight="SemiBold" FontSize="13" Foreground="#222" Margin="0,0,0,8"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="&#xF29A;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" FontSize="16" Foreground="#237B3B" VerticalAlignment="Top" Margin="0,1,8,0"/>
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                        <TextBlock x:Name="lblCompatStatus" Text="Compatible" FontWeight="SemiBold" FontSize="12" Foreground="#222" Margin="0,0,0,2"/>
+                                        <TextBlock x:Name="lblCompatDesc" Text="Your device meets the requirements for conversion." FontSize="11" Foreground="#777"/>
+                                    </StackPanel>
+                                    
+                                    <Button Grid.Column="2" VerticalAlignment="Center" Background="White" BorderBrush="#DCDCDC" BorderThickness="1" Padding="16,4" Cursor="Hand" Foreground="#111" FontWeight="Medium" Click="BtnDetails_Click">
+                                        <Button.Template>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="6" Padding="{TemplateBinding Padding}">
+                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Button.Template>
+                                        <TextBlock x:Name="btnDetailsText" Text="Details"/>
+                                    </Button>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <!-- Section 5: Overview -->
+            <StackPanel Grid.Row="1" Margin="0,0,0,20">
+                <Border Background="White" CornerRadius="8" Padding="20">
+                    <StackPanel>
+                        <TextBlock x:Name="lblSection5Title" Text="5. Overview" FontSize="15" FontWeight="SemiBold" Foreground="#005A9E" Margin="0,0,0,15"/>
+                        <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="8"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="8"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="8"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="8"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="8"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        
+                        <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
+                            <TextBlock Text="&#xEE65;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" Width="20" Foreground="#0078D4"/>
+                            <TextBlock x:Name="lblTargetWin" Text="Target Windows" Foreground="#555" FontSize="13"/>
+                        </StackPanel>
+                        <TextBlock x:Name="txtOverviewTargetWindows" Grid.Row="0" Grid.Column="1" Text="Loading..." FontWeight="SemiBold" Foreground="#333" FontSize="13"/>
+                        
+                        <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal">
+                            <TextBlock Text="&#xF70F;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" Width="20" Foreground="#0078D4"/>
+                            <TextBlock x:Name="lblTargetEdition" Text="Target Edition" Foreground="#555" FontSize="13"/>
+                        </StackPanel>
+                        <TextBlock x:Name="txtOverviewTargetEdition" Grid.Row="2" Grid.Column="1" Text="Loading..." FontWeight="SemiBold" Foreground="#333" FontSize="13"/>
+                        
+                        <StackPanel Grid.Row="4" Grid.Column="0" Orientation="Horizontal">
+                            <TextBlock Text="&#xE499;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" Width="20" Foreground="#0078D4"/>
+                            <TextBlock x:Name="lblTargetArch" Text="Architecture" Foreground="#555" FontSize="13"/>
+                        </StackPanel>
+                        <TextBlock x:Name="txtOverviewArchitecture" Grid.Row="4" Grid.Column="1" Text="Loading..." FontWeight="Medium" Foreground="#333" FontSize="13"/>
+                        
+                        <StackPanel Grid.Row="6" Grid.Column="0" Orientation="Horizontal">
+                            <TextBlock Text="&#xF6A9;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" Width="20" Foreground="#0078D4"/>
+                            <TextBlock x:Name="lblMethod" Text="Method" Foreground="#555" FontSize="13"/>
+                        </StackPanel>
+                        <TextBlock Grid.Row="6" Grid.Column="1" Text="Convert SKUs" FontWeight="Medium" Foreground="#333" FontSize="13"/>
+                        
+                        <StackPanel Grid.Row="8" Grid.Column="0" Orientation="Horizontal">
+                            <TextBlock Text="&#xEAC8;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" Width="20" Foreground="#0078D4"/>
+                            <TextBlock x:Name="lblActReq" Text="Activation Req" Foreground="#555" FontSize="13"/>
+                        </StackPanel>
+                        <TextBlock x:Name="lblActReqText" Grid.Row="8" Grid.Column="1" Text="May require reactivation" FontWeight="Medium" Foreground="#D83B01" FontSize="13"/>
+                        
+                        <StackPanel Grid.Row="10" Grid.Column="0" Orientation="Horizontal">
+                            <TextBlock Text="&#xF869;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" Width="20" Foreground="#0078D4"/>
+                            <TextBlock x:Name="lblRisk" Text="Risk" Foreground="#555" FontSize="13"/>
+                        </StackPanel>
+                        <TextBlock x:Name="lblRiskText" Grid.Row="10" Grid.Column="1" Text="Low" FontWeight="Medium" Foreground="#137333" FontSize="13"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <!-- Section 6: Logs -->
+            <Border Grid.Row="2" Background="White" CornerRadius="8" Padding="20" Margin="0,0,0,20">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0" Margin="0,0,0,15">
+                        <TextBlock x:Name="lblSection6Title" Text="6. Logs" FontSize="15" FontWeight="SemiBold" Foreground="#005A9E" VerticalAlignment="Center"/>
+                        <Button HorizontalAlignment="Right" Background="White" BorderBrush="#E5E5E5" BorderThickness="1" Cursor="Hand" Padding="12,5" ToolTip="Clear Logs">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="6" Padding="{TemplateBinding Padding}">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Button.Template>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#xF34C;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" Foreground="#555" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                <TextBlock x:Name="btnClearLogText" Text="Clear Log" Foreground="#333" FontWeight="Medium" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                    
+                    <Border Grid.Row="1" Background="#F9F9F9" BorderBrush="#E5E5E5" BorderThickness="1" CornerRadius="8" Padding="15" Height="250">
+                        <ListBox x:Name="LogList" Background="Transparent" BorderThickness="0" 
+                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                 PreviewMouseWheel="LogScroller_PreviewMouseWheel">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Text}" Foreground="{Binding Color}" FontFamily="Consolas" FontSize="13" Margin="0,2" TextWrapping="Wrap"/>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="ListBoxItem">
+                                    <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                                    <Setter Property="Padding" Value="0"/>
+                                    <Setter Property="Margin" Value="0"/>
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="BorderThickness" Value="0"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="ListBoxItem">
+                                                <ContentPresenter />
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                        </ListBox>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <!-- Section 7: Actions -->
+            <Border Grid.Row="3" Background="White" CornerRadius="8" Padding="20" VerticalAlignment="Stretch" Margin="0,0,0,20">
+                <StackPanel>
+                        <TextBlock x:Name="lblSection7Title" Text="7. Actions" FontSize="15" FontWeight="SemiBold" Foreground="#005A9E" Margin="0,0,0,15"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="15"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Button Grid.Column="0" Style="{StaticResource SecondaryActionButtonStyle}" Click="BtnLearnMore_Click">
+                                <TextBlock x:Name="btnLearnMoreText" Text="Learn more about SKUs" VerticalAlignment="Center"/>
+                            </Button>
+                            
+                            <!-- Bắt đầu chuyển đổi -->
+                            <Button x:Name="btnStartConversion" Grid.Column="2" Style="{StaticResource ActionButtonStyle}" Click="BtnStartConversion_Click">
+                                <TextBlock x:Name="btnStartConvertText" Text="Convert Now" VerticalAlignment="Center"/>
+                            </Button>
+
+                            <!-- Khởi động lại (Ẩn mặc định) -->
+                            <Button x:Name="btnRestart" Grid.Column="2" Style="{StaticResource ActionButtonStyle}" Background="#107C41" Visibility="Collapsed" Click="BtnRestart_Click">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="&#xF106;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" Margin="0,0,8,0" VerticalAlignment="Center" Foreground="White"/>
+                                    <TextBlock x:Name="btnRestartText" Text="Restart Now" VerticalAlignment="Center" Foreground="White" FontWeight="SemiBold"/>
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+                        <TextBlock x:Name="txtActionWarning" Text="* The conversion process may take a few minutes and will restart the PC." FontSize="11" Foreground="#888" Margin="0,15,0,0" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+            
+        </Grid>
+        </ScrollViewer>
+    </Grid>
+
+        <!-- Overlay Details Dialog -->
+        <Border x:Name="OverlayDetails" Background="#B3E6F4F9" Visibility="Collapsed" CornerRadius="15" Margin="-10,0,10,0">
+        <Grid>
+            <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Margin="-300,0,0,0" MinWidth="450" MaxWidth="500">
+                <Border Background="#FDFDFD" CornerRadius="8">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="20" ShadowDepth="5" Opacity="0.16" Color="#0F172A"/>
+                    </Border.Effect>
+                </Border>
+                <Border Background="#FDFDFD" BorderBrush="#E5E7EB" BorderThickness="1" CornerRadius="8" Padding="25">
+                    <StackPanel>
+                    <Grid Margin="0,0,0,15">
+                        <TextBlock x:Name="lblOverlayDetailsTitle" Text="Device Compatibility Details" FontSize="16" FontWeight="SemiBold" Foreground="#111827" VerticalAlignment="Center"/>
+
+                    </Grid>
+                    
+                    <StackPanel>
+                        <TextBlock x:Name="lblOverlaySysInfo" Text="System Information:" FontWeight="SemiBold" Foreground="#005A9E" Margin="0,0,0,8"/>
+                        <Grid Margin="0,0,0,5">
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="150"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                            <TextBlock x:Name="lblOverlayOS" Text="Operating System:" Foreground="#4B5563"/>
+                            <TextBlock x:Name="txtDetailsOS" Grid.Column="1" Text="..." FontWeight="Medium" Foreground="#4B5563"/>
+                        </Grid>
+                        <Grid Margin="0,0,0,5">
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="150"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                            <TextBlock x:Name="lblOverlayCPU" Text="CPU Architecture:" Foreground="#4B5563"/>
+                            <TextBlock x:Name="txtDetailsArch" Grid.Column="1" Text="..." FontWeight="Medium" Foreground="#4B5563"/>
+                        </Grid>
+                        
+                        <TextBlock x:Name="lblOverlayReq" Text="System Requirements:" FontWeight="SemiBold" Foreground="#005A9E" Margin="0,15,0,8"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                            <TextBlock Text="&#xF29A;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" Foreground="#107C41" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                            <TextBlock x:Name="lblOverlayReqAdmin" Text="Application is running with Administrator privileges" Foreground="#4B5563" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                            <TextBlock x:Name="iconDetailsSKUs" Text="&#xF29A;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" Foreground="#107C41" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                            <TextBlock x:Name="txtDetailsSKUs" Text="Local SKUs packages are available" Foreground="#4B5563" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
+                            <TextBlock Text="&#xF29A;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" Foreground="#107C41" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                            <TextBlock x:Name="lblOverlayReqSppsvc" Text="Software Licensing Service (sppsvc) is running normally" Foreground="#4B5563" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        
+                        <!-- Warnings -->
+                        <Border Background="#FFF4CE" BorderBrush="#FDE7A9" BorderThickness="1" CornerRadius="6" Padding="12">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#xF882;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" FontSize="16" Foreground="#9D5D00" VerticalAlignment="Top" Margin="0,2,10,0"/>
+                                <TextBlock x:Name="lblOverlayWarning" Text="Note: You may need to reactivate your license using a Product Key or Digital License after the system restarts." Foreground="#734400" TextWrapping="Wrap" MaxWidth="380" FontSize="12" LineHeight="18"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                    
+                    <Button Width="100" HorizontalAlignment="Right" Margin="0,20,0,0" Padding="8,6" Background="#E5E7EB" Foreground="#4B5563" BorderThickness="0" Cursor="Hand" Click="BtnCloseDetails_Click"><TextBlock x:Name="btnOverlayCloseText" Text="Close" HorizontalAlignment="Center"/>
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="4"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Grid>
+        </Border>
+
+        <!-- Overlay Confirm Conversion -->
+        <Border x:Name="OverlayConfirm" Background="#B3E6F4F9" Visibility="Collapsed" CornerRadius="15" Margin="-10,0,10,0">
+        <Grid>
+            <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Margin="-300,0,0,0" MinWidth="450" MaxWidth="500">
+                <Border Background="#FDFDFD" CornerRadius="12">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="20" ShadowDepth="5" Opacity="0.16" Color="#0F172A"/>
+                    </Border.Effect>
+                </Border>
+                <Border Background="#FDFDFD" BorderBrush="#E5E7EB" BorderThickness="1" CornerRadius="12" Padding="25">
+                    <StackPanel>
+                    <Grid Margin="0,0,0,15">
+                        <TextBlock x:Name="lblOverlayConfirmTitle" Text="Confirm SKU Conversion" FontSize="18" FontWeight="Bold" Foreground="#111827" VerticalAlignment="Center"/>
+                    </Grid>
+                    
+                    <StackPanel Orientation="Horizontal" Margin="0,10,0,20">
+                        <Image x:Name="imgConfirmOS" Width="40" Height="40" RenderOptions.BitmapScalingMode="HighQuality" VerticalAlignment="Top" Margin="0,0,15,0"/>
+                        <StackPanel>
+                            <TextBlock x:Name="lblConfirmMsg" Text="Are you sure you want to switch from:" FontSize="14" Foreground="#4B5563" Margin="0,0,0,10"/>
+                            <TextBlock x:Name="txtConfirmCurrent" Text="Windows 10 Home" FontSize="14" FontWeight="SemiBold" Foreground="#005A9E"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,2,0,10">
+                                <TextBlock Text="&#xF182;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" FontSize="14" Foreground="#4B5563" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                <TextBlock x:Name="txtConfirmTarget" Text="Windows 10 Pro" FontSize="14" FontWeight="Bold" Foreground="#107C41" VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <TextBlock x:Name="lblConfirmWarning" Text="After completion, you need to restart your computer." FontSize="13" Foreground="#4B5563" TextWrapping="Wrap" MaxWidth="350"/>
+                        </StackPanel>
+                    </StackPanel>
+                    
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+                        <Button UseLayoutRounding="True" SnapsToDevicePixels="True" Background="White" Foreground="#4B5563" BorderBrush="#E5E7EB" BorderThickness="1" Padding="20,8" Margin="0,0,10,0" Cursor="Hand" Click="BtnCancelConfirm_Click">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Margin="1" SnapsToDevicePixels="True" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="6" Padding="{TemplateBinding Padding}">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Button.Template>
+                            <TextBlock x:Name="btnConfirmNo" Text="Cancel" FontWeight="Medium"/>
+                        </Button>
+                        <Button UseLayoutRounding="True" SnapsToDevicePixels="True" Background="#0078D4" Foreground="White" BorderThickness="0" Padding="20,8" Cursor="Hand" Click="BtnYesConfirm_Click">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Margin="1" SnapsToDevicePixels="True" Background="{TemplateBinding Background}" CornerRadius="6" Padding="{TemplateBinding Padding}">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Button.Template>
+                            <TextBlock x:Name="btnConfirmYes" Text="Agree" FontWeight="SemiBold"/>
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
+                </Border>
+            </Grid>
+        </Grid>
+        </Border>
+
+        <!-- Overlay Bridge Upgrade Notice -->
+        <Border x:Name="OverlayBridgeUpgrade" Background="#B3E6F4F9" Visibility="Collapsed" CornerRadius="15" Margin="-10,0,10,0">
+        <Grid>
+            <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Margin="-300,0,0,0" MinWidth="450" MaxWidth="500">
+                <Border Background="#FDFDFD" CornerRadius="12">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="20" ShadowDepth="5" Opacity="0.16" Color="#0F172A"/>
+                    </Border.Effect>
+                </Border>
+                <Border Background="#FDFDFD" BorderBrush="#E5E7EB" BorderThickness="1" CornerRadius="12" Padding="25">
+                    <StackPanel>
+                    <Grid Margin="0,0,0,15">
+                        <TextBlock x:Name="lblOverlayBridgeTitle" Text="Nâng cấp cần qua 2 bước" FontSize="18" FontWeight="Bold" Foreground="#111827" VerticalAlignment="Center"/>
+                    </Grid>
+                    
+                    <StackPanel Orientation="Horizontal" Margin="0,10,0,20">
+                        <TextBlock Text="&#xF882;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" FontSize="40" Foreground="#0078D4" VerticalAlignment="Top" Margin="0,0,15,0"/>
+                        <StackPanel>
+                            <TextBlock x:Name="lblBridgeMsg1" Text="Nâng cấp từ bản Home lên LTSC cần thực hiện qua 2 bước:" FontSize="14" Foreground="#4B5563" Margin="0,0,0,10" TextWrapping="Wrap"/>
+                            <TextBlock x:Name="lblBridgeMsg2" Text="Bước 1: Nâng cấp hệ thống lên bản Pro và khởi động lại." FontSize="14" FontWeight="SemiBold" Foreground="#005A9E" Margin="0,0,0,5" TextWrapping="Wrap"/>
+                            <TextBlock x:Name="lblBridgeMsg3" Text="Bước 2: Mở lại ứng dụng này và tiếp tục chuyển sang LTSC." FontSize="14" FontWeight="SemiBold" Foreground="#107C41" Margin="0,0,0,10" TextWrapping="Wrap"/>
+                            <TextBlock x:Name="lblBridgeMsg4" Text="Bạn có muốn bắt đầu Bước 1 (Nâng cấp lên Pro) ngay bây giờ không?" FontSize="13" Foreground="#4B5563" TextWrapping="Wrap" MaxWidth="350"/>
+                        </StackPanel>
+                    </StackPanel>
+                    
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+                        <Button UseLayoutRounding="True" SnapsToDevicePixels="True" Background="White" Foreground="#4B5563" BorderBrush="#E5E7EB" BorderThickness="1" Padding="20,8" Margin="0,0,10,0" Cursor="Hand" Click="BtnCancelBridge_Click">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Margin="1" SnapsToDevicePixels="True" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="6" Padding="{TemplateBinding Padding}">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Button.Template>
+                            <TextBlock x:Name="btnBridgeNo" Text="Huỷ" FontWeight="Medium"/>
+                        </Button>
+                        <Button UseLayoutRounding="True" SnapsToDevicePixels="True" Background="#0078D4" Foreground="White" BorderThickness="0" Padding="20,8" Cursor="Hand" Click="BtnYesBridge_Click">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Margin="1" SnapsToDevicePixels="True" Background="{TemplateBinding Background}" CornerRadius="6" Padding="{TemplateBinding Padding}">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Button.Template>
+                            <TextBlock x:Name="btnBridgeYes" Text="Bắt đầu Bước 1" FontWeight="SemiBold"/>
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
+                </Border>
+            </Grid>
+        </Grid>
+        </Border>
+
+        <!-- Overlay Restart -->
+        <Border x:Name="OverlayRestart" Background="#B3E6F4F9" Visibility="Collapsed" CornerRadius="15" Margin="-10,0,10,0">
+        <Grid>
+            <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Margin="-300,0,0,0" MinWidth="400" MaxWidth="450">
+                <Border Background="#FDFDFD" CornerRadius="12">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="20" ShadowDepth="5" Opacity="0.16" Color="#0F172A"/>
+                    </Border.Effect>
+                </Border>
+                <Border Background="#FDFDFD" BorderBrush="#E5E7EB" BorderThickness="1" CornerRadius="12" Padding="25">
+                    <StackPanel>
+                    <Grid Margin="0,0,0,15">
+                        <TextBlock x:Name="lblOverlayRestartTitle" Text="Confirmation" FontSize="18" FontWeight="Bold" Foreground="#111827" VerticalAlignment="Center"/>
+                    </Grid>
+                    
+                    <StackPanel Orientation="Horizontal" Margin="0,10,0,20">
+                        <TextBlock Text="&#xE777;" FontFamily="Segoe MDL2 Assets" FontSize="40" Foreground="#0078D4" VerticalAlignment="Top" Margin="0,0,15,0"/>
+                        <TextBlock x:Name="lblRestartMsg" Text="Restart your computer right now?" FontSize="14" Foreground="#4B5563" VerticalAlignment="Center" TextWrapping="Wrap" MaxWidth="300"/>
+                    </StackPanel>
+                    
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+                        <Button UseLayoutRounding="True" SnapsToDevicePixels="True" Background="White" Foreground="#4B5563" BorderBrush="#E5E7EB" BorderThickness="1" Padding="20,8" Margin="0,0,10,2" Cursor="Hand" Click="BtnCancelRestart_Click">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Margin="1" SnapsToDevicePixels="True" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="6" Padding="{TemplateBinding Padding}">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Button.Template>
+                            <TextBlock x:Name="btnRestartNo" Text="Cancel" FontWeight="Medium"/>
+                        </Button>
+                        <Button UseLayoutRounding="True" SnapsToDevicePixels="True" Background="#0078D4" Foreground="White" BorderThickness="0" Padding="20,8" Margin="0,0,0,2" Cursor="Hand" Click="BtnYesRestart_Click">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Margin="1" SnapsToDevicePixels="True" Background="{TemplateBinding Background}" CornerRadius="6" Padding="{TemplateBinding Padding}">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Button.Template>
+                            <TextBlock x:Name="btnRestartYes" Text="Restart" FontWeight="SemiBold"/>
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
+                </Border>
+            </Grid>
+        </Grid>
+        </Border>
+
+        <!-- Overlay Processing -->
+        <Border x:Name="OverlayProcessing" Background="#B3E6F4F9" Visibility="Collapsed" CornerRadius="15" Margin="-10,0,10,0">
+        <Grid>
+            <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Margin="-300,0,0,0" MinWidth="420" MaxWidth="450">
+                <Border Background="#FDFDFD" CornerRadius="12">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="20" ShadowDepth="5" Opacity="0.16" Color="#0F172A"/>
+                    </Border.Effect>
+                </Border>
+                <Border Background="#FDFDFD" BorderBrush="#E5E7EB" BorderThickness="1" CornerRadius="12" Padding="30">
+                    <StackPanel>
+                    <TextBlock x:Name="lblProcessingTitle" Text="Processing..." FontSize="20" FontWeight="Bold" Foreground="#111827" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                    <TextBlock x:Name="lblProcessingSub" Text="Please wait a moment" FontSize="13" Foreground="#4B5563" HorizontalAlignment="Center" Margin="0,0,0,25"/>
+
+                    <!-- Linear Progress Bar -->
+                    <Grid Margin="0,0,0,25">
+                        <ProgressBar x:Name="progressBar" Minimum="0" Maximum="100" Value="0" Height="10" Foreground="#0078D4" Background="#E5E7EB" BorderThickness="0">
+                            <ProgressBar.Template>
+                                <ControlTemplate TargetType="ProgressBar">
+                                    <Border Background="{TemplateBinding Background}" CornerRadius="5">
+                                        <Grid x:Name="PART_Track">
+                                            <Border x:Name="PART_Indicator" Background="{TemplateBinding Foreground}" CornerRadius="5" HorizontalAlignment="Left"/>
+                                        </Grid>
+                                    </Border>
+                                </ControlTemplate>
+                            </ProgressBar.Template>
+                        </ProgressBar>
+                        <TextBlock x:Name="txtProgressPercentOutside" Text="0%" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,0,-25" FontSize="12" FontWeight="SemiBold" Foreground="#0078D4"/>
+                    </Grid>
+
+                    <!-- Steps List -->
+                    <StackPanel Margin="20,0,0,25">
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                            <TextBlock x:Name="iconStep1" Text="&#xF29A;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" FontSize="18" Foreground="#E5E7EB" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                            <TextBlock x:Name="lblStep1" Text="Preparing data" FontSize="14" Foreground="#4B5563" VerticalAlignment="Center" FontWeight="Medium"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                            <TextBlock x:Name="iconStep2" Text="&#xF29A;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" FontSize="18" Foreground="#E5E7EB" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                            <TextBlock x:Name="lblStep2" Text="Removing old settings" FontSize="14" Foreground="#4B5563" VerticalAlignment="Center" FontWeight="Medium"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                            <TextBlock x:Name="iconStep3" Text="&#xF29A;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" FontSize="18" Foreground="#E5E7EB" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                            <TextBlock x:Name="lblStep3" Text="Applying changes" FontSize="14" Foreground="#4B5563" VerticalAlignment="Center" FontWeight="Medium"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock x:Name="iconStep4" Text="&#xF29A;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" FontSize="18" Foreground="#E5E7EB" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                            <TextBlock x:Name="lblStep4" Text="Completed" FontSize="14" Foreground="#4B5563" VerticalAlignment="Center" FontWeight="Medium"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <Button Background="#F0F6FF" Foreground="#0078D4" BorderThickness="0" Padding="0,10" Width="150" HorizontalAlignment="Center" Cursor="Arrow" IsEnabled="False" Margin="0,0,0,15">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="{TemplateBinding Background}" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                        <TextBlock x:Name="btnProcessingCancel" Text="Processing..." FontWeight="Medium"/>
+                    </Button>
+                    
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <TextBlock Text="&#xF4A2;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" FontSize="14" Foreground="#4B5563" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                        <TextBlock x:Name="lblProcessingNote" Text="Do not close this window during processing." FontSize="12" Foreground="#4B5563" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </StackPanel>
+                </Border>
+            </Grid>
+        </Grid>
+        </Border>
+
+        <!-- Overlay Success -->
+        <Border x:Name="OverlaySuccess" Background="#B3E6F4F9" Visibility="Collapsed" CornerRadius="15" Margin="-10,0,10,0">
+        <Grid>
+            <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Margin="-300,0,0,0" MinWidth="480" MaxWidth="520">
+                <Border Background="#FDFDFD" CornerRadius="12">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="20" ShadowDepth="5" Opacity="0.16" Color="#0F172A"/>
+                    </Border.Effect>
+                </Border>
+                <Border Background="#FDFDFD" BorderBrush="#E5E7EB" BorderThickness="1" CornerRadius="12" Padding="30">
+                    <Grid>
+                    <StackPanel>
+                        <TextBlock x:Name="lblSuccessTitle" Text="Successfully Completed!" FontSize="20" FontWeight="Bold" Foreground="#111827" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                        <TextBlock x:Name="lblSuccessSub" Text="Windows SKU has been successfully converted." FontSize="13" Foreground="#4B5563" HorizontalAlignment="Center" Margin="0,0,0,25"/>
+
+                        <Grid Margin="0,0,0,25">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <!-- OS Icon -->
+                            <Grid Width="90" Height="90" Margin="0,0,25,0">
+                                <Image x:Name="imgSuccessOS" Width="60" Height="60" RenderOptions.BitmapScalingMode="HighQuality" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Grid>
+                            
+                            <!-- Details Card -->
+                            <Border Grid.Column="1" Background="#F2FBF4" CornerRadius="8" Padding="15">
+                                <StackPanel VerticalAlignment="Center">
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                                        <TextBlock Text="&#xEE65;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" FontSize="14" Foreground="#107C41" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                        <TextBlock x:Name="lblSuccessNewVer" Text="New Version:" FontSize="13" Foreground="#4B5563" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                        <TextBlock x:Name="txtSuccessTargetName" Text="Windows 10 Pro" FontSize="13" FontWeight="SemiBold" Foreground="#111827" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                                        <TextBlock Text="&#xF2DC;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" FontSize="14" Foreground="#107C41" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                        <TextBlock x:Name="lblSuccessTime" Text="Time:" FontSize="13" Foreground="#4B5563" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                        <TextBlock x:Name="txtSuccessTimeVal" Text="..." FontSize="13" FontWeight="Medium" Foreground="#111827" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xE0A9;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" FontSize="14" Foreground="#107C41" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                        <TextBlock x:Name="lblSuccessReq" Text="Action Required:" FontSize="13" Foreground="#4B5563" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                        <TextBlock x:Name="txtSuccessReqVal" Text="Restart" FontSize="13" FontWeight="SemiBold" Foreground="#111827" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="15"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Button Grid.Column="0" UseLayoutRounding="True" SnapsToDevicePixels="True" Background="White" Foreground="#4B5563" BorderBrush="#E5E7EB" BorderThickness="1" Padding="0,12" Cursor="Hand" Click="BtnCloseSuccess_Click">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Margin="1" SnapsToDevicePixels="True" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Button.Template>
+                                <TextBlock x:Name="btnSuccessClose" Text="Close" FontWeight="Medium"/>
+                            </Button>
+                            <Button Grid.Column="2" UseLayoutRounding="True" SnapsToDevicePixels="True" Background="#107C41" Foreground="White" BorderThickness="0" Padding="0,12" Cursor="Hand" Click="BtnYesRestart_Click">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Margin="1" SnapsToDevicePixels="True" Background="{TemplateBinding Background}" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Button.Template>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="&#xF106;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="btnSuccessRestart" Text="Restart Now" FontWeight="SemiBold"/>
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+                    </StackPanel>
+                </Grid>
+                </Border>
+            </Grid>
+        </Grid>
+        </Border>
+    </Grid>
+</UserControl>
+
+
+
+
+
+
+
+
+
+
+
+

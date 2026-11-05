@@ -1,0 +1,232 @@
+<UserControl x:Class="HyperLisUI.Views.NetworkView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="800" d:DesignWidth="850">
+    
+    <!-- <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Margin="0"> -->
+    <Border CornerRadius="20" Background="Transparent">
+        <Border.OpacityMask>
+            <VisualBrush>
+                <VisualBrush.Visual>
+                    <Border Background="Black" CornerRadius="20"
+                            Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Border}}"
+                            Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=Border}}"/>
+                </VisualBrush.Visual>
+            </VisualBrush>
+        </Border.OpacityMask>
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Margin="0">
+        <Grid Margin="20,20,0,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/> 
+            </Grid.ColumnDefinitions>
+
+            <!-- LEFT CONTENT (SETTINGS) -->
+            <StackPanel HorizontalAlignment="Left" Margin="0,0,20,0">
+                
+                <!-- SECTION 1: NETWORK ADAPTER -->
+                <TextBlock x:Name="lblNetSelectAdapter" Text="Select Network Adapter" FontSize="26" FontWeight="SemiBold" Margin="0,0,0,15"/>
+                
+                <!-- Adapter Dropdown -->
+                <ComboBox x:Name="ComboAdapters" Style="{StaticResource WinUIComboBoxStyle}" Margin="0,0,0,10" Width="450" HorizontalAlignment="Left" DisplayMemberPath="Description" SelectionChanged="ComboAdapters_SelectionChanged">
+                </ComboBox>
+                
+
+                
+                <!-- DNS Dropdown -->
+                <ComboBox x:Name="ComboDNS" Style="{StaticResource WinUIComboBoxStyle}" Margin="0,0,0,10" Width="450" HorizontalAlignment="Left" DisplayMemberPath="Name">
+                </ComboBox>
+                
+
+                
+                <!-- DNS Section -->
+                <StackPanel Margin="0,0,0,30">
+                    <!-- DNS Info -->
+                    <Grid Margin="0,0,0,20">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" MinWidth="80"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="15"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- IPv4 -->
+                        <TextBlock x:Name="lblNetDNSv4" Grid.Row="0" Grid.Column="0" Text="DNS IPv4: " FontWeight="SemiBold" VerticalAlignment="Center"/>
+                        <TextBlock x:Name="TxtDnsV4_1" Grid.Row="0" Grid.Column="1" Text="-" VerticalAlignment="Center"/>
+                        <TextBlock x:Name="TxtDnsV4_2" Grid.Row="1" Grid.Column="1" Text="-" Margin="0,2,0,0" VerticalAlignment="Center"/>
+
+                        <!-- IPv6 -->
+                        <TextBlock x:Name="lblNetDNSv6" Grid.Row="3" Grid.Column="0" Text="DNS IPv6: " FontWeight="SemiBold" VerticalAlignment="Center"/>
+                        <TextBlock x:Name="TxtDnsV6_1" Grid.Row="3" Grid.Column="1" Text="-" VerticalAlignment="Center"/>
+                        <TextBlock x:Name="TxtDnsV6_2" Grid.Row="4" Grid.Column="1" Text="-" Margin="0,2,0,0" VerticalAlignment="Center"/>
+                    </Grid>
+
+                    <!-- Buttons Row -->
+                    <StackPanel Orientation="Horizontal">
+                        <Button x:Name="btnNetSetDNS" Content="Set DNS" Click="SetDNS_Click" Style="{StaticResource ActionButtonStyle}" Margin="0,0,10,0"/>
+                        <Button x:Name="btnNetFlushDNS" Content="Flush DNS Cache" Click="FlushDNS_Click" Style="{StaticResource ActionButtonStyle}" Margin="0,0,10,0"/>
+                        <Button x:Name="btnNetOpenSettings" Content="Open Network Settings" Click="OpenNetwork_Click" Style="{StaticResource ActionButtonStyle}" Margin="0,0,0,0"/>
+                    </StackPanel>
+                </StackPanel>
+                
+                <!-- SECTION 2: TOGGLES -->
+                <StackPanel Margin="0,0,0,30">
+                    <CheckBox x:Name="CheckThrottling" Content="Optimize Network" Style="{StaticResource ToggleSwitchStyle}" Checked="CheckThrottling_Checked" Unchecked="CheckThrottling_Unchecked" Margin="0,0,0,10"/>
+                    <CheckBox x:Name="CheckWifiSense" Content="Disable Wifi Sense" Style="{StaticResource ToggleSwitchStyle}" Checked="CheckWifiSense_Checked" Unchecked="CheckWifiSense_Unchecked" Margin="0,0,0,10"/>
+                    <CheckBox x:Name="CheckPaidWifi" Content="Fix Wi-Fi automatically hidden" Style="{StaticResource ToggleSwitchStyle}" Checked="CheckPaidWifi_Checked" Unchecked="CheckPaidWifi_Unchecked"/>
+                </StackPanel>
+                
+                <!-- SECTION 3: PING TOOL -->
+                <TextBlock x:Name="lblNetPingTool" Text="Ping IP to check network latency" FontSize="26" FontWeight="SemiBold" Margin="0,0,0,15"/>
+                
+                <!-- Search/Ping Input -->
+                <Border HorizontalAlignment="Left" Width="400" Height="40" CornerRadius="20" Background="#40FFFFFF" Margin="0,0,0,20">
+                    <StackPanel Orientation="Horizontal" Margin="15,0">
+                        <TextBlock Text="🔍" VerticalAlignment="Center" Foreground="#333"/>
+                        <TextBox x:Name="PingInput" Text="Type the IP or Domain name..." GotFocus="PingInput_GotFocus" LostFocus="PingInput_LostFocus" Background="Transparent" BorderThickness="0" VerticalAlignment="Center" Margin="10,0,0,0" Width="340"/>
+                    </StackPanel>
+                </Border>
+                
+                <!-- Ping Actions -->
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,30">
+                    <Button x:Name="btnNetPing" Content="Ping" Click="Ping_Click" Style="{StaticResource ActionButtonStyle}" Width="100" Margin="0,0,10,0"/>
+                    <!-- <Button Content="Copy IP" Style="{StaticResource ActionButtonStyle}" Width="100" Margin="0,0,10,0"/>
+                    <Button Content="Copy" Style="{StaticResource ActionButtonStyle}" Width="100" Margin="0,0,10,0"/> -->
+                    <!-- <Button Content="Check on SHODAN.io" Style="{StaticResource ActionButtonStyle}" Width="210" Margin="0,0,0,0"/> -->
+                </StackPanel>
+                
+                <!-- Result Section -->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock x:Name="lblNetPingResult" Text="Result" FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                    <Button x:Name="btnNetExport" Grid.Column="1" Content="Export" Click="ExportPing_Click" Style="{StaticResource ActionButtonStyle}" Width="100" Margin="0"/>
+                </Grid>
+                
+                <Border Background="#40FFFFFF" CornerRadius="10" Padding="15" Margin="0,10,0,0" MinHeight="295">
+                    <StackPanel x:Name="PingResultPanel">
+                         <!-- Placeholder values removed. Use Logic to populate -->
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <!-- RIGHT CONTENT (FAST INFO) -->
+            <Border Grid.Column="1" Background="#60FFFFFF" CornerRadius="15" Padding="20" VerticalAlignment="Top" Width="350" Margin="0,10,10,0">
+                <StackPanel>
+                    <TextBlock x:Name="lblNetInfoTitle" Text="Network Information" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,18"/>
+
+                    <Grid Margin="0,0,0,15">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock x:Name="lblNetStatus" Text="Status:" Foreground="#555" FontWeight="Medium"/>
+                        <TextBlock x:Name="TxtStatus" Grid.Column="1" Text="-" FontWeight="Bold" Foreground="Green" HorizontalAlignment="Right"/>
+                    </Grid>
+                    
+                    <Rectangle Height="1" Fill="#30000000" Margin="0,5,0,15" SnapsToDevicePixels="True"/>
+
+                    <StackPanel Margin="0,0,0,15">
+                        <TextBlock x:Name="lblNetInternet" Text="Internet Access" Foreground="#555" FontWeight="Medium"/>
+                        <TextBlock x:Name="TxtInternet" Text="-" FontWeight="SemiBold" Margin="0,2,0,0"/>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,0,0,15">
+                        <TextBlock x:Name="lblNetSSID" Text="Network Name (SSID)" Foreground="#555" FontWeight="Medium"/>
+                        <TextBlock x:Name="TxtSSID" Text="-" FontWeight="SemiBold" Margin="0,2,0,0"/>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,0,0,15">
+                        <TextBlock x:Name="lblNetSignal" Text="Signal Strength" Foreground="#555" FontWeight="Medium"/>
+                        <TextBlock x:Name="TxtSignal" Text="-" FontWeight="SemiBold" Margin="0,2,0,0"/>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,0,0,15">
+                        <TextBlock x:Name="lblNetSecurity" Text="Security Type" Foreground="#555" FontWeight="Medium"/>
+                        <TextBlock x:Name="TxtSecurity" Text="-" FontWeight="SemiBold" Margin="0,2,0,0"/>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,0,0,15">
+                        <TextBlock x:Name="lblNetType" Text="Connection Type" Foreground="#555" FontWeight="Medium"/>
+                        <TextBlock x:Name="TxtType" Text="-" FontWeight="SemiBold" Margin="0,2,0,0"/>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,0,0,15">
+                        <TextBlock x:Name="lblNetBand" Text="Network Band" Foreground="#555" FontWeight="Medium"/>
+                        <TextBlock x:Name="TxtBand" Text="-" FontWeight="SemiBold" Margin="0,2,0,0"/>
+                    </StackPanel>
+
+                    <!-- <StackPanel Margin="0,0,0,15">
+                        <TextBlock Text="Network Channel" Foreground="#555" FontWeight="Medium"/>
+                        <TextBlock Text="44" FontWeight="SemiBold" Margin="0,2,0,0"/>
+                    </StackPanel> -->
+
+                    <StackPanel Margin="0,0,0,15">
+                        <TextBlock x:Name="lblNetSpeed" Text="Link Speed (Receive/Transmit)" Foreground="#555" FontWeight="Medium"/>
+                        <TextBlock x:Name="TxtSpeed" Text="-" FontWeight="SemiBold" Margin="0,2,0,0"/>
+                    </StackPanel>
+
+
+                    <StackPanel Margin="0,0,0,15">
+                        <TextBlock x:Name="lblNetDataUsage" Text="Data Usage (Session)" Foreground="#555" FontWeight="Medium"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                            <TextBlock x:Name="TxtDataDown" Text="⬇ -" FontWeight="Bold" Margin="0,0,15,0" Foreground="Green"/>
+                            <TextBlock x:Name="TxtDataUp" Text="⬆ -" FontWeight="Bold" Foreground="Red"/>
+                        </StackPanel>
+                    </StackPanel>
+                    
+                    <Separator Background="#20000000" Margin="0,5,0,20"/>
+
+                    <StackPanel Margin="0,0,0,10">
+                        <TextBlock x:Name="lblNetIPv4" Text="IPv4 Address:" Foreground="#555" FontWeight="Medium"/>
+                        <TextBlock x:Name="TxtIPv4" Text="-" FontWeight="SemiBold" Margin="0,2,0,0"/>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,0,0,10">
+                        <TextBlock x:Name="lblNetSubnet" Text="Subnet Mask:" Foreground="#555" FontWeight="Medium"/>
+                        <TextBlock x:Name="TxtSubnet" Text="-" FontWeight="SemiBold" Margin="0,2,0,0"/>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,0,0,10">
+                        <TextBlock x:Name="lblNetIPv6" Text="IPv6 Address:" Foreground="#555" FontWeight="Medium"/>
+                        <TextBlock x:Name="TxtIPv6" Text="-" FontWeight="SemiBold" Margin="0,2,0,0"/>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,0,0,10">
+                        <TextBlock x:Name="lblNetMAC" Text="MAC Address:" Foreground="#555" FontWeight="Medium"/>
+                        <TextBlock x:Name="TxtMAC" Text="-" FontWeight="SemiBold" Margin="0,2,0,0"/>
+                    </StackPanel>
+                    
+                    <StackPanel Margin="0,0,0,10">
+                        <TextBlock x:Name="lblNetGateway" Text="Gateway:" Foreground="#555" FontWeight="Medium"/>
+                        <TextBlock x:Name="TxtGateway" Text="-" FontWeight="SemiBold" Margin="0,2,0,0"/>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,0,0,10">
+                        <TextBlock x:Name="lblNetDHCP" Text="DHCP Server:" Foreground="#555" FontWeight="Medium"/>
+                        <TextBlock x:Name="TxtDHCP" Text="-" FontWeight="SemiBold" Margin="0,2,0,0"/>
+                    </StackPanel>
+
+
+
+                    <StackPanel Margin="0,0,0,10">
+                        <TextBlock x:Name="lblNetDNSServer" Text="DNS Server:" Foreground="#555" FontWeight="Medium"/>
+                        <TextBlock x:Name="TxtDNSServer" Text="-" FontWeight="SemiBold" Margin="0,2,0,0"/>
+                    </StackPanel>
+
+                </StackPanel>
+            </Border>
+        </Grid>
+        </ScrollViewer>
+    </Border>
+</UserControl>

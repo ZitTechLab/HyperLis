@@ -1,0 +1,18 @@
+<UserControl x:Class="HyperLisUI.Views.CleaningRightView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="300">
+    <StackPanel>
+        <TextBlock Text="Description" FontWeight="SemiBold" FontSize="19" Margin="0,0,0,15"/>
+        <TextBlock Text="The junk cleanup feature removes temporary files, system error reports, unnecessary data, and empties the Recycle Bin to free up disk space and improve system performance." 
+                   FontSize="17" TextWrapping="Wrap" Margin="0,0,0,20" Foreground="#333"/>
+        <Separator Background="White" Opacity="0.5" Margin="0,10"/>
+        <TextBlock Text="Mô tả:" FontWeight="SemiBold" FontSize="17" Margin="0,0,0,5"/>
+        <TextBlock Text="Tính năng dọn dẹp rác giúp loại bỏ các tệp tạm thời, báo cáo lỗi hệ thống, dữ liệu không cần thiết và làm trống thùng rác, giúp giải phóng dung lượng và cải thiện hiệu suất hệ thống." 
+                   FontSize="17" TextWrapping="Wrap" Foreground="#333"/>
+    </StackPanel>
+</UserControl>

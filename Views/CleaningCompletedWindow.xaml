@@ -1,0 +1,51 @@
+<Window x:Class="HyperLisUI.Views.CleaningCompletedWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Cleaning Completed" SizeToContent="Height" MinHeight="200" Width="450"
+        WindowStartupLocation="CenterOwner"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent">
+
+    <Border Background="#F0F8FF" CornerRadius="15" BorderBrush="#B2EBF2" BorderThickness="1" Padding="20">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Title -->
+            <TextBlock x:Name="LblInfo" Text="Info" FontSize="20" FontWeight="SemiBold" Foreground="#333" Grid.Row="0" HorizontalAlignment="Left" Margin="0,0,0,10"/>
+
+            <!-- Message -->
+            <TextBlock x:Name="MessageText" Text="Cleaning completed" FontSize="14" Foreground="#444" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" TextAlignment="Left" Margin="5,15"/>
+
+            <!-- Button -->
+            <Button x:Name="BtnGotIt" Content="Got it" Click="GotIt_Click" Width="120" Height="40" Grid.Row="2" HorizontalAlignment="Center" Margin="0,10,0,0">
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Background="#90CDF4" CornerRadius="10">
+                                        <TextBlock Text="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" Foreground="#333"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Cursor" Value="Hand"/>
+                                            <Setter Property="Opacity" Value="0.9"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Button.Style>
+            </Button>
+        </Grid>
+    </Border>
+</Window>

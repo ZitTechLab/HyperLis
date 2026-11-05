@@ -1,0 +1,937 @@
+<UserControl x:Class="HyperLisUI.Views.UWPAppsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="720" d:DesignWidth="1050">
+    <UserControl.Resources>
+        <!-- Fluent Rounded Button -->
+        <Style x:Key="FluentButtonStyle" TargetType="Button">
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="FontFamily" Value="Segoe UI" />
+            <Setter Property="FontSize" Value="12.5" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="6" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Opacity" Value="0.88" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Opacity" Value="0.75" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.45" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Segmented Tab Style -->
+        <Style x:Key="SegmentedTabStyle" TargetType="RadioButton">
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="FontFamily" Value="Segoe UI" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontWeight" Value="Medium" />
+            <Setter Property="Foreground" Value="#475569" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border x:Name="tabBorder" Background="Transparent" CornerRadius="6" Padding="14,6">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="tabBorder" Property="Background" Value="#2563EB" />
+                                <Setter Property="Foreground" Value="White" />
+                                <Setter Property="FontWeight" Value="SemiBold" />
+                            </Trigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsMouseOver" Value="True" />
+                                    <Condition Property="IsChecked" Value="False" />
+                                </MultiTrigger.Conditions>
+                                <Setter TargetName="tabBorder" Property="Background" Value="#E2E8F0" />
+                            </MultiTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Fluent 2 CheckBox Style -->
+        <Style x:Key="FluentCheckBox" TargetType="CheckBox">
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CheckBox">
+                        <Grid Width="18" Height="18" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Border x:Name="Box" Width="18" Height="18" CornerRadius="4" Background="White" BorderBrush="#CBD5E1" BorderThickness="1.5" SnapsToDevicePixels="True"/>
+                            <Path x:Name="CheckMark" 
+                                  Width="10" Height="8" 
+                                  Stretch="Uniform" 
+                                  Data="M 1,4.2 L 3.8,7 L 9,1.5" 
+                                  Stroke="White" 
+                                  StrokeThickness="2" 
+                                  StrokeStartLineCap="Round" 
+                                  StrokeEndLineCap="Round" 
+                                  StrokeLineJoin="Round" 
+                                  HorizontalAlignment="Center" 
+                                  VerticalAlignment="Center" 
+                                  SnapsToDevicePixels="True"
+                                  Visibility="Collapsed"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Box" Property="Background" Value="#2563EB"/>
+                                <Setter TargetName="Box" Property="BorderBrush" Value="#2563EB"/>
+                                <Setter TargetName="CheckMark" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="{x:Null}">
+                                <Setter TargetName="Box" Property="Background" Value="#2563EB"/>
+                                <Setter TargetName="Box" Property="BorderBrush" Value="#2563EB"/>
+                                <Setter TargetName="CheckMark" Property="Data" Value="M 1,4 L 9,4"/>
+                                <Setter TargetName="CheckMark" Property="Height" Value="2"/>
+                                <Setter TargetName="CheckMark" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Box" Property="BorderBrush" Value="#2563EB"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Box" Property="Opacity" Value="0.4"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Fluent Labeled CheckBox Style -->
+        <Style x:Key="FluentLabeledCheckBox" TargetType="CheckBox">
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CheckBox">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Grid Width="18" Height="18" VerticalAlignment="Center">
+                                <Border x:Name="Box" Width="18" Height="18" CornerRadius="4" Background="White" BorderBrush="#CBD5E1" BorderThickness="1.5" SnapsToDevicePixels="True"/>
+                                <Path x:Name="CheckMark" 
+                                      Width="10" Height="8" 
+                                      Stretch="Uniform" 
+                                      Data="M 1,4.2 L 3.8,7 L 9,1.5" 
+                                      Stroke="White" 
+                                      StrokeThickness="2" 
+                                      StrokeStartLineCap="Round" 
+                                      StrokeEndLineCap="Round" 
+                                      StrokeLineJoin="Round" 
+                                      HorizontalAlignment="Center" 
+                                      VerticalAlignment="Center" 
+                                      SnapsToDevicePixels="True"
+                                      Visibility="Collapsed"/>
+                            </Grid>
+                            <ContentPresenter Margin="8,0,0,0" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Box" Property="Background" Value="#2563EB"/>
+                                <Setter TargetName="Box" Property="BorderBrush" Value="#2563EB"/>
+                                <Setter TargetName="CheckMark" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="{x:Null}">
+                                <Setter TargetName="Box" Property="Background" Value="#2563EB"/>
+                                <Setter TargetName="Box" Property="BorderBrush" Value="#2563EB"/>
+                                <Setter TargetName="CheckMark" Property="Data" Value="M 1,4 L 9,4"/>
+                                <Setter TargetName="CheckMark" Property="Height" Value="2"/>
+                                <Setter TargetName="CheckMark" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Box" Property="BorderBrush" Value="#2563EB"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Box" Property="Opacity" Value="0.4"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Fluent Toggle Switch Style -->
+        <Style x:Key="FluentToggleSwitch" TargetType="CheckBox">
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CheckBox">
+                        <Grid Width="36" Height="19" VerticalAlignment="Center">
+                            <Border x:Name="Track" Background="#CBD5E1" CornerRadius="9.5" />
+                            <Ellipse x:Name="Thumb" Width="13" Height="13" Fill="White" HorizontalAlignment="Left" Margin="3,0,0,0">
+                                <Ellipse.Effect>
+                                    <DropShadowEffect BlurRadius="3" ShadowDepth="1" Opacity="0.25" Color="#000000"/>
+                                </Ellipse.Effect>
+                            </Ellipse>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Track" Property="Background" Value="#2563EB" />
+                                <Setter TargetName="Thumb" Property="HorizontalAlignment" Value="Right" />
+                                <Setter TargetName="Thumb" Property="Margin" Value="0,0,3,0" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.4"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Preset Card RadioButton Style -->
+        <Style x:Key="PresetCardStyle" TargetType="RadioButton">
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border x:Name="CardBorder" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1.5" CornerRadius="10" Padding="14,12">
+                            <ContentPresenter />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="CardBorder" Property="BorderBrush" Value="#3B82F6" />
+                                <Setter TargetName="CardBorder" Property="Background" Value="#FFFFFF" />
+                                <Setter TargetName="CardBorder" Property="BorderThickness" Value="1.8" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="CardBorder" Property="Background" Value="#F8FAFC" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Clean Modern ListBoxItem Style -->
+        <Style x:Key="AppListItemStyle" TargetType="ListBoxItem">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Margin" Value="0" />
+            <Setter Property="BorderThickness" Value="0,0,0,1" />
+            <Setter Property="BorderBrush" Value="#F1F5F9" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border x:Name="ItemBorder" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True">
+                            <ContentPresenter />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ItemBorder" Property="Background" Value="#F8FAFC" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="ItemBorder" Property="Background" Value="#EFF6FF" />
+                                <Setter TargetName="ItemBorder" Property="BorderBrush" Value="#BFDBFE" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <!-- Main Content Grid -->
+    <Grid Margin="10,0,15,10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/> <!-- 0: Header Banner & KPI Badge -->
+            <RowDefinition Height="Auto"/> <!-- 1: 3 Preset Cards -->
+            <RowDefinition Height="Auto"/> <!-- 2: Toolbar (Tabs + Search + Filters) -->
+            <RowDefinition Height="*"/>    <!-- 3: Master-Detail Content (Left: Table, Right: Detail Card) -->
+            <RowDefinition Height="Auto"/> <!-- 4: Sticky Bottom Action Bar -->
+        </Grid.RowDefinitions>
+
+        <!-- ROW 0: HEADER BANNER & KPI BADGE -->
+        <Grid Grid.Row="0" Margin="0,0,0,14">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Left: Icon + Title + Subtitle -->
+            <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                <Border Width="48" Height="48" CornerRadius="12" Background="#EFF6FF" Margin="0,0,14,0" VerticalAlignment="Center">
+                    <TextBlock Text="&#xE8A9;" FontFamily="Segoe MDL2 Assets" FontSize="22" Foreground="#2563EB" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Border>
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock x:Name="lblBloatwareTitle" Text="UWP Apps" FontSize="22" FontWeight="SemiBold" Foreground="#0F172A" Margin="0,0,0,3"/>
+                    <TextBlock x:Name="lblBloatwareSub" Text="Easily manage, uninstall, and clean pre-installed Microsoft Store apps to free up space and improve privacy." 
+                               TextWrapping="Wrap" FontSize="12.5" Foreground="#64748B" MaxWidth="620"/>
+                </StackPanel>
+            </StackPanel>
+
+            <!-- Right: KPI Metric Card -->
+            <Border Grid.Column="1" Background="White" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="12" Padding="14,10" VerticalAlignment="Center">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="&#xE9F5;" FontFamily="Segoe MDL2 Assets" FontSize="24" Foreground="#0EA5E9" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="Save up to" FontSize="10" Foreground="#64748B" FontWeight="Medium"/>
+                        <TextBlock Text="{Binding KpiSaveText}" FontSize="16" FontWeight="Bold" Foreground="#1E3A8A" Margin="0,0,0,0"/>
+                        <TextBlock Text="disk space" FontSize="10" Foreground="#64748B"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- ROW 1: 3 PRESET CARDS -->
+        <Grid Grid.Row="1" Margin="0,0,0,14">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Card 1: Safe -->
+            <RadioButton x:Name="rbSafe" GroupName="PresetGroup" Style="{StaticResource PresetCardStyle}" Background="White" BorderBrush="#E2E8F0" Grid.Column="0" Margin="0,0,8,0" Checked="Preset_Checked">
+                <StackPanel>
+                    <Grid Margin="0,0,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="&#xEA18;" FontFamily="Segoe MDL2 Assets" FontSize="22" Foreground="#10B981" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <TextBlock x:Name="lblPresetSafe" Text="Safe" FontSize="14" FontWeight="SemiBold" Foreground="#0F172A"/>
+                            <Border Background="#ECFDF5" CornerRadius="4" HorizontalAlignment="Left" Padding="6,1" Margin="0,2,0,0">
+                                <TextBlock x:Name="lblPresetSafeApps" Text="27 apps" FontSize="11" FontWeight="SemiBold" Foreground="#059669"/>
+                            </Border>
+                        </StackPanel>
+                    </Grid>
+                    <TextBlock x:Name="lblPresetSafeDesc1" Text="Removes non-essential apps while keeping core Windows features and Microsoft essentials." TextWrapping="Wrap" FontSize="11.5" Foreground="#64748B" Margin="0,0,0,8" MinHeight="34"/>
+                    <Border Background="#F0FDF4" CornerRadius="5" Padding="0,5">
+                        <TextBlock x:Name="lblPresetSafeDesc2" Text="Recommended for beginners" FontSize="11" Foreground="#16A34A" FontWeight="Medium" HorizontalAlignment="Center"/>
+                    </Border>
+                </StackPanel>
+            </RadioButton>
+
+            <!-- Card 2: Recommended (Active by default) -->
+            <RadioButton x:Name="rbRecommended" GroupName="PresetGroup" IsChecked="True" Style="{StaticResource PresetCardStyle}" Background="White" BorderBrush="#3B82F6" Grid.Column="1" Margin="4,0,4,0" Checked="Preset_Checked">
+                <StackPanel>
+                    <Grid Margin="0,0,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="&#xE734;" FontFamily="Segoe MDL2 Assets" FontSize="22" Foreground="#3B82F6" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <TextBlock x:Name="lblPresetRecommended" Text="Recommended" FontSize="14" FontWeight="SemiBold" Foreground="#0F172A"/>
+                            <Border Background="#EFF6FF" CornerRadius="4" HorizontalAlignment="Left" Padding="6,1" Margin="0,2,0,0">
+                                <TextBlock x:Name="lblPresetRecommendedApps" Text="44 apps" FontSize="11" FontWeight="SemiBold" Foreground="#2563EB"/>
+                            </Border>
+                        </StackPanel>
+                    </Grid>
+                    <TextBlock x:Name="lblPresetRecommendedDesc1" Text="Best balance between performance, privacy, and compatibility." TextWrapping="Wrap" FontSize="11.5" Foreground="#64748B" Margin="0,0,0,8" MinHeight="34"/>
+                    <Border Background="#EFF6FF" CornerRadius="5" Padding="0,5">
+                        <TextBlock x:Name="lblPresetRecommendedDesc2" Text="Most popular" FontSize="11" Foreground="#2563EB" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                    </Border>
+                </StackPanel>
+            </RadioButton>
+
+            <!-- Card 3: Aggressive -->
+            <RadioButton x:Name="rbAggressive" GroupName="PresetGroup" Style="{StaticResource PresetCardStyle}" Background="White" BorderBrush="#E2E8F0" Grid.Column="2" Margin="8,0,0,0" Checked="Preset_Checked">
+                <StackPanel>
+                    <Grid Margin="0,0,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="&#xE945;" FontFamily="Segoe MDL2 Assets" FontSize="22" Foreground="#EF4444" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <TextBlock x:Name="lblPresetAggressive" Text="Aggressive" FontSize="14" FontWeight="SemiBold" Foreground="#0F172A"/>
+                            <Border Background="#FEF2F2" CornerRadius="4" HorizontalAlignment="Left" Padding="6,1" Margin="0,2,0,0">
+                                <TextBlock x:Name="lblPresetAggressiveApps" Text="65 apps" FontSize="11" FontWeight="SemiBold" Foreground="#DC2626"/>
+                            </Border>
+                        </StackPanel>
+                    </Grid>
+                    <TextBlock x:Name="lblPresetAggressiveDesc1" Text="Removes almost all non-essential apps for maximum performance and minimum background processes." TextWrapping="Wrap" FontSize="11.5" Foreground="#64748B" Margin="0,0,0,8" MinHeight="34"/>
+                    <Border Background="#FEF2F2" CornerRadius="5" Padding="0,5">
+                        <TextBlock x:Name="lblPresetAggressiveDesc2" Text="Maximum performance" FontSize="11" Foreground="#DC2626" FontWeight="Medium" HorizontalAlignment="Center"/>
+                    </Border>
+                </StackPanel>
+            </RadioButton>
+        </Grid>
+
+        <!-- ROW 2: TOOLBAR (Expert Mode + Search Box + View Switch + Filters) -->
+        <Grid Grid.Row="2" Margin="0,0,0,12">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Left: Expert Mode CheckBox -->
+            <CheckBox x:Name="chkExpertMode" Grid.Column="0" Style="{StaticResource FluentLabeledCheckBox}" VerticalAlignment="Center" Checked="ExpertMode_Changed" Unchecked="ExpertMode_Changed">
+                <CheckBox.ToolTip>
+                    <ToolTip MaxWidth="360" Background="White" BorderBrush="#CBD5E1" BorderThickness="1" Padding="10,8">
+                        <StackPanel>
+                            <TextBlock Text="Expert Mode" FontWeight="SemiBold" FontSize="12.5" Foreground="#0F172A" Margin="0,0,0,3"/>
+                            <TextBlock x:Name="lblExpertTooltip" 
+                                       Text="Unlocks and shows all Windows core and background packages. Warning: Removing critical system packages may cause Windows instability." 
+                                       TextWrapping="Wrap" FontSize="11.5" Foreground="#475569" LineHeight="16"/>
+                        </StackPanel>
+                    </ToolTip>
+                </CheckBox.ToolTip>
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock x:Name="lblExpertMode" Text="Expert Mode (Unlock System Apps)" FontSize="12" Foreground="#334155" FontWeight="SemiBold"/>
+                    <TextBlock x:Name="lblExpertModeDesc" Text="(Hiện ứng dụng lõi hệ thống • Cần cẩn trọng)" FontSize="10.5" Foreground="#DC2626" FontWeight="Medium" Margin="0,1,0,0"/>
+                </StackPanel>
+            </CheckBox>
+
+            <!-- Right: Search Box + View Toggle + Filters -->
+            <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                <!-- Search Box -->
+                <Border Background="White" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="8" Padding="10,5" Width="230" Margin="0,0,10,0">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="&#xE721;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foreground="#94A3B8" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <TextBox x:Name="txtSearchApps" Grid.Column="1" BorderThickness="0" Background="Transparent" Foreground="#1E293B" FontSize="12.5" VerticalAlignment="Center" TextChanged="SearchBox_TextChanged"/>
+                        <TextBlock x:Name="txtSearchAppsPlaceholder" Grid.Column="1" Text="Search apps..." Foreground="#94A3B8" FontSize="12.5" VerticalAlignment="Center" IsHitTestVisible="False" Margin="2,0,0,0"/>
+                    </Grid>
+                </Border>
+
+                <!-- View Switcher (List / Grid) -->
+                <Border Background="#F1F5F9" CornerRadius="8" Padding="2">
+                    <StackPanel Orientation="Horizontal">
+                        <Button x:Name="btnViewList" Style="{StaticResource FluentButtonStyle}" Background="#2563EB" BorderThickness="0" Padding="8,5" Click="BtnViewList_Click">
+                            <TextBlock x:Name="btnViewListIcon" Text="&#xE8FD;" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="White"/>
+                        </Button>
+                        <Button x:Name="btnViewGrid" Style="{StaticResource FluentButtonStyle}" Background="Transparent" BorderThickness="0" Padding="8,5" Click="BtnViewGrid_Click">
+                            <TextBlock x:Name="btnViewGridIcon" Text="&#xE80A;" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="#64748B"/>
+                        </Button>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </Grid>
+
+        <!-- ROW 3: MASTER-DETAIL VIEW (Grid with Left: Table, Right: Detail Card) -->
+        <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" MinWidth="480"/>
+                <ColumnDefinition Width="330" />
+            </Grid.ColumnDefinitions>
+
+            <!-- LEFT: APP LIST TABLE -->
+            <Border Grid.Column="0" Background="White" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="10" ClipToBounds="True">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="38"/> <!-- Header -->
+                        <RowDefinition Height="*"/>  <!-- List Items -->
+                    </Grid.RowDefinitions>
+
+                    <!-- Table Header -->
+                    <Border x:Name="borderTableHeader" Grid.Row="0" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="0,0,0,1" Padding="14,0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="36"/> <!-- Checkbox -->
+                                <ColumnDefinition Width="*"/>  <!-- App Name -->
+                                <ColumnDefinition Width="85"/> <!-- Size -->
+                                <ColumnDefinition Width="95"/> <!-- Type -->
+                                <ColumnDefinition Width="26"/> <!-- Arrow -->
+                            </Grid.ColumnDefinitions>
+
+                            <CheckBox x:Name="chkSelectAll" Grid.Column="0" Style="{StaticResource FluentCheckBox}" Click="SelectAll_Click" HorizontalAlignment="Left"/>
+                            
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock Text="App name" FontSize="12" FontWeight="SemiBold" Foreground="#64748B"/>
+                                <TextBlock Text="&#xE74B;" FontFamily="Segoe MDL2 Assets" FontSize="10" Foreground="#94A3B8" Margin="4,0,0,0" VerticalAlignment="Center"/>
+                            </StackPanel>
+
+                            <TextBlock Grid.Column="2" Text="Size" FontSize="12" FontWeight="SemiBold" Foreground="#64748B" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="3" Text="Type" FontSize="12" FontWeight="SemiBold" Foreground="#64748B" VerticalAlignment="Center"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- Table Rows (List View) -->
+                    <ListBox x:Name="AppListBox" Grid.Row="1" ItemsSource="{Binding DisplayApps}" SelectedItem="{Binding SelectedApp, Mode=TwoWay}" 
+                             ItemContainerStyle="{StaticResource AppListItemStyle}" BorderThickness="0" Background="Transparent" 
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto"
+                             SelectionChanged="AppList_SelectionChanged">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Height="48" Margin="14,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="36"/> <!-- Checkbox -->
+                                        <ColumnDefinition Width="*"/>  <!-- Icon + Name + Package -->
+                                        <ColumnDefinition Width="85"/> <!-- Size -->
+                                        <ColumnDefinition Width="95"/> <!-- Type Badge -->
+                                        <ColumnDefinition Width="26"/> <!-- Chevron -->
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Col 0: CheckBox -->
+                                    <CheckBox Grid.Column="0" IsChecked="{Binding IsChecked, Mode=TwoWay}" IsEnabled="{Binding IsEnabled}"
+                                              Style="{StaticResource FluentCheckBox}" Checked="AppRow_CheckedChanged" Unchecked="AppRow_CheckedChanged" HorizontalAlignment="Left"/>
+
+                                    <!-- Col 1: Icon + Name + Subtitle -->
+                                    <Grid Grid.Column="1" VerticalAlignment="Center" Margin="0,0,10,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- App Icon with fallback -->
+                                        <Border Grid.Column="0" Width="28" Height="28" CornerRadius="6" Margin="0,0,10,0" VerticalAlignment="Center">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Background" Value="Transparent"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding ImagePath}" Value="">
+                                                            <Setter Property="Background" Value="#EFF6FF"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding ImagePath}" Value="{x:Null}">
+                                                            <Setter Property="Background" Value="#EFF6FF"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <Grid>
+                                                <TextBlock Text="&#xE71D;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="#3B82F6" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding ImagePath}" Value="">
+                                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding ImagePath}" Value="{x:Null}">
+                                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                                <Image Source="{Binding ImagePath}" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality">
+                                                    <Image.Style>
+                                                        <Style TargetType="Image">
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding ImagePath}" Value="">
+                                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding ImagePath}" Value="{x:Null}">
+                                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Image.Style>
+                                                </Image>
+                                            </Grid>
+                                        </Border>
+
+                                        <!-- Name & ID -->
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding Name}" FontSize="13" FontWeight="SemiBold" Foreground="#1E293B" TextTrimming="CharacterEllipsis"/>
+                                            <TextBlock Text="{Binding PackageId}" FontSize="10.5" Foreground="#94A3B8" TextTrimming="CharacterEllipsis"/>
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <!-- Col 2: Size -->
+                                    <TextBlock Grid.Column="2" Text="{Binding Size}" FontSize="12" Foreground="#475569" VerticalAlignment="Center"/>
+
+                                    <!-- Col 3: Type Badge -->
+                                    <Border Grid.Column="3" Background="{Binding AppTypeBadgeBg}" CornerRadius="4" Padding="6,2" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding AppTypeBadge}" Foreground="{Binding AppTypeBadgeFg}" FontSize="11" FontWeight="SemiBold"/>
+                                    </Border>
+
+                                    <!-- Col 4: Chevron Right -->
+                                    <TextBlock Grid.Column="4" Text="&#xE76C;" FontFamily="Segoe MDL2 Assets" FontSize="10" Foreground="#94A3B8" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                    <!-- Grid Cards (Grid View) -->
+                    <ListBox x:Name="AppGridBox" Grid.Row="0" Grid.RowSpan="2" ItemsSource="{Binding DisplayApps}" SelectedItem="{Binding SelectedApp, Mode=TwoWay}"
+                             BorderThickness="0" Background="Transparent" Visibility="Collapsed"
+                             Padding="10" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto"
+                             SelectionChanged="AppList_SelectionChanged">
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="Padding" Value="0"/>
+                                <Setter Property="Margin" Value="6"/>
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ListBoxItem">
+                                            <Border x:Name="CardBorder" Width="140" Height="132" CornerRadius="10" Background="White" BorderBrush="#E2E8F0" BorderThickness="1" SnapsToDevicePixels="True">
+                                                <ContentPresenter/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="CardBorder" Property="Background" Value="#F8FAFC"/>
+                                                    <Setter TargetName="CardBorder" Property="BorderBrush" Value="#CBD5E1"/>
+                                                </Trigger>
+                                                <Trigger Property="IsSelected" Value="True">
+                                                    <Setter TargetName="CardBorder" Property="Background" Value="#EFF6FF"/>
+                                                    <Setter TargetName="CardBorder" Property="BorderBrush" Value="#3B82F6"/>
+                                                    <Setter TargetName="CardBorder" Property="BorderThickness" Value="1.5"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="10,8">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+
+                                    <!-- Top row: Checkbox and Size badge -->
+                                    <Grid Grid.Row="0">
+                                        <CheckBox IsChecked="{Binding IsChecked, Mode=TwoWay}" IsEnabled="{Binding IsEnabled}"
+                                                  Style="{StaticResource FluentCheckBox}" Checked="AppRow_CheckedChanged" Unchecked="AppRow_CheckedChanged" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                        <Border Background="#F1F5F9" CornerRadius="4" Padding="5,1.5" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding Size}" FontSize="9.5" Foreground="#64748B" FontWeight="Medium"/>
+                                        </Border>
+                                    </Grid>
+
+                                    <!-- Center: App Icon -->
+                                    <Border Grid.Row="1" Width="36" Height="36" CornerRadius="8" Margin="0,8,0,6" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="Background" Value="Transparent"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ImagePath}" Value="">
+                                                        <Setter Property="Background" Value="#EFF6FF"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding ImagePath}" Value="{x:Null}">
+                                                        <Setter Property="Background" Value="#EFF6FF"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        <Grid>
+                                            <TextBlock Text="&#xE71D;" FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="#3B82F6" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding ImagePath}" Value="">
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding ImagePath}" Value="{x:Null}">
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                            <Image Source="{Binding ImagePath}" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality">
+                                                <Image.Style>
+                                                    <Style TargetType="Image">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding ImagePath}" Value="">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding ImagePath}" Value="{x:Null}">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Image.Style>
+                                            </Image>
+                                        </Grid>
+                                    </Border>
+
+                                    <!-- Bottom: App Name and Type badge -->
+                                    <StackPanel Grid.Row="2" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Name}" FontSize="11.5" FontWeight="SemiBold" Foreground="#1E293B" TextAlignment="Center" TextTrimming="CharacterEllipsis" ToolTip="{Binding Name}"/>
+                                        <TextBlock Text="{Binding AppTypeBadge}" FontSize="9.5" Foreground="{Binding AppTypeBadgeFg}" TextAlignment="Center" Margin="0,2,0,0"/>
+                                    </StackPanel>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </Border>
+
+            <!-- RIGHT: DETAIL CARD -->
+            <Border Grid.Column="1" Background="White" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="10" Padding="14,16" Margin="12,0,0,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/> <!-- App Header -->
+                        <RowDefinition Height="Auto"/> <!-- Separator -->
+                        <RowDefinition Height="*"/>    <!-- Key-Value Metadata -->
+                        <RowDefinition Height="Auto"/> <!-- Separator -->
+                        <RowDefinition Height="Auto"/> <!-- Action Buttons -->
+                    </Grid.RowDefinitions>
+
+                    <!-- Top: Icon + Title + Package + Badge -->
+                    <Grid Grid.Row="0" Margin="0,0,0,14">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Large Icon with fallback -->
+                        <Border Grid.Column="0" Width="44" Height="44" CornerRadius="8" Margin="0,0,12,0" VerticalAlignment="Center">
+                            <Border.Style>
+                                <Style TargetType="Border">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SelectedApp.ImagePath}" Value="">
+                                            <Setter Property="Background" Value="#EFF6FF"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding SelectedApp.ImagePath}" Value="{x:Null}">
+                                            <Setter Property="Background" Value="#EFF6FF"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                            <Grid>
+                                <TextBlock Text="&#xE71D;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="#2563EB" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding SelectedApp.ImagePath}" Value="">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding SelectedApp.ImagePath}" Value="{x:Null}">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                                <Image Source="{Binding SelectedApp.ImagePath}" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality">
+                                    <Image.Style>
+                                        <Style TargetType="Image">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding SelectedApp.ImagePath}" Value="">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding SelectedApp.ImagePath}" Value="{x:Null}">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Image.Style>
+                                </Image>
+                            </Grid>
+                        </Border>
+
+                        <!-- Title & Package -->
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding SelectedApp.Name}" FontSize="15" FontWeight="Bold" Foreground="#0F172A" TextTrimming="CharacterEllipsis"/>
+                            <TextBlock Text="{Binding SelectedApp.PackageId}" FontSize="11" Foreground="#64748B" TextTrimming="CharacterEllipsis" ToolTip="{Binding SelectedApp.PackageId}"/>
+                        </StackPanel>
+
+                        <!-- Badge -->
+                        <Border Grid.Column="2" Background="{Binding SelectedApp.AppTypeBadgeBg}" CornerRadius="4" Padding="6,2" VerticalAlignment="Top">
+                            <TextBlock Text="{Binding SelectedApp.AppTypeBadge}" Foreground="{Binding SelectedApp.AppTypeBadgeFg}" FontSize="10.5" FontWeight="SemiBold"/>
+                        </Border>
+                    </Grid>
+
+                    <!-- Separator 1 -->
+                    <Border Grid.Row="1" Height="1" Background="#F1F5F9" Margin="0,0,0,14"/>
+
+                    <!-- Metadata Rows -->
+                    <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+                        <StackPanel>
+                            <!-- Row 1: Size -->
+                            <Grid Margin="0,0,0,10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="&#xE74C;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foreground="#64748B" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Size" FontSize="12" Foreground="#64748B" VerticalAlignment="Center"/>
+                                </StackPanel>
+                                <TextBlock Grid.Column="1" Text="{Binding SelectedApp.Size}" FontSize="12" FontWeight="Medium" Foreground="#1E293B" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                            </Grid>
+
+                            <!-- Row 2: Version -->
+                            <Grid Margin="0,0,0,10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="&#xE8EC;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foreground="#64748B" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Version" FontSize="12" Foreground="#64748B" VerticalAlignment="Center"/>
+                                </StackPanel>
+                                <TextBlock Grid.Column="1" Text="{Binding SelectedApp.Version}" FontSize="12" FontWeight="Medium" Foreground="#1E293B" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                            </Grid>
+
+                            <!-- Row 3: Publisher -->
+                            <Grid Margin="0,0,0,10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="&#xE77B;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foreground="#64748B" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Publisher" FontSize="12" Foreground="#64748B" VerticalAlignment="Center"/>
+                                </StackPanel>
+                                <TextBlock Grid.Column="1" Text="{Binding SelectedApp.Publisher}" FontSize="12" FontWeight="Medium" Foreground="#1E293B" HorizontalAlignment="Right" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" MaxWidth="150"/>
+                            </Grid>
+
+                            <!-- Row 4: Install date -->
+                            <Grid Margin="0,0,0,12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="&#xE787;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foreground="#64748B" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Install date" FontSize="12" Foreground="#64748B" VerticalAlignment="Center"/>
+                                </StackPanel>
+                                <TextBlock Grid.Column="1" Text="{Binding SelectedApp.InstallDate}" FontSize="12" FontWeight="Medium" Foreground="#1E293B" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                            </Grid>
+
+                            <!-- Row 5: Description -->
+                            <Grid Margin="0,0,0,6">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="&#xE70B;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foreground="#64748B" Margin="0,2,8,0" VerticalAlignment="Top"/>
+                                <StackPanel Grid.Column="1">
+                                    <TextBlock Text="Description" FontSize="12" Foreground="#64748B" Margin="0,0,0,4"/>
+                                    <TextBlock Text="{Binding SelectedApp.Description}" FontSize="11.5" Foreground="#334155" TextWrapping="Wrap" LineHeight="17"/>
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </ScrollViewer>
+
+                    <!-- Separator 2 -->
+                    <Border Grid.Row="3" Height="1" Background="#F1F5F9" Margin="0,10,0,12"/>
+
+                    <!-- Action Buttons -->
+                    <Grid Grid.Row="4">
+                        <!-- Uninstall Button (Full Width) -->
+                        <Button Style="{StaticResource FluentButtonStyle}" Background="#EF4444" BorderThickness="0" Foreground="White" Padding="12,8.5" Click="UninstallSingle_Click">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foreground="White" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="Uninstall" FontSize="12.5" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- ROW 4: STICKY BOTTOM ACTION BAR -->
+        <Border Grid.Row="4" Background="White" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="10" Padding="14,10" Margin="0,12,0,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Left: Selection Counter -->
+                <TextBlock Grid.Column="0" Text="{Binding SelectionSummaryText}" FontSize="13" FontWeight="SemiBold" Foreground="#1E293B" VerticalAlignment="Center"/>
+
+                <!-- Right: Action Buttons Group -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <!-- Export List -->
+                    <Button Style="{StaticResource FluentButtonStyle}" Background="White" BorderBrush="#CBD5E1" BorderThickness="1" Padding="10,6" Margin="0,0,8,0" Click="Export_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE898;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foreground="#334155" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                            <TextBlock Text="Export List" FontSize="12" Foreground="#334155" FontWeight="Medium" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+
+                    <!-- Import List -->
+                    <Button Style="{StaticResource FluentButtonStyle}" Background="White" BorderBrush="#CBD5E1" BorderThickness="1" Padding="10,6" Margin="0,0,8,0" Click="Import_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE896;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foreground="#334155" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                            <TextBlock Text="Import List" FontSize="12" Foreground="#334155" FontWeight="Medium" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+
+
+
+                    <!-- Uninstall Selected -->
+                    <Button Style="{StaticResource FluentButtonStyle}" Background="#3B82F6" BorderThickness="0" Padding="14,7" Click="StartDebloat_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foreground="White" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                            <TextBlock Text="Uninstall Selected" FontSize="12.5" Foreground="White" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- TERMINAL PROGRESS POPUP -->
+        <Border x:Name="TerminalPopup" Grid.RowSpan="5" Background="Transparent" Visibility="Collapsed" Panel.ZIndex="100" CornerRadius="12">
+            <Grid VerticalAlignment="Center" HorizontalAlignment="Center" Width="700" Height="480">
+                <Border Background="White" CornerRadius="10">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="24" ShadowDepth="6" Opacity="0.18" Color="#0F172A"/>
+                    </Border.Effect>
+                </Border>
+                
+                <Border Background="White" CornerRadius="10" Padding="20">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        
+                        <TextBlock Text="Terminal Output" FontSize="17" FontWeight="SemiBold" Foreground="#0F172A" Margin="0,0,0,12"/>
+                        
+                        <Grid Grid.Row="1" Margin="0,0,0,12">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <ProgressBar x:Name="pbTerminalProgress" Height="4" Foreground="#2563EB" Background="#E2E8F0" BorderThickness="0" Minimum="0" Maximum="100" Margin="0,0,0,6"/>
+                            <TextBlock x:Name="lblTerminalStatus" Grid.Row="1" Text="Preparing..." Foreground="#2563EB" FontSize="12" FontWeight="Medium"/>
+                        </Grid>
+                        
+                        <Border Grid.Row="2" CornerRadius="6" Padding="14" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1">
+                            <ScrollViewer x:Name="svTerminalOutput" VerticalScrollBarVisibility="Auto">
+                                <TextBlock x:Name="txtTerminalOutput" Foreground="#334155" FontFamily="Consolas" FontSize="12.5" TextWrapping="Wrap" LineHeight="19"/>
+                            </ScrollViewer>
+                        </Border>
+                        
+                        <Grid Grid.Row="3" Margin="0,14,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Button x:Name="btnCopyTerminal" Content="Copy to Clipboard" Grid.Column="0" Margin="0,0,6,0" Padding="10,8" Style="{StaticResource FluentButtonStyle}" Background="White" BorderBrush="#CBD5E1" BorderThickness="1" Foreground="#334155" Click="CopyTerminal_Click"/>
+                            <Button x:Name="btnCloseTerminal" Content="Close" Grid.Column="1" Margin="6,0,0,0" Padding="10,8" Style="{StaticResource FluentButtonStyle}" Background="#2563EB" BorderThickness="0" Foreground="White" Click="CloseTerminal_Click" IsEnabled="False"/>
+                        </Grid>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

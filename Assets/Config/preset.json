@@ -1,0 +1,38 @@
+{
+  "Standard": [
+    "WPFTweaksActivity",
+    "WPFTweaksConsumerFeatures",
+    "WPFTweaksDisableExplorerAutoDiscovery",
+    "WPFTweaksDVR",
+    "WPFTweaksLocation",
+    "WPFTweaksServices",
+    "WPFTweaksTelemetry",
+    "WPFTweaksDiskCleanup",
+    "WPFTweaksDeleteTempFiles",
+    "WPFTweaksEndTaskOnTaskbar",
+    "WPFTweaksRestorePoint",
+    "WPFTweaksPowershell7Tele",
+    "WPFTweaksBlockAdobeNet",
+    "WPFTweaksBraveDebloat",
+    "WPFTweaksDisableBGapps",
+    "WPFTweaksDisableFSO",
+    "WPFTweaksDisableIPv6",
+    "WPFTweaksTeredo",
+    "WPFTweaksRemoveCopilot",
+    "WPFTweaksStorage",
+    "WPFTweaksEdgeDebloat",
+    "WPFTweaksMakeEdgeUninstallable",
+    "WPFTweaksIPv46",
+    "WPFTweaksDeBloat",
+    "WPFTweaksRemoveGallery",
+    "WPFTweaksRemoveHome",
+    "WPFTweaksDisplay",
+    "WPFTweaksRightClickMenu"
+  ],
+  "Minimal": [
+    "WPFTweaksConsumerFeatures",
+    "WPFTweaksDisableExplorerAutoDiscovery",
+    "WPFTweaksServices",
+    "WPFTweaksTelemetry"
+  ]
+}

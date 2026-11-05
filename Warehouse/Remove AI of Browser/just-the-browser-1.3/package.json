@@ -1,0 +1,17 @@
+{
+  "name": "just-the-browser-website",
+  "version": "1.0.0",
+  "description": "Website for Just the Browser project.",
+  "scripts": {
+    "test": "npx @11ty/eleventy --serve",
+    "start": "npx @11ty/eleventy --serve",
+    "bundle": "npx @11ty/eleventy"
+  },
+  "keywords": [],
+  "author": "Corbin Davenport",
+  "license": "MIT",
+  "dependencies": {
+    "@11ty/eleventy": "^3.1.0",
+    "jsdom": "^26.1.0"
+  }
+}

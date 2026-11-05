@@ -1,0 +1,89 @@
+<UserControl x:Class="HyperLisUI.Views.FixGameErrorsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:HyperLisUI.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="900" d:DesignWidth="900">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="20,10,0,20">
+        <StackPanel Margin="0,0,20,0">
+            
+            <!-- Select game -->
+            <TextBlock Text="Select game" FontSize="29" FontWeight="SemiBold" Margin="0,0,0,20"/>
+            
+            <!-- Game Selection Card -->
+            <Border Background="#60FFFFFF" CornerRadius="12" Padding="20" Margin="0,0,0,30">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/> <!-- Icon -->
+                        <ColumnDefinition Width="*"/>    <!-- Text -->
+                        <ColumnDefinition Width="250"/>  <!-- Combo -->
+                    </Grid.ColumnDefinitions>
+                    
+                    <!-- Game Controller Icon -->
+                    <Image Source="pack://application:,,,/Images/game.png" Width="40" Height="40" VerticalAlignment="Center" Margin="0,0,20,0"/>
+
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <TextBlock Text="Choose Your Game" FontWeight="Bold" FontSize="16" Margin="0,0,0,2"/>
+                        <TextBlock Text="Pick the game you want to repair so we can load the right fixes for it." FontSize="13" Foreground="#555" TextWrapping="Wrap" Margin="0,0,10,0"/>
+                    </StackPanel>
+
+                    <ComboBox Grid.Column="2" SelectedIndex="0" Style="{StaticResource WinUIComboBoxStyle}" VerticalAlignment="Center">
+                         <ComboBoxItem Content="Select"/>
+                         <ComboBoxItem Content="Battlefield 1"/>
+                         <ComboBoxItem Content="Battlefield V"/>
+                         <ComboBoxItem Content="Battlefield 2042"/>
+                         <ComboBoxItem Content="Battlefield 6"/>
+                         <ComboBoxItem Content="PUBG"/>
+                         <ComboBoxItem Content="Valorant"/>
+                         <ComboBoxItem Content="League of Legends"/>
+                         <ComboBoxItem Content="Delta Force"/>
+                    </ComboBox>
+                </Grid>
+            </Border>
+
+            <!-- Pick an error -->
+            <TextBlock Text="Pick an error" FontSize="29" FontWeight="SemiBold" Margin="0,0,0,20"/>
+
+            <!-- Error Selection Card -->
+            <Border Background="#60FFFFFF" CornerRadius="12" Padding="20" Margin="0,0,0,30">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/> <!-- Icon -->
+                        <ColumnDefinition Width="*"/>    <!-- Text -->
+                        <ColumnDefinition Width="250"/>  <!-- Combo -->
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    
+                    <!-- Icon -->
+                    <Grid Grid.Column="0" VerticalAlignment="Top" Margin="0,0,20,0">
+                         <Image Source="pack://application:,,,/Images/gameerrors.png" Width="40" Height="40"/>
+                    </Grid>
+
+                    <StackPanel Grid.Column="1" Grid.Row="0" VerticalAlignment="Top">
+                        <TextBlock Text="Choose Error Type" FontWeight="Bold" FontSize="16" Margin="0,0,0,2"/>
+                        <TextBlock Text="Select the error or issue you're facing, and we'll apply the best solution for you." FontSize="13" Foreground="#555" TextWrapping="Wrap" Margin="0,0,10,15"/>
+                    </StackPanel>
+                    
+
+                   
+                    <ComboBox Grid.Column="2" Grid.Row="0" SelectedIndex="2" Style="{StaticResource WinUIComboBoxStyle}" VerticalAlignment="Top">
+                         <ComboBoxItem Content="Driver VGA"/>
+                         <ComboBoxItem Content="Secure Boot"/>
+                         <ComboBoxItem Content="FPS Stuttering"/>
+                         <ComboBoxItem Content="DirectX"/>
+                         <ComboBoxItem Content="Other Fixes"/>
+                    </ComboBox>
+                </Grid>
+            </Border>
+            
+            <Button Content="Let's go" Style="{StaticResource ActionButtonStyle}" Width="150" HorizontalAlignment="Left" Margin="20,0,0,30"/>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

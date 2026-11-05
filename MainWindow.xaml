@@ -1,0 +1,275 @@
+<Window x:Class="HyperLisUI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:HyperLisUI"
+        xmlns:components="clr-namespace:HyperLisUI.Views.Components"
+        mc:Ignorable="d"
+        Title="HyperLis" Height="850" Width="1440"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
+        ResizeMode="CanResize"
+        AllowsTransparency="True"
+        Background="Transparent"
+        FontFamily="Segoe UI"
+        Icon="Images/icon.ico"
+        FontSize="15">
+
+    <Window.Resources>
+        <Style x:Key="WindowControlButtonStyle" TargetType="Button">
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="Width" Value="40"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="8" SnapsToDevicePixels="true">
+                            <ContentPresenter x:Name="contentPresenter" Focusable="False" HorizontalAlignment="Center" VerticalAlignment="Center" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter TargetName="border" Property="Background">
+                                    <Setter.Value>
+                                        <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                                            <GradientStop Color="#30FFFFFF" Offset="0"/>
+                                            <GradientStop Color="#3000B2FF" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Cursor" Value="Hand"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="true">
+                                <Setter TargetName="border" Property="Background">
+                                    <Setter.Value>
+                                        <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                                            <GradientStop Color="#50FFFFFF" Offset="0"/>
+                                            <GradientStop Color="#5000B2FF" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <Style x:Key="DownloadMenuButtonStyle" TargetType="RadioButton" BasedOn="{StaticResource MenuButtonStyle}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="10" Padding="{TemplateBinding Padding}" Margin="10,0">
+                            <Grid Height="36" SnapsToDevicePixels="True" UseLayoutRounding="True" RenderOptions.BitmapScalingMode="HighQuality">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="60"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Image x:Name="IconImage" Grid.Column="0" Source="pack://application:,,,/Images/navbar/download.png" Width="20" Height="20" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,0,0" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                <ContentPresenter Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#50FFFFFF"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter Property="Background" Value="#80FFFFFF"/>
+                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                <Setter TargetName="IconImage" Property="Source" Value="pack://application:,,,/Images/navbar/clicked_download.png"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="WindowsMenuButtonStyle" TargetType="RadioButton" BasedOn="{StaticResource MenuButtonStyle}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="10" Padding="{TemplateBinding Padding}" Margin="10,0">
+                            <Grid Height="36" SnapsToDevicePixels="True" UseLayoutRounding="True" RenderOptions.BitmapScalingMode="HighQuality">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="60"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Image x:Name="IconImage" Grid.Column="0" Source="pack://application:,,,/Images/navbar/windows.png" Width="20" Height="20" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,0,0" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                <ContentPresenter Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#50FFFFFF"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter Property="Background" Value="#80FFFFFF"/>
+                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                <Setter TargetName="IconImage" Property="Source" Value="pack://application:,,,/Images/navbar/clicked_windows.png"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="GameMenuButtonStyle" TargetType="RadioButton" BasedOn="{StaticResource MenuButtonStyle}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="10" Padding="{TemplateBinding Padding}" Margin="10,0">
+                            <Grid Height="36" SnapsToDevicePixels="True" UseLayoutRounding="True" RenderOptions.BitmapScalingMode="HighQuality">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="60"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Image x:Name="IconImage" Grid.Column="0" Source="pack://application:,,,/Images/navbar/game.png" Width="20" Height="20" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,0,0" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                <ContentPresenter Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#50FFFFFF"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter Property="Background" Value="#80FFFFFF"/>
+                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                <Setter TargetName="IconImage" Property="Source" Value="pack://application:,,,/Images/navbar/clicked_game.png"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Border CornerRadius="15" ClipToBounds="True" MouseDown="Border_MouseDown">
+        <Border.Background>
+            <ImageBrush ImageSource="pack://application:,,,/Images/background.png" Stretch="UniformToFill"/>
+        </Border.Background>
+        <Grid>
+
+            <!-- Main Scaling Container -->
+            <Viewbox Stretch="Uniform">
+                <Grid Width="1600" Height="900">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="60"/> <!-- Header -->
+                        <RowDefinition Height="*"/>   <!-- Content -->
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="280"/> <!-- Sidebar -->
+                        <ColumnDefinition Width="*"/>   <!-- Main Content -->
+                        <ColumnDefinition Width="320"/> <!-- Description Panel -->
+                    </Grid.ColumnDefinitions>
+
+                    <!-- HEADER -->
+                    <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="25,0,0,0">
+                         <!-- Icon Placeholder -->
+                         <Image Source="pack://application:,,,/Images/hyperlis.png" Width="38" Height="38" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                         <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="HyperLis" FontSize="22" FontWeight="SemiBold" Margin="0,0,0,0"/>
+                            <!-- <TextBlock Text="© Zịt's Tech Lab" FontSize="11" Foreground="#808080" Margin="1,3,0,0" FontWeight="Regular"/> -->
+                            <!-- <TextBlock Text="Lê Minh Đức" FontSize="11" Foreground="#808080" Margin="12,0,0,0" FontWeight="Regular"/> -->
+                         </StackPanel>
+                    </StackPanel>
+
+                    <!-- Search Bar -->
+                    <Border x:Name="SearchContainer" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center"
+                            Width="300" Height="36" CornerRadius="18" Background="#40FFFFFF" Margin="10,0,0,0">
+                        <StackPanel Orientation="Horizontal" Margin="15,0">
+                            <TextBlock Text="🔍" VerticalAlignment="Center" Foreground="#333"/>
+                            <TextBox x:Name="SearchBox" Text="Type here to search..." Background="Transparent" BorderThickness="0" 
+                                     VerticalAlignment="Center" Margin="10,0,0,0" Width="220" Foreground="#555" 
+                                     CaretBrush="#333"
+                                     GotFocus="SearchBox_GotFocus"
+                                     LostFocus="SearchBox_LostFocus"
+                                     TextChanged="SearchBox_TextChanged"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Header Controls (Right) -->
+                    <StackPanel Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,25,0">
+                        <Button Height="42" Margin="0,0,15,0" Padding="30,0" Click="GlobalRestart_Click" FocusVisualStyle="{x:Null}">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="21" Padding="{TemplateBinding Padding}">
+                                        <TextBlock Text="⟳ Restart to apply changes" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="17" FontWeight="Medium"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="border" Property="Background">
+                                                <Setter.Value>
+                                                    <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                                                        <GradientStop Color="#30FFFFFF" Offset="0"/>
+                                                        <GradientStop Color="#3000B2FF" Offset="1"/>
+                                                    </LinearGradientBrush>
+                                                </Setter.Value>
+                                            </Setter>
+                                            <Setter Property="Cursor" Value="Hand"/>
+                                        </Trigger>
+                                     </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Button.Template>
+                             <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Background" Value="#40FFFFFF"/>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                        <Button x:Name="SettingsButton" Content="&#xF8B0;" FontFamily="Segoe MDL2 Assets" Click="SettingsButton_Click" Style="{StaticResource WindowControlButtonStyle}" Margin="5,0"/>
+                        <Button Content="—" Click="MinimizeButton_Click" Style="{StaticResource WindowControlButtonStyle}" FontSize="22" Margin="5,0"/>
+                        <Button Content="✕" Click="CloseButton_Click" Style="{StaticResource WindowControlButtonStyle}" FontSize="18" Margin="5,0"/>
+                    </StackPanel>
+
+                    <!-- SIDEBAR -->
+                    <!-- SIDEBAR -->
+                    <Border Grid.Row="1" Grid.Column="0" Background="#40FFFFFF" CornerRadius="15" Margin="15,20,5,20" Padding="0,10">
+                        <ScrollViewer VerticalScrollBarVisibility="Hidden" Margin="0,0">
+                            <StackPanel>
+                                <RadioButton x:Name="NavDashboard" IsChecked="True" Content="Dashboard" Tag="&#xE80F;" Style="{StaticResource MenuButtonStyle}" Checked="Dashboard_Checked"/>
+                                <RadioButton x:Name="NavGeneral" Content="General" Tag="&#xF8B0;" Style="{StaticResource MenuButtonStyle}" Checked="General_Checked"/>
+                                <RadioButton x:Name="NavWindows" Content="Windows" Style="{StaticResource WindowsMenuButtonStyle}" Checked="Windows_Checked"/>
+                                <RadioButton x:Name="NavUWPApps" Content="UWP Apps" Tag="&#xE71D;" Style="{StaticResource MenuButtonStyle}" Checked="UWPApps_Checked"/>
+                                <RadioButton x:Name="NavStartup" Content="Startup Apps" Tag="&#xEC4A;" Style="{StaticResource MenuButtonStyle}" Checked="Startup_Checked"/>
+                                <RadioButton x:Name="NavDownload" Content="Download" Style="{StaticResource DownloadMenuButtonStyle}" Checked="Download_Checked"/>
+                                <RadioButton x:Name="NavCleaning" Content="Cleaning" Tag="&#xE74D;" Style="{StaticResource MenuButtonStyle}" Checked="Cleaning_Checked"/>
+                                <RadioButton x:Name="NavNetwork" Content="Network" Tag="&#xE909;" Style="{StaticResource MenuButtonStyle}" Checked="Network_Checked"/>
+                                <RadioButton x:Name="NavUSBBoot" Content="USB Boot" Tag="&#xE88E;" Style="{StaticResource MenuButtonStyle}" Checked="USBBoot_Checked"/>
+                                <RadioButton x:Name="NavHardware" Content="Hardware Info" Tag="&#xE946;" Style="{StaticResource MenuButtonStyle}" Checked="HardwareInfo_Checked"/>
+                                <RadioButton x:Name="NavLicense" Content="License" Tag="&#xE8D7;" Style="{StaticResource MenuButtonStyle}" Checked="License_Checked"/>
+                                <RadioButton x:Name="NavConvertSKU" Content="Convert SKUs" Tag="&#xE8B1;" Style="{StaticResource MenuButtonStyle}" Checked="ConvertSKU_Checked"/>
+                                <RadioButton x:Name="NavOffice" Content="Office" Tag="&#xE9F9;" Style="{StaticResource MenuButtonStyle}" Checked="Office_Checked"/>
+                                <RadioButton x:Name="NavExtendFeatures" Content="Extend Features" Tag="&#xE700;" Style="{StaticResource MenuButtonStyle}" Checked="ExtendFeatures_Checked"/>
+                                <RadioButton x:Name="NavWSAP" Content="WSAP" Tag="&#xE74C;" Style="{StaticResource MenuButtonStyle}" Checked="WSAP_Checked"/>
+                                
+                                <RadioButton x:Name="NavPrinterErrors" Content="Printer Errors" Tag="&#xF56D;" Style="{StaticResource MenuButtonStyle}" Checked="PrinterErrors_Checked"/>
+                                <RadioButton x:Name="NavWindowsErrors" Content="Windows Errors" Tag="&#xED15;" Style="{StaticResource MenuButtonStyle}" Checked="WindowsErrors_Checked"/>
+                                <RadioButton x:Name="NavGameConfigs" Content="Game Configs" Style="{StaticResource GameMenuButtonStyle}" Checked="GameConfigs_Checked" Visibility="Collapsed"/>
+                                <RadioButton x:Name="NavFixGame" Content="Fix game errors" Tag="&#xE90F;" Style="{StaticResource MenuButtonStyle}" Checked="FixGameErrors_Checked" Visibility="Collapsed"/>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Border>
+
+                    <!-- MAIN CONTENT BACKGROUND (GLASS LAYERS) -->
+                    <Border x:Name="MainBackgroundBorder" Grid.Row="1" Grid.Column="1" Background="#40FFFFFF" CornerRadius="15" Margin="20,20,10,20"/>
+                    
+                    <!-- MAIN CONTENT AREA -->
+                    <ContentControl x:Name="MainContentControl" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="20,20,20,20" FocusVisualStyle="{x:Null}"/>
+
+                    <!-- RIGHT DESCRIPTION PANEL -->
+                    <Border x:Name="RightPanelBorder" Grid.Row="1" Grid.Column="2" Background="#40FFFFFF" CornerRadius="15" Margin="10,20,20,20" Padding="15">
+                         <ContentControl x:Name="RightPanelContent"/>
+                    </Border>
+
+
+
+                </Grid>
+            </Viewbox>
+            <!-- Global Loading Overlay -->
+            <components:LoadingOverlayView x:Name="GlobalLoadingOverlay" Visibility="Collapsed" Panel.ZIndex="1000"/>
+        </Grid>
+    </Border>
+</Window>

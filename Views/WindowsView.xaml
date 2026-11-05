@@ -1,0 +1,274 @@
+<UserControl x:Class="HyperLisUI.Views.WindowsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:components="clr-namespace:HyperLisUI.Views.Components"
+             mc:Ignorable="d" 
+             d:DesignHeight="1200" d:DesignWidth="1000">
+
+    <UserControl.Resources>
+        <!-- Blue Action Button Style -->
+        <Style x:Key="ActionButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#A078C0E0"/> <!-- Light Blue/Cyan semi-transparent -->
+            <Setter Property="Foreground" Value="#333"/>
+            <Setter Property="Padding" Value="25,12"/>
+            <Setter Property="Margin" Value="0,0,15,10"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="12" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#C078C0E0"/>
+                            </Trigger>
+                             <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#E078C0E0"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Profile Radio Switch Style (Switch-like RadioButton) -->
+        <Style x:Key="ProfileRadioSwitchStyle" TargetType="RadioButton">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#333"/>
+            <Setter Property="FontSize" Value="17"/>
+            <Setter Property="Margin" Value="0,0,20,10"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Grid Background="Transparent">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="50"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <!-- Toggle Track -->
+                            <Border x:Name="Border" Width="40" Height="22" CornerRadius="11" Background="#DDDDDD" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                <Ellipse x:Name="Ellipse" Width="18" Height="18" Fill="White" HorizontalAlignment="Left" Margin="2,0,0,0">
+                                    <Ellipse.Effect>
+                                        <DropShadowEffect ShadowDepth="1" BlurRadius="2" Opacity="0.3"/>
+                                    </Ellipse.Effect>
+                                </Ellipse>
+                            </Border>
+                            
+                            <!-- Text Content -->
+                            <ContentPresenter Grid.Column="1" VerticalAlignment="Center" Margin="10,0,0,0" TextElement.FontSize="17"/>
+
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CheckStates">
+                                    <VisualState x:Name="Checked">
+                                        <Storyboard>
+                                            <ColorAnimation Storyboard.TargetName="Border" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)" To="#00B2FF" Duration="0:0:0.1"/>
+                                            <ThicknessAnimation Storyboard.TargetName="Ellipse" Storyboard.TargetProperty="Margin" To="20,0,0,0" Duration="0:0:0.1"/>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Unchecked">
+                                        <Storyboard>
+                                            <ColorAnimation Storyboard.TargetName="Border" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)" To="#DDDDDD" Duration="0:0:0.1"/>
+                                            <ThicknessAnimation Storyboard.TargetName="Ellipse" Storyboard.TargetProperty="Margin" To="2,0,0,0" Duration="0:0:0.1"/>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="35,30,0,20">
+        <StackPanel Margin="0,0,340,0">
+            
+            <!-- SYSTEM -->
+            <TextBlock x:Name="lblWinSystem" Text="System" FontSize="29" FontWeight="SemiBold" Margin="0,0,0,20"/>
+            <Grid Margin="0,0,0,30">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <CheckBox x:Name="DisableMyPeopleCheck" Content="Disable My People" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="DisableMyPeopleCheck_Checked" Unchecked="DisableMyPeopleCheck_Unchecked"/>
+                    <CheckBox x:Name="DisableTPMCheckCheck" Content="Disable TPM 2.0 Check" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Visibility="Collapsed" Checked="DisableTPMCheckCheck_Checked" Unchecked="DisableTPMCheckCheck_Unchecked"/>
+                    <CheckBox x:Name="EnableLongPathsCheck" Content="Enable Long Paths" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="EnableLongPathsCheck_Checked" Unchecked="EnableLongPathsCheck_Unchecked"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1">
+                    <CheckBox x:Name="DisableSensorServicesCheck" Content="Disable Sensor Services" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="DisableSensorServicesCheck_Checked" Unchecked="DisableSensorServicesCheck_Unchecked"/>
+                    <CheckBox x:Name="VBSOrVolumeMixerCheck" Content="Disable Virtualization Based Security" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="VBSOrVolumeMixerCheck_Checked" Unchecked="VBSOrVolumeMixerCheck_Unchecked"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- PRIVACY -->
+            <TextBlock x:Name="lblWinPrivacy" Text="Privacy" FontSize="29" FontWeight="SemiBold" Margin="0,0,0,20"/>
+            <Grid Margin="0,0,0,30">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <CheckBox x:Name="DisableTelemetryCheck" Content="Disable Telemetry Services" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="DisableTelemetryCheck_Checked" Unchecked="DisableTelemetryCheck_Unchecked"/>
+                    <CheckBox x:Name="DisableCortanaCheck" Content="Disable Cortana" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="DisableCortanaCheck_Checked" Unchecked="DisableCortanaCheck_Unchecked"/>
+                    <CheckBox x:Name="DisableCopilotCheck" Content="Disable Copilot &amp; Recall" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="DisableCopilotCheck_Checked" Unchecked="DisableCopilotCheck_Unchecked"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1">
+                    <CheckBox x:Name="EnhancePrivacyCheck" Content="Enhance Privacy" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="EnhancePrivacyCheck_Checked" Unchecked="EnhancePrivacyCheck_Unchecked"/>
+                    <CheckBox x:Name="DisableStartMenuAdsCheck" Content="Disable Start Menu Ads" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="DisableStartMenuAdsCheck_Checked" Unchecked="DisableStartMenuAdsCheck_Unchecked"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- GAMING -->
+            <TextBlock x:Name="lblWinGaming" Text="Gaming" FontSize="29" FontWeight="SemiBold" Margin="0,0,0,20"/>
+            <Grid Margin="0,0,0,30">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <CheckBox x:Name="EnableGamingModeCheck" Content="Enable Gaming Mode" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="EnableGamingModeCheck_Checked" Unchecked="EnableGamingModeCheck_Unchecked"/>
+                    <CheckBox x:Name="DisableGameBarCheck" Content="Disable Game Bar" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="DisableGameBarCheck_Checked" Unchecked="DisableGameBarCheck_Unchecked"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1">
+                    <CheckBox x:Name="DisableXboxLiveCheck" Content="Disable Xbox Live" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="DisableXboxLiveCheck_Checked" Unchecked="DisableXboxLiveCheck_Unchecked"/>
+                    <CheckBox x:Name="DisableMouseAccelerationCheck" Content="Disable Mouse Acceleration" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="DisableMouseAccelerationCheck_Checked" Unchecked="DisableMouseAccelerationCheck_Unchecked"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- POWER PLAN -->
+            <TextBlock x:Name="lblWinPowerPlan" Text="PowerPlan" FontSize="29" FontWeight="SemiBold" Margin="0,0,0,20"/>
+            <Grid Margin="0,0,0,30">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <CheckBox x:Name="EnableHighPerformanceCheck" Content="Enable High Performance" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="EnableHighPerformanceCheck_Checked" Unchecked="EnableHighPerformanceCheck_Unchecked"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1">
+                    <CheckBox x:Name="EnableUltimatePerformanceCheck" Content="Enable Ultimate Performance" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="EnableUltimatePerformanceCheck_Checked" Unchecked="EnableUltimatePerformanceCheck_Unchecked"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- WINDOWS UPDATE -->
+            <TextBlock x:Name="lblWinUpdate" Text="Windows Update" FontSize="29" FontWeight="SemiBold" Margin="0,0,0,20"/>
+            <Grid Margin="0,0,0,30">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <CheckBox x:Name="PauseUpdatesCheck" Content="Pause Update Until 2036" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="PauseUpdatesCheck_Checked" Unchecked="PauseUpdatesCheck_Unchecked"/>
+                    <CheckBox x:Name="DisableMSStoreUpdatesCheck" Content="Disable MS Store Updates" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="DisableMSStoreUpdatesCheck_Checked" Unchecked="DisableMSStoreUpdatesCheck_Unchecked"/>
+                    <CheckBox x:Name="DisableWindowsUpdateCheck" Content="Disable Windows Update" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="DisableWindowsUpdateCheck_Checked" Unchecked="DisableWindowsUpdateCheck_Unchecked"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1">
+                    <CheckBox x:Name="DisableInsiderServiceCheck" Content="Disable Insider Service" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="DisableInsiderServiceCheck_Checked" Unchecked="DisableInsiderServiceCheck_Unchecked"/>
+                    <CheckBox x:Name="ExcludeDriversCheck" Content="Exclude Drivers from Updates" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="ExcludeDriversCheck_Checked" Unchecked="ExcludeDriversCheck_Unchecked"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- TASKBAR -->
+            <TextBlock x:Name="lblWinTaskbar" Text="Taskbar" FontSize="29" FontWeight="SemiBold" Margin="0,0,0,20"/>
+            <Grid Margin="0,0,0,30">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                 <StackPanel Grid.Column="0">
+                    <CheckBox x:Name="AlignTaskbarLeftCheck" Content="Align Taskbar to Left" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="AlignTaskbarLeftCheck_Checked" Unchecked="AlignTaskbarLeftCheck_Unchecked"/>
+                    <CheckBox x:Name="DisableWidgetsCheck" Content="Disable Widgets" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="DisableWidgetsCheck_Checked" Unchecked="DisableWidgetsCheck_Unchecked"/>
+                    <CheckBox x:Name="EnableSmallTaskbarIconsCheck" Content="Enable Small Taskbar Icons" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="EnableSmallTaskbarIconsCheck_Checked" Unchecked="EnableSmallTaskbarIconsCheck_Unchecked"/>
+                    <CheckBox x:Name="DisableNotificationCenterCheck" Content="Disable Notification Center" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="DisableNotificationCenterCheck_Checked" Unchecked="DisableNotificationCenterCheck_Unchecked"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1">
+                    <CheckBox x:Name="DisableChatCheck" Content="Disable Chat" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="DisableChatCheck_Checked" Unchecked="DisableChatCheck_Unchecked"/>
+                    <CheckBox x:Name="DisableStickersCheck" Content="Disable Stickers" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="DisableStickersCheck_Checked" Unchecked="DisableStickersCheck_Unchecked"/>
+                    <CheckBox x:Name="FixPinToTaskbarCheck" Content="Fix Pin to Taskbar" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="FixPinToTaskbarCheck_Checked" Unchecked="FixPinToTaskbarCheck_Unchecked"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- EXTRAS -->
+            <TextBlock x:Name="lblWinExtras" Text="Extras" FontSize="29" FontWeight="SemiBold" Margin="0,0,0,20"/>
+            <Grid Margin="0,0,0,30">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <CheckBox x:Name="DisableSnapAssistCheck" Content="Disable Snap Assist" Style="{StaticResource ToggleSwitchStyle}" IsChecked="False" Margin="0,8" Checked="DisableSnapAssistCheck_Checked" Unchecked="DisableSnapAssistCheck_Unchecked"/>
+                    <CheckBox x:Name="EnableClassicRightClickCheck" Content="Enable Classic Right-Click Menu" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="EnableClassicRightClickCheck_Checked" Unchecked="EnableClassicRightClickCheck_Unchecked"/>
+                    <!-- <CheckBox Content="Disable Fast Startup" Style="{StaticResource ToggleSwitchStyle}" IsChecked="True" Margin="0,8"/> -->
+                    <CheckBox x:Name="ShowFileExtensionsCheck" Content="Show file extension" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="ShowFileExtensionsCheck_Checked" Unchecked="ShowFileExtensionsCheck_Unchecked"/>
+                    <!-- <CheckBox Content="Show protected OS files" Style="{StaticResource ToggleSwitchStyle}" IsChecked="True" Margin="0,8"/> -->
+                </StackPanel>
+                <StackPanel Grid.Column="1">
+                    <CheckBox x:Name="EnableCompactModeCheck" Content="Enable Compact Mode in Explorer" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="EnableCompactModeCheck_Checked" Unchecked="EnableCompactModeCheck_Unchecked"/>
+                    <CheckBox x:Name="EnableNumLockCheck" Content="Enable Numlock on Startup" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="EnableNumLockCheck_Checked" Unchecked="EnableNumLockCheck_Unchecked"/>
+                    <!-- <CheckBox Content="Disable HPET" Style="{StaticResource ToggleSwitchStyle}" IsChecked="True" Margin="0,8"/> -->
+                    <CheckBox x:Name="ShowHiddenFilesCheck" Content="Show hidden files and folders" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="ShowHiddenFilesCheck_Checked" Unchecked="ShowHiddenFilesCheck_Unchecked"/>
+                    <!-- <CheckBox Content="Disable unnecessary Visual Effects" Style="{StaticResource ToggleSwitchStyle}" IsChecked="True" Margin="0,8"/> -->
+                </StackPanel>
+            </Grid>
+
+            <!-- ADVANCED TWEAKING -->
+            <TextBlock x:Name="lblWinAdvanced" Text="Advanced Tweaking" FontSize="29" FontWeight="SemiBold" Margin="0,0,0,20"/>
+            <!-- <Grid Margin="0,0,0,30">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <RadioButton Content="For Working" GroupName="AdvancedTweaks" Style="{StaticResource ProfileRadioSwitchStyle}" Checked="ProfileWorking_Checked"/>
+                    <RadioButton Content="For Gaming" GroupName="AdvancedTweaks" Style="{StaticResource ProfileRadioSwitchStyle}" Checked="ProfileGaming_Checked"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1">
+                    <RadioButton Content="For Extreme Gaming" GroupName="AdvancedTweaks" Style="{StaticResource ProfileRadioSwitchStyle}" Checked="ProfileExtremeGaming_Checked"/>
+                    <RadioButton Content="Restore to default" GroupName="AdvancedTweaks" Style="{StaticResource ProfileRadioSwitchStyle}" Checked="ProfileRestore_Checked"/>
+                </StackPanel>
+            </Grid> -->
+            <Grid Margin="0,0,0,30">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <CheckBox x:Name="ForWorking" Content="Optimize for Working" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="ForWorking_Checked" Unchecked="ForWorking_Unchecked"/>
+                    <CheckBox x:Name="ResetToDefault" Content="Reset to Default" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="ResetToDefault_Checked" Unchecked="ResetToDefault_Unchecked"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1">
+                    <CheckBox x:Name="ForExtremeGaming" Content="Optimize for Extreme Gaming" Style="{StaticResource ToggleSwitchStyle}" Margin="0,8" Checked="ForExtremeGaming_Checked" Unchecked="ForExtremeGaming_Unchecked"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- BROWSER AI MANAGEMENT -->
+            <TextBlock x:Name="lblBrowserAI" Text="Browser AI Management" FontSize="29" FontWeight="SemiBold" Margin="0,10,0,20"/>
+            <Grid Margin="0,0,0,40">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <!-- COMBOBOX -->
+                    <ComboBox x:Name="ComboBrowserAI" Style="{StaticResource WinUIComboBoxStyle}" Margin="0,0,15,0" Width="300" HorizontalAlignment="Left" SelectedIndex="0">
+                        <ComboBoxItem x:Name="optAllBrowsers" Content="All Browsers"/>
+                        <ComboBoxItem Content="Google Chrome"/>
+                        <ComboBoxItem Content="Microsoft Edge"/>
+                        <ComboBoxItem Content="Mozilla Firefox"/>
+                    </ComboBox>
+                    
+                    <!-- BUTTONS -->
+                    <Button x:Name="btnRemoveAI" Content="Remove AI" Click="btnRemoveAI_Click" Style="{StaticResource ActionButtonStyle}" Margin="5,0" Width="Auto" MinWidth="160" Padding="15,12" FontSize="15" Background="#A078C0E0"/>
+                    <Button x:Name="btnRestoreAI" Content="Restore AI" Click="btnRestoreAI_Click" Style="{StaticResource ActionButtonStyle}" Margin="5,0" Width="Auto" MinWidth="160" Padding="15,12" FontSize="15" Background="#A078C0E0"/>
+                </StackPanel>
+            </Grid>
+
+
+        </StackPanel>
+    </ScrollViewer>
+    </Grid>
+</UserControl>

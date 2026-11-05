@@ -1,0 +1,159 @@
+<UserControl x:Class="HyperLisUI.Views.Components.LoadingOverlayView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="900">
+    <UserControl.Resources>
+        <Style x:Key="SegmentedProgressBarStyle" TargetType="ProgressBar">
+            <Setter Property="Height" Value="6"/>
+            <Setter Property="Background" Value="#E0E0E0"/>
+            <Setter Property="Foreground" Value="#0078D7"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ProgressBar">
+                        <Grid>
+                            <Border Name="PART_Track" CornerRadius="3" Background="{TemplateBinding Background}"/>
+                            <Border Name="PART_Indicator" CornerRadius="3" HorizontalAlignment="Left" Background="{TemplateBinding Foreground}"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Border Background="#B3E6F4F9" CornerRadius="15" ClipToBounds="True" UseLayoutRounding="True" SnapsToDevicePixels="True"> <!-- Semi-transparent background matching theme -->
+        <Grid>
+            <!-- Shadow Layer -->
+            <Border Background="#E6F4F9" CornerRadius="12" Width="700" Height="500" HorizontalAlignment="Center" VerticalAlignment="Center">
+                 <Border.Effect>
+                    <DropShadowEffect BlurRadius="20" Color="#444" Opacity="0.3" ShadowDepth="5" RenderingBias="Quality"/>
+                </Border.Effect>
+            </Border>
+
+            <!-- Content Layer -->
+            <Border Background="#E6F4F9" CornerRadius="12" Width="700" Height="500" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="30" TextOptions.TextFormattingMode="Display" TextOptions.TextRenderingMode="ClearType">
+                
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>   <!-- Carousel Content -->
+                        <RowDefinition Height="Auto"/> <!-- Dots -->
+                        <RowDefinition Height="Auto"/> <!-- Progress Section -->
+                        <RowDefinition Height="Auto"/> <!-- Cancel Button -->
+                    </Grid.RowDefinitions>
+
+                    <!-- Carousel Area -->
+                    <Grid Grid.Row="0" Margin="0,0,0,10">
+                         <Grid.ColumnDefinitions>
+                             <ColumnDefinition Width="Auto"/>
+                             <ColumnDefinition Width="*"/>
+                             <ColumnDefinition Width="Auto"/>
+                         </Grid.ColumnDefinitions>
+                         
+                         <!-- Left Arrow -->
+                         <Button Grid.Column="0" Content="&#xE76B;" Padding="0" FontFamily="Segoe MDL2 Assets" FontSize="18" Background="White" Width="40" Height="40" Style="{StaticResource ActionButtonStyle}" Click="PrevSlide_Click" VerticalAlignment="Center">
+                             <Button.Resources>
+                                 <Style TargetType="Border">
+                                     <Setter Property="CornerRadius" Value="20"/>
+                                 </Style>
+                             </Button.Resources>
+                         </Button>
+
+                         <!-- Content -->
+                         <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">
+                             <Border Background="#33000000" CornerRadius="8" Margin="0,0,0,20" HorizontalAlignment="Center">
+                                 <!-- Placeholder Image logic handled in code -->
+                                 <Image x:Name="CarouselImage" Height="135" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality"/>
+                             </Border>
+                             
+                             <TextBlock x:Name="CarouselTitle" Text="Did you know?" FontSize="22" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                             <TextBlock x:Name="CarouselDesc" Text="You can relax while we do the heavy lifting." FontSize="16" Foreground="#555" TextWrapping="Wrap" TextAlignment="Center" MaxWidth="500"/>
+                         </StackPanel>
+
+                         <!-- Right Arrow -->
+                         <Button Grid.Column="2" Content="&#xE76C;" Padding="0" FontFamily="Segoe MDL2 Assets" FontSize="18" Background="White" Width="40" Height="40" Style="{StaticResource ActionButtonStyle}" Click="NextSlide_Click" VerticalAlignment="Center">
+                             <Button.Resources>
+                                 <Style TargetType="Border">
+                                     <Setter Property="CornerRadius" Value="20"/>
+                                 </Style>
+                             </Button.Resources>
+                         </Button>
+                    </Grid>
+
+                    <!-- Dots Pagination -->
+                    <StackPanel x:Name="DotsPanel" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,15"/>
+
+                    <!-- Progress Section -->
+                    <StackPanel Grid.Row="2" Margin="0,0,0,15">
+                        <TextBlock x:Name="StatusTitle" Text="Processing..." FontSize="18" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,4"/>
+                        <TextBlock x:Name="StatusSubTitle" Text="Step 1 of 3: Preparing..." FontSize="13" Foreground="#555" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+                        
+                        <Grid Width="520">
+                            <StackPanel>
+                                <!-- Overall Progress Bar Header -->
+                                <DockPanel Margin="0,0,0,4">
+                                    <TextBlock Text="Overall Progress" FontSize="12" Foreground="#64748B"/>
+                                    <TextBlock x:Name="OverallPercentText" Text="0%" FontSize="12" FontWeight="SemiBold" Foreground="#0078D7" HorizontalAlignment="Right"/>
+                                </DockPanel>
+
+                                <!-- Single Smooth Bar (Overall) -->
+                                <ProgressBar x:Name="SingleProgressBar" Value="0" Maximum="100" Height="6" Background="#E2E8F0" Foreground="#0078D7">
+                                    <ProgressBar.Template>
+                                        <ControlTemplate TargetType="ProgressBar">
+                                            <Grid>
+                                                <Border Name="PART_Track" CornerRadius="3" Background="{TemplateBinding Background}"/>
+                                                <Border Name="PART_Indicator" CornerRadius="3" HorizontalAlignment="Left" Background="{TemplateBinding Foreground}"/>
+                                            </Grid>
+                                        </ControlTemplate>
+                                    </ProgressBar.Template>
+                                </ProgressBar>
+
+                                <!-- Detailed File Progress Container (Dual Progress Bar) -->
+                                <Border x:Name="DetailedProgressContainer" Visibility="Collapsed" Margin="0,10,0,0"
+                                        Background="#180078D7" BorderBrush="#300078D7" BorderThickness="1" CornerRadius="8" Padding="12,8">
+                                    <StackPanel>
+                                        <DockPanel Margin="0,0,0,4">
+                                            <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
+                                                <TextBlock Text="📄 " FontSize="12" VerticalAlignment="Center"/>
+                                                <TextBlock x:Name="CurrentFileNameText" Text="Preparing..." FontSize="12" FontWeight="Medium" Foreground="#1E293B" MaxWidth="380" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                            <TextBlock x:Name="FilePercentText" Text="0%" FontSize="12" FontWeight="SemiBold" Foreground="#0284C7" HorizontalAlignment="Right" DockPanel.Dock="Right" VerticalAlignment="Center"/>
+                                        </DockPanel>
+
+                                        <!-- Current File Progress Bar -->
+                                        <ProgressBar x:Name="FileProgressBar" Value="0" Maximum="100" Height="4" Margin="0,2,0,4" Background="#CBD5E1" Foreground="#0284C7">
+                                            <ProgressBar.Template>
+                                                <ControlTemplate TargetType="ProgressBar">
+                                                    <Grid>
+                                                        <Border Name="PART_Track" CornerRadius="2" Background="{TemplateBinding Background}"/>
+                                                        <Border Name="PART_Indicator" CornerRadius="2" HorizontalAlignment="Left" Background="{TemplateBinding Foreground}"/>
+                                                    </Grid>
+                                                </ControlTemplate>
+                                            </ProgressBar.Template>
+                                        </ProgressBar>
+
+                                        <DockPanel>
+                                            <TextBlock x:Name="TransferSizeText" Text="0 MB / 0 MB" FontSize="11" Foreground="#64748B"/>
+                                            <TextBlock x:Name="TransferSpeedText" Text="0 MB/s" FontSize="11" FontWeight="Medium" Foreground="#0369A1" HorizontalAlignment="Right"/>
+                                        </DockPanel>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+
+                    <!-- Cancel Button -->
+                    <Button Grid.Row="3" Content="Cancel" Width="120" Height="35" Background="#87CEEB" Foreground="Black" BorderThickness="0" HorizontalAlignment="Center" Click="CancelButton_Click">
+                         <Button.Resources>
+                             <Style TargetType="Border">
+                                 <Setter Property="CornerRadius" Value="17"/>
+                             </Style>
+                         </Button.Resources>
+                    </Button>
+
+                </Grid>
+            </Border>
+        </Grid>
+    </Border>
+</UserControl>

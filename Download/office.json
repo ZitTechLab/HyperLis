@@ -1,0 +1,56 @@
+{
+  "Standard2019Volume": {
+    "name": "Office LTSC Standard 2019",
+    "productid": "Standard2019Volume",
+    "channel": "PerpetualVL2019",
+    "pidkey": "6NWWJ-YQWMR-QKGCB-6TMB3-9D9HK"
+  },
+  "ProPlus2021Volume": {
+    "name": "Office LTSC Pro Plus 2021",
+    "productid": "ProPlus2021Volume",
+    "channel": "PerpetualVL2021",
+    "pidkey": "FXYTK-NJJ8C-GB6DW-3DYQT-6F7TH"
+  },
+  "ProPlus2024Volume": {
+    "name": "Office LTSC Pro Plus 2024",
+    "productid": "ProPlus2024Volume",
+    "channel": "PerpetualVL2024",
+    "pidkey": "2T99X-WVND2-8HYBD-RK297-8T2F9"
+  },
+  "Standard2024Volume": {
+    "name": "Office LTSC Standard 2024",
+    "productid": "Standard2024Volume",
+    "channel": "PerpetualVL2024",
+    "pidkey": "V28V8-N7W6H-K4PPV-BVVHF-V2KV6"
+  },
+  "O365ProPlusRetail": {
+    "name": "Office 365 Apps for Enterprise",
+    "productid": "O365ProPlusRetail",
+    "channel": "MonthlyEnterprise",
+    "pidkey": "SIGN-IN-REQUIRED"
+  },
+  "O365ProPlusRetailNoTeams": {
+    "name": "Office 365 Apps for Enterprise (No Teams)",
+    "productid": "O365ProPlusRetail",
+    "channel": "MonthlyEnterprise",
+    "pidkey": "SIGN-IN-REQUIRED"
+  },
+  "O365BusinessRetail": {
+    "name": "Office 365 Apps for Business",
+    "productid": "O365BusinessRetail",
+    "channel": "MonthlyEnterprise",
+    "pidkey": "SIGN-IN-REQUIRED"
+  },
+  "O365BusinessRetailNoTeams": {
+    "name": "Office 365 Apps for Business (No Teams)",
+    "productid": "O365BusinessRetail",
+    "channel": "MonthlyEnterprise",
+    "pidkey": "SIGN-IN-REQUIRED"
+  },
+  "Troll": {
+    "name": "Troll",
+    "productid": "Troll",
+    "channel": "MonthlyEnterprise",
+    "pidkey": "SIGN-IN-REQUIRED"
+  }
+}

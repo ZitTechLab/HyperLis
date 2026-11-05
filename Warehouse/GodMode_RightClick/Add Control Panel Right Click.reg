@@ -1,0 +1,26 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\DesktopBackground\Shell\ControlPanel]
+"MUIVerb"="Control Panel"
+"SubCommands"=""
+"Icon"="imageres.dll,-27"
+"Position"="Middle"
+
+[HKEY_CLASSES_ROOT\DesktopBackground\Shell\ControlPanel\shell\001menu]
+@="Category view"
+
+[HKEY_CLASSES_ROOT\DesktopBackground\Shell\ControlPanel\shell\001menu\command]
+@="explorer.exe shell:::{26EE0668-A00A-44D7-9371-BEB064C98683}"
+
+
+[HKEY_CLASSES_ROOT\DesktopBackground\Shell\ControlPanel\shell\002menu]
+@="Icons view"
+
+[HKEY_CLASSES_ROOT\DesktopBackground\Shell\ControlPanel\shell\002menu\command]
+@="explorer.exe shell:::{21EC2020-3AEA-1069-A2DD-08002B30309D}"
+
+[HKEY_CLASSES_ROOT\DesktopBackground\Shell\ControlPanel\shell\003menu]
+@="All Tasks (God mode)"
+
+[HKEY_CLASSES_ROOT\DesktopBackground\Shell\ControlPanel\shell\003menu\command]
+@="explorer.exe shell:::{ED7BA470-8E54-465E-825C-99712043E01C}"

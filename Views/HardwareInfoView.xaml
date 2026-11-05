@@ -1,0 +1,255 @@
+<UserControl x:Class="HyperLisUI.Views.HardwareInfoView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:HyperLisUI.Views"
+             xmlns:components="clr-namespace:HyperLisUI.Views.Components"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="800">
+    <UserControl.Resources>
+        <Style x:Key="SectionHeaderStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="#222"/>
+            <Setter Property="Margin" Value="0,15,0,5"/>
+        </Style>
+        <Style x:Key="InfoTextStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Foreground" Value="#444"/>
+            <Setter Property="Margin" Value="15,2,0,2"/>
+        </Style>
+        
+        <!-- Custom ToggleButton for Expander Header -->
+        <Style x:Key="WinUIToggleButtonHeader" TargetType="ToggleButton">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border Background="{TemplateBinding Background}" Padding="20,15" CornerRadius="12">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <ContentPresenter Grid.Column="0" VerticalAlignment="Center">
+                                    <ContentPresenter.Resources>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="FontSize" Value="16"/>
+                                            <Setter Property="FontWeight" Value="SemiBold"/>
+                                            <Setter Property="Foreground" Value="#222"/>
+                                        </Style>
+                                    </ContentPresenter.Resources>
+                                </ContentPresenter>
+                                <TextBlock x:Name="Arrow" Grid.Column="1" Text="&#xE70D;" FontFamily="Segoe MDL2 Assets" FontSize="12" VerticalAlignment="Center" Margin="10,0,0,0" RenderTransformOrigin="0.5,0.5" Foreground="#555">
+                                    <TextBlock.RenderTransform>
+                                        <RotateTransform x:Name="ArrowRotation" Angle="0"/>
+                                    </TextBlock.RenderTransform>
+                                </TextBlock>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="ArrowRotation" Storyboard.TargetProperty="Angle" To="180" Duration="0:0:0.25">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <CubicEase EasingMode="EaseOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.EnterActions>
+                                <Trigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="ArrowRotation" Storyboard.TargetProperty="Angle" To="0" Duration="0:0:0.25">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <CubicEase EasingMode="EaseOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.ExitActions>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#E6F7FF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Custom Expander Style -->
+        <Style x:Key="WinUIExpanderStyle" TargetType="Expander">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Margin" Value="0,0,0,15"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Expander">
+                        <Border BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" CornerRadius="12">
+                            <StackPanel>
+                                <ToggleButton x:Name="HeaderSite" Style="{StaticResource WinUIToggleButtonHeader}"
+                                              IsChecked="{Binding IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                              Content="{TemplateBinding Header}" />
+                                <Border x:Name="ExpandSite" Visibility="Collapsed" Padding="20,0,20,20" Opacity="0">
+                                    <Border.LayoutTransform>
+                                        <ScaleTransform x:Name="ExpandSiteScale" ScaleY="0"/>
+                                    </Border.LayoutTransform>
+                                    <ContentPresenter Focusable="false"/>
+                                </Border>
+                            </StackPanel>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsExpanded" Value="True">
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ExpandSite" Storyboard.TargetProperty="Visibility">
+                                                <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{x:Static Visibility.Visible}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <DoubleAnimation Storyboard.TargetName="ExpandSiteScale" Storyboard.TargetProperty="ScaleY" To="1" Duration="0:0:0.3">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <CubicEase EasingMode="EaseOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                            <DoubleAnimation Storyboard.TargetName="ExpandSite" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.3"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.EnterActions>
+                                <Trigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="ExpandSiteScale" Storyboard.TargetProperty="ScaleY" To="0" Duration="0:0:0.25">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <CubicEase EasingMode="EaseIn"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                            <DoubleAnimation Storyboard.TargetName="ExpandSite" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.25"/>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ExpandSite" Storyboard.TargetProperty="Visibility">
+                                                <DiscreteObjectKeyFrame KeyTime="0:0:0.25" Value="{x:Static Visibility.Collapsed}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.ExitActions>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/> <!-- Controls -->
+            <RowDefinition Height="*"/>    <!-- Info Content -->
+        </Grid.RowDefinitions>
+        <components:LoadingOverlayView x:Name="LoadingOverlay" Grid.RowSpan="2" Visibility="Collapsed" Panel.ZIndex="10"/>
+
+        <!-- Top Controls -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="20,10,0,20">
+            <!-- Detailed View Toggle -->
+            <CheckBox x:Name="DetailedViewToggle" Content="Detailed view" Style="{StaticResource ToggleSwitchStyle}" IsChecked="False" VerticalAlignment="Center" Margin="0,0,40,0" Checked="DetailedView_Checked" Unchecked="DetailedView_Checked">
+                <CheckBox.LayoutTransform>
+                    <ScaleTransform ScaleX="1.2" ScaleY="1.2"/>
+                </CheckBox.LayoutTransform>
+            </CheckBox>
+
+            <!-- Action Buttons -->
+            <Button x:Name="BtnSaveTxt" Content="Save .txt file" Style="{StaticResource ActionButtonStyle}" Click="SaveButton_Click" Width="140" Margin="0,0,15,0" />
+            <Button x:Name="BtnCopyAll" Content="Copy All" Style="{StaticResource ActionButtonStyle}" Click="CopyButton_Click" Width="180" Margin="0,0,15,0"/>
+        </StackPanel>
+
+        <!-- Hardware Info List -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="50,0,30,0">
+            <StackPanel x:Name="HardwareInfoPanel" HorizontalAlignment="Left" Width="850">
+                <!-- Section 1: General Info -->
+                <Expander x:Name="ExpanderGeneralInfo" Header="General Information" Style="{StaticResource WinUIExpanderStyle}" IsExpanded="False">
+                    <StackPanel>
+                        <!-- Operating System -->
+                        <TextBlock x:Name="lblHardwareOS" Text="Operating System" Style="{StaticResource SectionHeaderStyle}" Margin="0,5,0,5"/>
+                        <TextBlock x:Name="TextOS" Text="Loading..." Style="{StaticResource InfoTextStyle}"/>
+                        
+                        <!-- Processors -->
+                        <TextBlock x:Name="lblHardwareProcessors" Text="Processors" Style="{StaticResource SectionHeaderStyle}"/>
+                        <TextBlock x:Name="TextCPU" Text="Loading..." Style="{StaticResource InfoTextStyle}"/>
+
+                        <!-- Memory -->
+                        <TextBlock x:Name="lblHardwareMemory" Text="Memory" Style="{StaticResource SectionHeaderStyle}"/>
+                        <TextBlock x:Name="TextRAM" Text="Loading..." Style="{StaticResource InfoTextStyle}"/>
+
+                        <!-- Motherboards -->
+                        <TextBlock x:Name="lblHardwareMotherboards" Text="Motherboards" Style="{StaticResource SectionHeaderStyle}"/>
+                        <TextBlock x:Name="TextMotherboard" Text="Loading..." Style="{StaticResource InfoTextStyle}"/>
+
+                        <!-- Graphics -->
+                        <TextBlock x:Name="lblHardwareGraphics" Text="Graphics" Style="{StaticResource SectionHeaderStyle}"/>
+                        <TextBlock x:Name="TextGPU" Text="Loading..." Style="{StaticResource InfoTextStyle}"/>
+
+                        <!-- Disk Drives -->
+                        <TextBlock x:Name="lblHardwareDiskDrives" Text="Disk Drives" Style="{StaticResource SectionHeaderStyle}"/>
+                        <TextBlock x:Name="TextDisks" Text="Loading..." Style="{StaticResource InfoTextStyle}"/>
+
+                        <!-- Network Adapters -->
+                        <TextBlock x:Name="lblHardwareNetworkAdapters" Text="Network Adapters" Style="{StaticResource SectionHeaderStyle}"/>
+                        <TextBlock x:Name="TextNetwork" Text="Loading..." Style="{StaticResource InfoTextStyle}"/>
+
+                        <!-- BIOS -->
+                        <TextBlock x:Name="lblHardwareBIOS" Text="BIOS" Style="{StaticResource SectionHeaderStyle}"/>
+                        <TextBlock x:Name="TextBIOS" Text="Loading..." Style="{StaticResource InfoTextStyle}"/>
+                    </StackPanel>
+                </Expander>
+
+                <!-- Section 2: Health Tools -->
+                <Expander x:Name="ExpanderHealthTools" Header="Health Tools" Style="{StaticResource WinUIExpanderStyle}" IsExpanded="False">
+                    <StackPanel>
+                        <!-- Disk Health -->
+                        <Border Background="White" CornerRadius="8" Padding="15" Margin="0,5,0,10" BorderBrush="#E5E5E5" BorderThickness="1">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                
+                                <Image Source="/Images/harddrive.png" Width="36" Height="36" VerticalAlignment="Center" Margin="5,0,20,0" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <TextBlock x:Name="lblDiskHealth" Text="Hard Drive Health" FontSize="16" FontWeight="SemiBold" Foreground="#333"/>
+                                    <TextBlock x:Name="TextDiskHealthStatus" Text="Ready to scan" FontSize="14" Foreground="#777" Margin="0,2,0,0"/>
+                                </StackPanel>
+                                
+                                <Button x:Name="BtnCheckDisk" Grid.Column="2" Content="Check Now" Style="{StaticResource ActionButtonStyle}" Margin="0" Padding="25,10" Click="BtnCheckDisk_Click"/>
+                            </Grid>
+                        </Border>
+
+                        <!-- Battery Health -->
+                        <Border Background="White" CornerRadius="8" Padding="15" Margin="0,0,0,5" BorderBrush="#E5E5E5" BorderThickness="1">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                
+                                <Image Source="/Images/battery.png" Width="36" Height="36" VerticalAlignment="Center" Margin="5,0,20,0" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <TextBlock x:Name="lblBatteryHealth" Text="Battery Health" FontSize="16" FontWeight="SemiBold" Foreground="#333"/>
+                                    <TextBlock x:Name="TextBatteryHealthStatus" Text="Ready to scan" FontSize="14" Foreground="#777" Margin="0,2,0,0"/>
+                                </StackPanel>
+                                
+                                <Button x:Name="BtnCheckBattery" Grid.Column="2" Content="Check Now" Style="{StaticResource ActionButtonStyle}" Margin="0" Padding="25,10" Click="BtnCheckBattery_Click"/>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+                </Expander>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

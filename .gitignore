@@ -1,0 +1,36 @@
+## Build and output directories
+bin/
+obj/
+out/
+build/
+dist/
+Warehouse/bin/
+Warehouse/**/bin/
+Warehouse/**/obj/
+
+## Visual Studio & IDEs
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.userprefs
+.vscode/
+.idea/
+
+## Packages
+packages/
+*.nupkg
+
+## AI Assistant & Workspace skills
+.agents/
+skills-lock.json
+
+## OS & Temp files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
+*.tmp
+

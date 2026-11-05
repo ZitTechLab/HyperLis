@@ -1,0 +1,110 @@
+<Window x:Class="HyperLisUI.Views.ModernConfirmationWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Confirmation" 
+        Width="560" 
+        MinWidth="500"
+        MaxWidth="680"
+        MinHeight="240"
+        MaxHeight="580"
+        SizeToContent="Height"
+        WindowStartupLocation="CenterOwner"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent">
+
+    <Grid Margin="15">
+        <!-- Shadow Effect -->
+        <Border Background="#F0F8FF" CornerRadius="16">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="25" ShadowDepth="4" Opacity="0.25" Color="#222"/>
+            </Border.Effect>
+        </Border>
+
+        <!-- Main Content -->
+        <Border Background="#F0F8FF" CornerRadius="16" BorderBrush="#B2EBF2" BorderThickness="1" Padding="26">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/> <!-- Custom Title Bar -->
+                    <RowDefinition Height="*"/>    <!-- Content -->
+                    <RowDefinition Height="Auto"/> <!-- Buttons -->
+                </Grid.RowDefinitions>
+
+                <!-- Title -->
+                <TextBlock x:Name="TxtTitle" 
+                           Text="Confirmation" 
+                           FontSize="18" 
+                           FontWeight="Bold" 
+                           Foreground="#222" 
+                           TextWrapping="Wrap"
+                           HorizontalAlignment="Center"
+                           Margin="0,0,0,16"/>
+
+                <!-- Message Content with ScrollViewer -->
+                <ScrollViewer Grid.Row="1" 
+                              VerticalScrollBarVisibility="Auto" 
+                              HorizontalScrollBarVisibility="Disabled"
+                              MaxHeight="380"
+                              Margin="0,0,0,20">
+                    <TextBlock x:Name="TxtMessage" 
+                               Text="Are you sure?" 
+                               FontSize="14" 
+                               LineHeight="22"
+                               Foreground="#333" 
+                               TextWrapping="Wrap" 
+                               HorizontalAlignment="Stretch" 
+                               VerticalAlignment="Center"/>
+                </ScrollViewer>
+
+                <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button x:Name="BtnConfirm" Content="Yes" Click="Confirm_Click" MinWidth="130" Height="42" Padding="15,0">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="#AED5F3" CornerRadius="21" Padding="10">
+                                                <TextBlock Text="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="15" FontWeight="Medium" Foreground="#1A3B4D"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Cursor" Value="Hand"/>
+                                                    <Setter Property="Opacity" Value="0.9"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+
+                    <Button x:Name="BtnCancel" Content="No" Click="Cancel_Click" MinWidth="130" Height="42" Margin="20,0,0,0" Padding="15,0">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="#AED5F3" CornerRadius="21" Padding="10">
+                                                <TextBlock Text="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="15" FontWeight="Medium" Foreground="#1A3B4D"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Cursor" Value="Hand"/>
+                                                    <Setter Property="Opacity" Value="0.9"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

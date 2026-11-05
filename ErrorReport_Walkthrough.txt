@@ -1,0 +1,39 @@
+BÁO CÁO LỖI VÀ HƯỚNG DẪN KHẮC PHỤC (WALKTHROUGH)
+=================================================
+
+1. MÔ TẢ LỖI (ISSUE)
+---------------------
+Khi thực thi lệnh `dotnet run` để chạy ứng dụng WPF, tiến trình bị crash ngay lập tức và trả về mã lỗi sau:
+"CLR: Assert failure(PID 9516 [0x0000252c], Thread: 5400 [0x1518]): !AreShadowStacksEnabled() || UseSpecialUserModeApc()"
+
+2. NGUYÊN NHÂN (ROOT CAUSE)
+----------------------------
+Bắt đầu từ phiên bản .NET 9, Microsoft đã bật mặc định một tính năng bảo vệ luồng thực thi cấp độ phần cứng có tên gọi là CET (Control-flow Enforcement Technology) Shadow Stacks.
+Tuy nhiên, trên một số phiên bản Windows 10 (đặc biệt là khi chưa cài đặt đủ các bản cập nhật bảo mật/cập nhật hệ thống mới nhất), tính năng Shadow Stacks này gặp lỗi trong quá trình khởi tạo môi trường runtime (CLR). Sự không tương thích này dẫn đến việc runtime tự động gián đoạn (assert failure) và thoát ứng dụng.
+
+3. GIẢI PHÁP KHẮC PHỤC (CHANGES MADE)
+--------------------------------------
+Để khắc phục tình trạng này mà không cần phải cập nhật lại hệ điều hành Windows 10, ta có thể chủ động cấu hình lại project để tắt tính năng CET Shadow Stacks.
+
+- File chỉnh sửa: HyperLisUI.csproj
+- Vị trí: Bên trong thẻ <PropertyGroup> chính của ứng dụng.
+- Mã được thêm vào: 
+  <CETCompat>false</CETCompat>
+
+Đoạn cấu hình sau khi sửa sẽ trông như sau:
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    ...
+    <UseWPF>true</UseWPF>
+    <CETCompat>false</CETCompat>
+    ...
+  </PropertyGroup>
+
+4. KẾT QUẢ KIỂM THỬ (VALIDATION RESULTS)
+-----------------------------------------
+Sau khi lưu lại file .csproj và chạy lại lệnh `dotnet run`:
+1. Quá trình biên dịch (build) thành công 100%.
+2. Lỗi "assert failure" ở trên không còn xuất hiện.
+3. Lệnh run có thể khởi tạo ứng dụng ổn định với tiến trình ngầm hiển thị "Exit code: 0".
+=> Vấn đề đã được giải quyết hoàn toàn. Ứng dụng có thể tiếp tục phát triển bình thường.

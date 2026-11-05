@@ -1,0 +1,64 @@
+{
+    "1": {
+        "content": "Relax and let the system handle the optimization for you.",
+        "type": "Enjoy the moment"
+    },
+    "2": {
+        "content": "Windows 11 24H2 introduces Quick Machine Recovery to help restore the system faster after critical failures.",
+        "type": "Fun Fact"
+    },
+    "3": {
+        "content": "Turning off unused startup programs can noticeably speed up boot time.",
+        "type": "Tip"
+    },
+    "4": {
+        "content": "Most Windows services run in the background even when you don’t see any open apps.",
+        "type": "Did You Know"
+    },
+    "5": {
+        "content": "We are applying system-level tweaks to improve overall responsiveness.",
+        "type": "Performance"
+    },
+    "6": {
+        "content": "Some changes may require a system restart to take full effect.",
+        "type": "Warning"
+    },
+    "7": {
+        "content": "Your system configuration is being analyzed in real time.",
+        "type": "System Info"
+    },
+    "8": {
+        "content": "Explorer.exe is responsible for the taskbar, desktop, and file manager.",
+        "type": "Did You Know"
+    },
+    "9": {
+        "content": "Enjoy this short pause while unnecessary background tasks are reduced.",
+        "type": "Enjoy the moment"
+    },
+    "10": {
+        "content": "Disabling visual effects can help low-end systems feel much smoother.",
+        "type": "Performance"
+    },
+    "11": {
+        "content": "Windows has hidden keyboard shortcuts that even power users sometimes miss.",
+        "type": "Easter Egg"
+    },
+    "12": {
+        "content": "System tweaks are applied safely and can usually be reverted if needed.",
+        "type": "System Info"
+    },
+    "13": {
+        "content": "Leaving at least 15–20% free disk space helps Windows operate efficiently.",
+        "type": "Tip"
+    },
+    "14": {
+        "content": "The black screen during boot usually indicates a driver or display initialization process.",
+        "type": "Did You Know"
+    },
+    "15": {
+        "content": "Behind every smooth UI is a carefully tuned set of background services.",
+        "type": "Easter Egg"
+    }
+}
+
+    

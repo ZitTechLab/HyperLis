@@ -1,0 +1,30 @@
+Hiện tại thuật toán của tab Cleaning đang chạy theo 2 pha lớn (đọc từ code):
+
+Pha Scan/Preview (E:\GGAI\Design\Views\CleaningView.xaml.cs): gom các mục cần xoá bằng CleaningHelper.Preview*() chạy trong Task.Run(), chỉ update UI theo “step” (Temporary/Minidumps/WER/Browser…).
+Pha Clean:
+Xoá các item đã preview bằng CleaningHelper.CleanAsync(...) (background thread) và mỗi item lại gọi Dispatcher.BeginInvoke(...) để update text trạng thái.
+“Deep temp clean” (ResetTempFolders) trong Task.Run().
+Update Cache (CleanUpdateCache) stop service → Directory.Delete(SoftwareDistribution\Download, true) → start service (background thread).
+Recycle Bin gọi trực tiếp CleaningHelper.EmptyRecycleBin() (đang chạy trên UI thread).
+RAM clean chạy RAMMap64.exe và chờ exit.
+Vì sao có hiện tượng “Cleaning rất lâu + gần như không thấy gì xảy ra / Not Responding”
+Các nguyên nhân có khả năng cao nhất (khớp đúng symptom “tick nhiều mục + đôi khi Not Responding vài phút rồi mới chạy tiếp”):
+
+Flood Dispatcher / nghẽn message loop UI khi xoá quá nhiều file
+CleaningHelper.CleanAsync() đang gọi progressCallback mỗi file/folder.
+Ở UI, callback dùng Dispatcher.BeginInvoke(() => UpdateLoadingProgress(...)).
+Nếu có hàng chục/hàng trăm nghìn item, UI thread bị bơm một “hàng đợi” update khổng lồ → app nhìn như đứng/Not Responding, và người dùng cũng “không thấy gì” vì text đổi quá nhanh hoặc bị nghẽn.
+Recycle Bin bị block UI thread
+Đoạn này hiện gọi thẳng trên UI thread:
+Helpers.CleaningHelper.EmptyRecycleBin();
+Khi Recycle Bin rất lớn, API SHEmptyRecycleBin có thể chặn khá lâu → WPF không pump message → Windows gắn nhãn Not Responding.
+Update Cache là một tác vụ “im lặng” và có thể rất lâu
+Directory.Delete(..., true) trên cây file lớn có thể mất vài phút, trong lúc đó UI chỉ thấy 1 dòng “Cleaning update cache...” rồi đứng yên (không có tick/progress trung gian).
+Ngoài ra RunCommand(... Verb="runas", UseShellExecute=true, WaitForExit()) có thể bị kẹt ở UAC/permission/Service stop chậm → lại càng “không thấy gì”.
+(Nhỏ hơn) Quá nhiều file khiến Preview/Clean tạo list rất lớn
+PreviewFolder() add cả file + folder vào PreviewCleanList; sau đó BuildDistinctItemList + Reverse + File.Exists/Directory.Exists từng item → nặng CPU/IO, càng làm callback spam tệ hơn.
+Đề xuất phương án (theo lựa chọn của bạn: hiển thị “% + số item”, Update Cache vẫn xoá folder)
+Mục tiêu
+UI luôn “sống” (không Not Responding).
+Người dùng thấy tiến trình rõ: processed/total, tốc độ, và phase hiện tại.
+Không spam UI update theo từng file.

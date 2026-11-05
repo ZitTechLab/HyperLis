@@ -1,0 +1,370 @@
+<UserControl x:Class="HyperLisUI.Views.WSAPView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:HyperLisUI.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="1200" d:DesignWidth="900">
+             
+    <UserControl.Resources>
+        <Style x:Key="ModernCheckBoxStyle" TargetType="CheckBox">
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#333"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Margin" Value="0,0,0,10"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CheckBox">
+                        <Grid Background="Transparent">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="24"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <!-- Box -->
+                            <Border x:Name="Box" Width="20" Height="20" CornerRadius="4" BorderThickness="1.5" BorderBrush="#888" Background="White" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                <Path x:Name="CheckMark" Data="M2,6 L6,10 L14,2" Stroke="White" StrokeThickness="2.5" StrokeStartLineCap="Round" StrokeEndLineCap="Round" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed"/>
+                            </Border>
+
+                            <!-- Content -->
+                            <ContentPresenter Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="8,0,0,0"/>
+
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CheckStates">
+                                    <VisualState x:Name="Checked">
+                                        <Storyboard>
+                                            <ColorAnimation Storyboard.TargetName="Box" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)" To="#00B2FF" Duration="0:0:0.1"/>
+                                            <ColorAnimation Storyboard.TargetName="Box" Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)" To="#00B2FF" Duration="0:0:0.1"/>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CheckMark" Storyboard.TargetProperty="Visibility">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Unchecked"/>
+                                    <VisualState x:Name="Indeterminate"/>
+                                </VisualStateGroup>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal"/>
+                                    <VisualState x:Name="MouseOver">
+                                        <Storyboard>
+                                            <ColorAnimation Storyboard.TargetName="Box" Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)" To="#00B2FF" Duration="0:0:0.1"/>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="35,30,0,20">
+        <StackPanel Margin="0,0,20,0">
+            
+            <!-- Select the destination disk -->
+            <TextBlock x:Name="WsapHeaderDestination" Text="Select the destination disk" FontSize="29" FontWeight="SemiBold" Margin="0,0,0,20"/>
+            
+            <!-- Disk Selection Card -->
+            <Border Background="#60FFFFFF" CornerRadius="12" Padding="20" Margin="0,0,0,30">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/> <!-- Icon -->
+                        <ColumnDefinition Width="*"/>    <!-- Text -->
+                        <ColumnDefinition Width="350"/>  <!-- Combo -->
+                    </Grid.ColumnDefinitions>
+                    
+                    <!-- Icon -->
+                     <Image Grid.Column="0" Source="pack://application:,,,/Images/harddrive.png" Width="35" Height="35" VerticalAlignment="Center" Margin="0,0,20,0"/>
+
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <TextBlock x:Name="WsapCardDiskTitle" Text="Choose Your Hard Disk" FontWeight="Bold" FontSize="16" Margin="0,0,0,2"/>
+                        <TextBlock x:Name="WsapCardDiskDesc" Text="Pick the hard drive where you want to install Windows." FontSize="13" Foreground="#555" TextWrapping="Wrap"/>
+                    </StackPanel>
+
+                    <ComboBox x:Name="DiskBox" Grid.Column="2" 
+                              ItemsSource="{Binding Disks}" 
+                              DisplayMemberPath="DisplayName" 
+                              SelectedValuePath="Index"
+                              SelectedIndex="0"
+                              SelectionChanged="DiskBox_SelectionChanged"
+                              Style="{StaticResource WinUIComboBoxStyle}" VerticalAlignment="Center"/>
+                </Grid>
+            </Border>
+
+            <!-- Partition Information -->
+            <TextBlock x:Name="WsapHeaderPartition" Text="Partition Information" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,15" Foreground="#333"/>
+            <Border Background="#E0F7FA" CornerRadius="8" Padding="0" Margin="0,0,0,30">
+                 <Grid Grid.IsSharedSizeScope="True">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/> <!-- Header -->
+                        <RowDefinition Height="Auto"/> <!-- Data -->
+                    </Grid.RowDefinitions>
+
+                    <!-- Header Row -->
+                    <Border Grid.Row="0" Background="#81D4FA" CornerRadius="8,8,0,0" Padding="15,10">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="1.5*"/>
+                                <ColumnDefinition Width="1.5*"/>
+                                <ColumnDefinition Width="1*"/>
+                                <ColumnDefinition Width="1.5*"/>
+                                <ColumnDefinition Width="0.8*"/>
+                                <ColumnDefinition Width="1.5*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock x:Name="WsapTablePartId" Grid.Column="0" Text="Partition ID" FontWeight="Bold" Margin="0,0,15,0"/>
+                            <TextBlock x:Name="WsapTableType" Grid.Column="1" Text="Type" FontWeight="Bold" Margin="0,0,15,0"/>
+                            <TextBlock x:Name="WsapTableSize" Grid.Column="2" Text="Size" FontWeight="Bold" Margin="0,0,15,0"/>
+                            <TextBlock x:Name="WsapTableStyle" Grid.Column="3" Text="Style" FontWeight="Bold" Margin="0,0,15,0"/>
+                            <TextBlock x:Name="WsapTableFileSystem" Grid.Column="4" Text="File System" FontWeight="Bold" Margin="0,0,15,0"/>
+                            <TextBlock x:Name="WsapTableDrive" Grid.Column="5" Text="Drive" FontWeight="Bold" Margin="0,0,15,0"/>
+                            <TextBlock x:Name="WsapTableInfo" Grid.Column="6" Text="Info" FontWeight="Bold"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- Data Rows -->
+                    <ItemsControl Grid.Row="1" ItemsSource="{Binding Partitions}" Margin="15,10">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,0,0,12">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="1.5*"/>
+                                        <ColumnDefinition Width="1.5*"/>
+                                        <ColumnDefinition Width="1*"/>
+                                        <ColumnDefinition Width="1.5*"/>
+                                        <ColumnDefinition Width="0.8*"/>
+                                        <ColumnDefinition Width="1.5*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="{Binding Name}" Margin="0,0,15,0"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding Type}" Margin="0,0,15,0"/>
+                                    <TextBlock Grid.Column="2" Text="{Binding Size}" Margin="0,0,15,0"/>
+                                    <TextBlock Grid.Column="3" Text="{Binding Style}" Margin="0,0,15,0"/>
+                                    <TextBlock Grid.Column="4" Text="{Binding FileSystem}" Margin="0,0,15,0"/>
+                                    <TextBlock Grid.Column="5" Text="{Binding Drive}" Margin="0,0,15,0"/>
+                                    <TextBlock Grid.Column="6" Text="{Binding Info}"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                 </Grid>
+            </Border>
+
+            <!-- Dynamic Disk Warning -->
+            <Border Background="#FFF3CD" BorderBrush="#FFEEBA" BorderThickness="1" CornerRadius="8" Padding="15" Margin="0,0,0,30" Visibility="{Binding DynamicWarningVisibility}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="⚠️" FontSize="20" VerticalAlignment="Center" Margin="0,0,15,0" Foreground="#856404"/>
+                    <TextBlock x:Name="WsapWarningDynamic" Grid.Column="1" Text="This disk is not suitable for the Windows Setup Automatic Protocol feature. Please select another disk. If you want to install Windows on this disk, you will need to use the traditional installation method via USB Boot or WinPE." 
+                               Foreground="#856404" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="14"/>
+                </Grid>
+            </Border>
+
+            <!-- EFI and Boot Partition Selection (Hidden for Dynamic Disks) -->
+            <StackPanel Visibility="{Binding SelectionVisibility}">
+                <!-- EFI Partition Card -->
+                <Border Background="#60FFFFFF" CornerRadius="12" Padding="20" Margin="0,0,0,30">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="350"/>
+                        </Grid.ColumnDefinitions>
+                         <Image Grid.Column="0" Source="pack://application:,,,/Images/partefi.png" Width="35" Height="35" VerticalAlignment="Center" Margin="0,0,20,0"/>
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <TextBlock x:Name="WsapCardEfiTitle" Text="Choose the System / EFI Partition" FontWeight="Bold" FontSize="16" Margin="0,0,0,2"/>
+                            <TextBlock x:Name="WsapCardEfiDesc" Text="Select the System / EFI partition to store Windows boot files." FontSize="13" Foreground="#555" TextWrapping="Wrap"/>
+                        </StackPanel>
+                        <ComboBox x:Name="EfiBox" Grid.Column="2" 
+                                  ItemsSource="{Binding EfiPartitions}" 
+                                  DisplayMemberPath="ComboBoxDisplay"
+                                  SelectedIndex="0"
+                                  Style="{StaticResource WinUIComboBoxStyle}" VerticalAlignment="Center"/>
+                    </Grid>
+                </Border>
+    
+                 <!-- Boot Partition Card -->
+                <Border Background="#60FFFFFF" CornerRadius="12" Padding="20" Margin="0,0,0,30">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="350"/>
+                        </Grid.ColumnDefinitions>
+                         <Image Grid.Column="0" Source="pack://application:,,,/Images/bootpart.png" Width="35" Height="35" VerticalAlignment="Center" Margin="0,0,20,0"/>
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <TextBlock x:Name="WsapCardBootTitle" Text="Choose the Boot Partition" FontWeight="Bold" FontSize="16" Margin="0,0,0,2"/>
+                            <TextBlock x:Name="WsapCardBootDesc" Text="Pick the partition where you want to install Windows." FontSize="13" Foreground="#555" TextWrapping="Wrap"/>
+                        </StackPanel>
+                        <ComboBox x:Name="BootBox" Grid.Column="2" 
+                                  ItemsSource="{Binding BootPartitions}" 
+                                  DisplayMemberPath="ComboBoxDisplay"
+                                  SelectedIndex="0"
+                                  Style="{StaticResource WinUIComboBoxStyle}" VerticalAlignment="Center"/>
+                    </Grid>
+                </Border>
+            </StackPanel>
+
+            <!-- Select Windows version -->
+            <TextBlock x:Name="WsapHeaderVersion" Text="Select Windows version" FontSize="29" FontWeight="SemiBold" Margin="0,0,0,20"/>
+            <Grid Margin="0,0,0,30" HorizontalAlignment="Left" Width="650">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Border Grid.Column="0" Background="White" CornerRadius="8" Margin="0,0,10,0">
+                    <TextBox x:Name="WindowsISOTextBox" 
+                             Text="Select directory to your iso file" 
+                             Tag="Select directory to your iso file"
+                             Background="Transparent" Padding="10" 
+                             BorderThickness="0" VerticalContentAlignment="Center" 
+                             FontSize="14" Foreground="#555"
+                             GotFocus="WindowsISOTextBox_GotFocus"
+                             LostFocus="WindowsISOTextBox_LostFocus"/>
+                </Border>
+                <Button x:Name="WindowsISOBrowseBtn" Grid.Column="1" Content="Browse" Margin="0,0,0,0" Background="White" Foreground="Black" Padding="15,8" BorderThickness="0" Click="WindowsISOBrowseBtn_Click">
+                     <Button.Resources>
+                         <Style TargetType="{x:Type Border}">
+                            <Setter Property="CornerRadius" Value="8"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
+            </Grid>
+
+             <!-- Windows Edition Card -->
+            <Border Background="#60FFFFFF" CornerRadius="12" Padding="20" Margin="0,0,0,30">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="350"/>
+                    </Grid.ColumnDefinitions>
+                     <!-- <TextBlock Grid.Column="0" Text="&#xE7AC;" FontFamily="Segoe MDL2 Assets" FontSize="35" VerticalAlignment="Center" Margin="0,0,20,0"/> -->
+                     <!-- <TextBlock Grid.Column="0" Text="🪟" FontSize="35" VerticalAlignment="Center" Margin="0,0,20,0"/> -->
+                     <Image Grid.Column="0" Source="pack://application:,,,/Images/version.png" Width="35" Height="35" VerticalAlignment="Center" Margin="0,0,20,0"/>
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <TextBlock x:Name="WsapCardVersionTitle" Text="Select Windows Edition" FontWeight="Bold" FontSize="16" Margin="0,0,0,2"/>
+                        <TextBlock x:Name="WsapCardVersionDesc" Text="Select the edition that best fits your needs." FontSize="13" Foreground="#555" TextWrapping="Wrap"/>
+                    </StackPanel>
+                    <ComboBox x:Name="EditionBox" Grid.Column="2" 
+                              ItemsSource="{Binding WindowsEditions}"
+                              Style="{StaticResource WinUIComboBoxStyle}" VerticalAlignment="Center"/>
+                </Grid>
+            </Border>
+
+            <!-- Select driver -->
+            <TextBlock x:Name="WsapHeaderDriver" Text="Select driver" FontSize="29" FontWeight="SemiBold" Margin="0,0,0,20"/>
+            <Grid Margin="0,0,0,30" HorizontalAlignment="Left" Width="650">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Border Grid.Column="0" Background="White" CornerRadius="8" Margin="0,0,10,0">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="🔍" VerticalAlignment="Center" Margin="10,0,5,0" FontSize="16"/>
+                        <TextBox x:Name="DriverLocationTextBox" Grid.Column="1" Text="Leave it blank if you want to install driver later" Background="Transparent" Padding="5,10,10,10" BorderThickness="0" VerticalContentAlignment="Center" FontSize="14"/>
+                    </Grid>
+                </Border>
+                <Button x:Name="DriverLocationBrowseBtn" Grid.Column="1" Content="Browse" Margin="0,0,0,0" Background="White" Foreground="Black" Padding="15,8" BorderThickness="0" Click="DriverLocationBrowseBtn_Click">
+                     <Button.Resources>
+                         <Style TargetType="{x:Type Border}">
+                            <Setter Property="CornerRadius" Value="8"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
+            </Grid>
+
+            <!-- Select file Unattend -->
+            <TextBlock x:Name="WsapHeaderUnattend" Text="Select file Unattend" FontSize="29" FontWeight="SemiBold" Margin="0,0,0,20"/>
+            <Grid Margin="0,0,0,30" HorizontalAlignment="Left" Width="650">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Border Grid.Column="0" Background="White" CornerRadius="8" Margin="0,0,10,0">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="🔍" VerticalAlignment="Center" Margin="10,0,5,0" FontSize="16"/>
+                        <TextBox x:Name="UnattendFileTextBox" Grid.Column="1" Text="Leave it blank if you want to configure by yourself" Background="Transparent" Padding="5,10,10,10" BorderThickness="0" VerticalContentAlignment="Center" FontSize="14"/>
+                    </Grid>
+                </Border>
+                <Button x:Name="UnattendFileBrowseBtn" Grid.Column="1" Content="Browse" Margin="0,0,0,0" Background="White" Foreground="Black" Padding="15,8" BorderThickness="0" Click="UnattendFileBrowseBtn_Click">
+                     <Button.Resources>
+                         <Style TargetType="{x:Type Border}">
+                            <Setter Property="CornerRadius" Value="8"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
+            </Grid>
+
+            <!-- Advanced Options -->
+            <!-- Advanced Options -->
+            <Border Background="#60FFFFFF" CornerRadius="12" Padding="20" Margin="0,0,0,30">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    
+                    <!-- Header -->
+                    <Grid Grid.Row="0" Margin="0,0,0,15">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                         <Image Grid.Column="0" Source="pack://application:,,,/Images/windows.png" Width="35" Height="35" VerticalAlignment="Center" Margin="0,0,20,0"/>
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <TextBlock x:Name="WsapCardAdvancedTitle" Text="Advanced Options" FontWeight="Bold" FontSize="16" Margin="0,0,0,2"/>
+                            <TextBlock x:Name="WsapCardAdvancedDesc" Text="Configure additional installation settings." FontSize="13" Foreground="#555" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Options -->
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="20"/> <!-- Spacer -->
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <StackPanel Grid.Column="0">
+                            <CheckBox x:Name="ChkAutoFormat" Content="Format target partition (Recommended)" IsChecked="True" Style="{StaticResource ModernCheckBoxStyle}"/>
+                            <CheckBox x:Name="ChkAutoRestart" Content="Auto Restart after preparation" IsChecked="True" Style="{StaticResource ModernCheckBoxStyle}"/>
+                            <CheckBox x:Name="ChkAddBootMenu" Content="Add entries to Boot Menu" IsChecked="True" Style="{StaticResource ModernCheckBoxStyle}"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="2">
+                             <CheckBox x:Name="ChkBypassWin11" Content="Bypass Windows 11 Requirements (TPM, Secure Boot)" IsChecked="False" Style="{StaticResource ModernCheckBoxStyle}"/>
+                             <CheckBox x:Name="ChkBypassNRO" Content="Bypass Microsoft Account (Create Local Account)" IsChecked="False" Style="{StaticResource ModernCheckBoxStyle}"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <WrapPanel Margin="0,0,0,30">
+                <Button x:Name="BtnStart" Content="Start" Style="{StaticResource ActionButtonStyle}" Width="150" Margin="0,0,20,10" Click="BtnStart_Click"/>
+                <Button x:Name="BtnRestart" Content="Restart" Style="{StaticResource ActionButtonStyle}" Width="150" Margin="0,0,20,10"/>
+                <Button x:Name="BtnReclaimX" Content="Reclaim Drive X" Style="{StaticResource ActionButtonStyle}" Width="150" Margin="0,0,20,10" Click="BtnReclaimX_Click"/>
+            </WrapPanel>
+
+        </StackPanel>
+        </ScrollViewer>
+
+
+    </Grid>
+</UserControl>

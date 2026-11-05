@@ -1,0 +1,24 @@
+<UserControl x:Class="HyperLisUI.Views.UWPDescriptionView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="300">
+             
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="0,0,10,0">
+            <!-- English Description -->
+            <TextBlock Text="Description:" FontSize="19" FontWeight="SemiBold" Margin="0,0,0,15"/>
+            <TextBlock Text="Bloatware Removal allows you to easily uninstall pre-installed Microsoft apps and unnecessary bloatware with a single click, or customize the removal list to your exact needs. Rest assured, only non-essential applications will be removed—your personal files and core system settings will remain completely safe and untouched." 
+                       TextWrapping="Wrap" FontSize="17" LineHeight="22" Margin="0,0,0,25" Foreground="Black"/>
+
+            <Separator Background="#80FFFFFF" Margin="0,0,0,20"/>
+            
+            <!-- Vietnamese Description -->
+            <TextBlock Text="Mô tả:" FontSize="19" FontWeight="SemiBold" Margin="0,0,0,15"/>
+            <TextBlock Text="Tính năng Gỡ bỏ Bloatware cho phép bạn dễ dàng dọn dẹp các ứng dụng Microsoft cài sẵn và bloatware không cần thiết chỉ với một cú nhấp chuột, hoặc tự do tùy chỉnh danh sách theo nhu cầu. Hãy yên tâm, chỉ những ứng dụng không thiết yếu mới bị loại bỏ — các tệp cá nhân và cài đặt hệ thống cốt lõi của bạn sẽ được giữ nguyên và an toàn tuyệt đối." 
+                       TextWrapping="Wrap" FontSize="17" LineHeight="22" Margin="0,0,0,30" Foreground="Black"/>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

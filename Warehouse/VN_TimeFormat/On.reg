@@ -1,0 +1,21 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CURRENT_USER\Control Panel\International]
+"LocaleName"="vi-VN"
+"sShortDate"="dd/MM/yyyy"
+"sLongDate"="dd MMMM yyyy"
+"sShortTime"="h:mm tt"
+"sTimeFormat"="h:mm:ss tt"
+"s1159"="SA"
+"s2359"="CH"
+"iFirstDayOfWeek"="0"
+
+[HKEY_USERS\.DEFAULT\Control Panel\International]
+"LocaleName"="vi-VN"
+"sShortDate"="dd/MM/yyyy"
+"sLongDate"="dd MMMM yyyy"
+"sShortTime"="h:mm tt"
+"sTimeFormat"="h:mm:ss tt"
+"s1159"="SA"
+"s2359"="CH"
+"iFirstDayOfWeek"="0"

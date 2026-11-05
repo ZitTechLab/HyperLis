@@ -1,0 +1,750 @@
+<UserControl x:Class="HyperLisUI.Views.LicenseView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:HyperLisUI.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="850" d:DesignWidth="1280" Background="Transparent"
+             FontFamily="Segoe UI"
+             FontSize="13.5"
+             TextOptions.TextFormattingMode="Ideal"
+             TextOptions.TextRenderingMode="Auto"
+             UseLayoutRounding="True"
+             SnapsToDevicePixels="True">
+
+    <UserControl.Resources>
+        <!-- ================= HYPERLIS BRAND COLOR PALETTE ================= -->
+        <!-- Primary Vibrant Cyan: #00B2FF / Deep Cyan: #0090D4 / Accent Cyan: #00A3EA -->
+        <!-- Frosted Glass Surface: #F7FAFD with Border #CFE5F8 -->
+        <!-- Sub-box Glass Surface: #F0F8FE with Border #D3E9FA -->
+        <!-- Text Colors: Primary #0F172A, Secondary #475569, Muted #64748B -->
+        <!-- Success Emerald: #10B981, Soft Tag Background: #ECFDF5, Tag Border: #A7F3D0 -->
+
+        <!-- PRIMARY CYAN ACTION BUTTON -->
+        <Style x:Key="PrimaryActionButtonStyle" TargetType="Button">
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#00B2FF" Offset="0"/>
+                        <GradientStop Color="#0090D4" Offset="1"/>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="20,8"/>
+            <Setter Property="FontSize" Value="13.5"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="7" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background">
+                                    <Setter.Value>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                            <GradientStop Color="#1AB8FF" Offset="0"/>
+                                            <GradientStop Color="#00A0EA" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background">
+                                    <Setter.Value>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                            <GradientStop Color="#0082C0" Offset="0"/>
+                                            <GradientStop Color="#0072AA" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Background" Value="#E2E8F0"/>
+                                <Setter Property="Foreground" Value="#94A3B8"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ActionButtonStyle" TargetType="Button" BasedOn="{StaticResource PrimaryActionButtonStyle}"/>
+        
+        <!-- SECONDARY FROSTED BUTTON -->
+        <Style x:Key="SecondaryActionButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#FFFFFF"/>
+            <Setter Property="Foreground" Value="#1E293B"/>
+            <Setter Property="BorderBrush" Value="#CBE3F5"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="14,6"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="7" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#F0F9FF"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="#00B2FF"/>
+                                <Setter Property="Foreground" Value="#0284C7"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#E0F2FE"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Background" Value="#F8FAFC"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="#E2E8F0"/>
+                                <Setter Property="Foreground" Value="#94A3B8"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- MAS CLEANUP ACTION CHIP BUTTON -->
+        <Style x:Key="CleanupChipButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#FFFFFF"/>
+            <Setter Property="Foreground" Value="#1E293B"/>
+            <Setter Property="BorderBrush" Value="#CBD5E1"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="10,6"/>
+            <Setter Property="FontSize" Value="12.5"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="7" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#F0F9FF"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="#00B2FF"/>
+                                <Setter Property="Foreground" Value="#0284C7"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#E0F2FE"/>
+                                <Setter Property="Foreground" Value="#0369A1"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- HYPERLINK BUTTON -->
+        <Style x:Key="HyperlinkButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#0090D4"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="12.5"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <TextBlock Text="{TemplateBinding Content}" TextDecorations="None" Foreground="{TemplateBinding Foreground}"/>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Foreground" Value="#00B2FF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- HEADER SUPPORT PILL BUTTON -->
+        <Style x:Key="HeaderSupportButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#40FFFFFF"/>
+            <Setter Property="Foreground" Value="#334155"/>
+            <Setter Property="BorderBrush" Value="#CBE3F5"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="14,5"/>
+            <Setter Property="FontSize" Value="12.5"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="16" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#F0F9FF"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="#00B2FF"/>
+                                <Setter Property="Foreground" Value="#0284C7"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ICON COPY BUTTON -->
+        <Style x:Key="IconButton" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Foreground" Value="#64748B"/>
+            <Setter Property="Padding" Value="5,3"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bdr" Background="{TemplateBinding Background}" CornerRadius="5" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bdr" Property="Background" Value="#E0F2FE"/>
+                                <Setter Property="Foreground" Value="#0090D4"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <!-- ================= SCROLLVIEWER FOR SMOOTH ACCESSIBILITY ON ALL SCREENS ================= -->
+    <ScrollViewer x:Name="LicenseScrollViewer" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" PanningMode="VerticalOnly">
+        <Grid Margin="24,6,24,12">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/> <!-- Row 0: Page Header -->
+                <RowDefinition Height="Auto"/> <!-- Row 1: Hero Status Card (Tier 1) -->
+                <RowDefinition Height="Auto"/> <!-- Row 2: Two Perfectly Balanced Columns -->
+            </Grid.RowDefinitions>
+
+            <!-- ================= ROW 0: PAGE HEADER ================= -->
+            <Grid Grid.Row="0" Margin="0,0,0,6">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Title & Subtitle -->
+                <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                    <TextBlock x:Name="lblLicMainTitle" Text="Manage License" FontSize="23" FontWeight="Bold" Foreground="#0F172A" Margin="0,0,0,2"/>
+                    <TextBlock x:Name="lblLicSubTitle" Text="Backup/Restore/Remove Windows licenses on this device" FontSize="13" Foreground="#64748B"/>
+                </StackPanel>
+
+                <!-- Quick Support & Guide Action Pills -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button x:Name="btnLicHelp" Style="{StaticResource HeaderSupportButtonStyle}" Margin="0,0,8,0" Click="BtnHelp_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="/Images/License/help.png" Width="14" Height="14" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                            <TextBlock Text="Help &amp; Guide" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="btnLicSupport" Style="{StaticResource HeaderSupportButtonStyle}" Click="BtnSupport_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="/Images/License/contact.png" Width="14" Height="14" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                            <TextBlock Text="Contact Support" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
+
+            <!-- ================= ROW 1: TIER 1 - HERO STATUS CARD ================= -->
+            <Border Grid.Row="1" Background="#F7FAFD" BorderBrush="#CFE5F8" BorderThickness="1" CornerRadius="12" Margin="0,0,0,10" Padding="18,10">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Top Status Line -->
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Icon Circle -->
+                        <Border Grid.Column="0" Width="40" Height="40" CornerRadius="20" Background="#ECFDF5" BorderBrush="#A7F3D0" BorderThickness="1" VerticalAlignment="Center" Margin="0,0,14,0">
+                            <Image x:Name="imgStatusIcon" Source="/Images/License/activated.png" Width="24" Height="24" RenderOptions.BitmapScalingMode="HighQuality" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+
+                        <!-- Title, License Badge & Description -->
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,2">
+                                <TextBlock x:Name="txtStatusTitle" Text="Windows is activated" FontSize="17" FontWeight="Bold" Foreground="#0F172A" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                                <Border x:Name="brdLicenseTypeTag" Background="#ECFDF5" BorderBrush="#A7F3D0" BorderThickness="1" CornerRadius="6" Padding="10,2" VerticalAlignment="Center">
+                                    <TextBlock x:Name="txtLicenseTypeTag" Text="OEM License (Factory Original)" FontSize="12" FontWeight="SemiBold" Foreground="#059669"/>
+                                </Border>
+                            </StackPanel>
+                            <TextBlock x:Name="txtStatusDesc" Text="This device is using the genuine factory OEM license." FontSize="12.5" Foreground="#475569"/>
+                        </StackPanel>
+
+                        <!-- Recheck Button -->
+                        <Button Grid.Column="2" VerticalAlignment="Center" Style="{StaticResource SecondaryActionButtonStyle}" Padding="14,5" Height="34" Click="BtnCheckStatus_Click">
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="/Images/License/checkstateagain.png" Width="13" Height="13" Margin="0,0,6,0" VerticalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                <TextBlock x:Name="lblLicRecheckStatus" Text="Recheck Status" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+
+                    <!-- Horizontal Metrics Bar -->
+                    <Border Grid.Row="1" Background="#F0F8FE" BorderBrush="#D3E9FA" BorderThickness="1" CornerRadius="8" Padding="14,6" Margin="0,8,0,0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Metric 1: Status -->
+                            <StackPanel Grid.Column="0">
+                                <TextBlock x:Name="lblLicStatus" Text="Status" FontSize="11.5" FontWeight="Medium" Foreground="#64748B" Margin="0,0,0,1"/>
+                                <TextBlock x:Name="txtDetailActivationStatus" Text="Activated" FontSize="13.5" FontWeight="Bold" Foreground="#059669"/>
+                            </StackPanel>
+
+                            <Separator Grid.Column="1" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="12,0" Background="#CFE5F8"/>
+
+                            <!-- Metric 2: Method -->
+                            <StackPanel Grid.Column="2">
+                                <TextBlock x:Name="lblLicMethod" Text="Method" FontSize="11.5" FontWeight="Medium" Foreground="#64748B" Margin="0,0,0,1"/>
+                                <TextBlock x:Name="txtDetailMethod" Text="OEM" FontSize="13.5" FontWeight="SemiBold" Foreground="#1E293B"/>
+                            </StackPanel>
+
+                            <Separator Grid.Column="3" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="12,0" Background="#CFE5F8"/>
+
+                            <!-- Metric 3: Activation Date -->
+                            <StackPanel Grid.Column="4">
+                                <TextBlock x:Name="lblLicActivationDate" Text="Activation Date" FontSize="11.5" FontWeight="Medium" Foreground="#64748B" Margin="0,0,0,1"/>
+                                <TextBlock x:Name="txtDetailDate" Text="13/03/2026" FontSize="13.5" FontWeight="SemiBold" Foreground="#1E293B"/>
+                            </StackPanel>
+
+                            <Separator Grid.Column="5" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="12,0" Background="#CFE5F8"/>
+
+                            <!-- Metric 4: Condition -->
+                            <StackPanel Grid.Column="6">
+                                <TextBlock x:Name="lblLicCondition" Text="Condition" FontSize="11.5" FontWeight="Medium" Foreground="#64748B" Margin="0,0,0,1"/>
+                                <TextBlock x:Name="txtDetailCondition" Text="Valid" FontSize="13.5" FontWeight="Bold" Foreground="#059669"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <!-- ================= ROW 2: TWO BALANCED SPACIOUS COLUMNS ================= -->
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>   <!-- Left Column: License Info + Activate Windows (Expanded to Fill) -->
+                    <ColumnDefinition Width="14"/>   <!-- Gap -->
+                    <ColumnDefinition Width="1*"/>   <!-- Right Column: Backup/Restore + MAS Cleanup (Shifted up ~25px) -->
+                </Grid.ColumnDefinitions>
+
+                <!-- ================= LEFT COLUMN ================= -->
+                <Grid Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- CARD 1: LICENSE INFORMATION (GENEROUS 13PX ROW SPACING) -->
+                    <Border Grid.Row="0" Background="#F7FAFD" BorderBrush="#CFE5F8" BorderThickness="1" CornerRadius="12" Padding="18,15" Margin="0,0,0,10">
+                        <StackPanel>
+                            <!-- Header -->
+                            <Grid Margin="0,0,0,12">
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock Text="&#xE24B;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" FontSize="17" Foreground="#0090D4" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="lblLicInfoTitle" Text="License Information" FontSize="15" FontWeight="Bold" Foreground="#0F172A" VerticalAlignment="Center"/>
+                                </StackPanel>
+                                <Button Style="{StaticResource SecondaryActionButtonStyle}" HorizontalAlignment="Right" Padding="12,5" Height="30" FontSize="12" Click="BtnCopyAll_Click">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="/Images/License/copyblue.png" Width="13" Height="13" Margin="0,0,5,0" VerticalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                        <TextBlock x:Name="lblLicCopyAll" Text="Copy all info" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                            </Grid>
+
+                            <!-- Specifications Grid (Generous 13px Row Gaps for Luxury Feel) -->
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="105"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="13"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="13"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="13"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="13"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="13"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="13"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="13"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Channel -->
+                                <TextBlock Grid.Row="0" Grid.Column="0" x:Name="lblLicChannel" Text="Channel" Foreground="#475569" FontSize="13" FontWeight="Medium" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" x:Name="txtChannel" Text="OEM" FontWeight="SemiBold" Foreground="#0F172A" FontSize="14" VerticalAlignment="Center"/>
+
+                                <!-- CID -->
+                                <TextBlock Grid.Row="2" Grid.Column="0" x:Name="lblLicCID" Text="CID" Foreground="#475569" FontSize="13" FontWeight="Medium" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Row="2" Grid.Column="1" x:Name="txtCID" Text="00356-24621-51116-AAOEM" FontWeight="SemiBold" Foreground="#0F172A" FontSize="14" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                <Button Grid.Row="2" Grid.Column="2" Style="{StaticResource IconButton}" Click="BtnCopyCID_Click" VerticalAlignment="Center" ToolTip="Copy CID">
+                                    <Image Source="/Images/License/copy.png" Width="14" Height="14" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                </Button>
+
+                                <!-- Product Key -->
+                                <TextBlock Grid.Row="4" Grid.Column="0" x:Name="lblLicProductKey" Text="Product Key" Foreground="#475569" FontSize="13" FontWeight="Medium" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Row="4" Grid.Column="1" x:Name="txtProductKey" Text="WN7RF-QBR8G-4PMJR-2DJJF-HQXC3" FontWeight="Bold" Foreground="#0090D4" FontSize="14.5" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                <Button Grid.Row="4" Grid.Column="2" Style="{StaticResource IconButton}" Click="BtnCopyKey_Click" VerticalAlignment="Center" ToolTip="Copy Product Key">
+                                    <Image Source="/Images/License/copy.png" Width="14" Height="14" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                </Button>
+
+                                <!-- OEM Key -->
+                                <TextBlock Grid.Row="6" Grid.Column="0" x:Name="lblLicOemKey" Text="OEM Key" Foreground="#475569" FontSize="13" FontWeight="Medium" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Row="6" Grid.Column="1" x:Name="txtOemKey" Text="KNQ32-29MV8-DGGKP-47JG6-8TY6Q" FontWeight="SemiBold" Foreground="#0F172A" FontSize="14" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                <Button Grid.Row="6" Grid.Column="2" Style="{StaticResource IconButton}" Click="BtnCopyOemKey_Click" VerticalAlignment="Center" ToolTip="Copy OEM Key">
+                                    <Image Source="/Images/License/copy.png" Width="14" Height="14" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                </Button>
+
+                                <!-- OEM Edition -->
+                                <TextBlock Grid.Row="8" Grid.Column="0" x:Name="lblLicOemEdition" Text="OEM Edition" Foreground="#475569" FontSize="13" FontWeight="Medium" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Row="8" Grid.Column="1" Grid.ColumnSpan="2" x:Name="txtOemEdition" Text="Home Single Language" FontWeight="SemiBold" Foreground="#0F172A" FontSize="14" VerticalAlignment="Center"/>
+
+                                <!-- OS Name -->
+                                <TextBlock Grid.Row="10" Grid.Column="0" x:Name="lblLicOsName" Text="OS Edition" Foreground="#475569" FontSize="13" FontWeight="Medium" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Row="10" Grid.Column="1" Grid.ColumnSpan="2" x:Name="txtOsName" Text="Windows 10 Home Single Language" FontWeight="SemiBold" Foreground="#0F172A" FontSize="14" VerticalAlignment="Center"/>
+
+                                <!-- Version & Build (Unified Font & Dynamic Localization) -->
+                                <TextBlock Grid.Row="12" Grid.Column="0" x:Name="lblLicVersion" Text="Version" Foreground="#475569" FontSize="13" FontWeight="Medium" VerticalAlignment="Center"/>
+                                <StackPanel Grid.Row="12" Grid.Column="1" Grid.ColumnSpan="2" Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock x:Name="txtVersion" Text="22H2" FontWeight="SemiBold" Foreground="#0F172A" FontSize="14" VerticalAlignment="Center"/>
+                                    <TextBlock Text="  •  " Foreground="#94A3B8" FontSize="12" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="lblLicOsBuild" Text="OS Build" Foreground="#475569" FontSize="13" FontWeight="Medium" VerticalAlignment="Center"/>
+                                    <TextBlock Text=": " Foreground="#475569" FontSize="13" FontWeight="Medium" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="txtBuild" Text="19045.6466" FontWeight="SemiBold" Foreground="#0F172A" FontSize="14" VerticalAlignment="Center"/>
+                                </StackPanel>
+
+                                <!-- Architecture & Installed Date (Unified Font & Dynamic Localization) -->
+                                <TextBlock Grid.Row="14" Grid.Column="0" x:Name="lblLicArch" Text="Architecture" Foreground="#475569" FontSize="13" FontWeight="Medium" VerticalAlignment="Center"/>
+                                <StackPanel Grid.Row="14" Grid.Column="1" Grid.ColumnSpan="2" Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock x:Name="txtArchitecture" Text="64-bit" FontWeight="SemiBold" Foreground="#0F172A" FontSize="14" VerticalAlignment="Center"/>
+                                    <TextBlock Text="  •  " Foreground="#94A3B8" FontSize="12" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="lblLicInstallDate" Text="Installed Date" Foreground="#475569" FontSize="13" FontWeight="Medium" VerticalAlignment="Center"/>
+                                    <TextBlock Text=": " Foreground="#475569" FontSize="13" FontWeight="Medium" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="txtInstallDate" Text="13/03/2026" FontWeight="SemiBold" Foreground="#0F172A" FontSize="14" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- CARD 2: ACTIVATE WINDOWS -->
+                    <Border Grid.Row="1" Background="#F7FAFD" BorderBrush="#CFE5F8" BorderThickness="1" CornerRadius="12" Padding="18,16" VerticalAlignment="Stretch">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <!-- Header -->
+                            <StackPanel Grid.Row="0">
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
+                                    <TextBlock Text="&#xE740;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" FontSize="17" Foreground="#0090D4" Margin="0,0,7,0" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="lblLicActivateTitle" Text="Activate Windows" FontSize="15" FontWeight="Bold" Foreground="#0F172A" VerticalAlignment="Center"/>
+                                </StackPanel>
+                                <TextBlock x:Name="lblLicActivateDesc" Text="Enter a product key to activate Windows." FontSize="13" Foreground="#64748B" Margin="0,0,0,12" TextWrapping="Wrap"/>
+                            </StackPanel>
+
+                            <!-- Input Box + Action Buttons (Comfortable 42px Height) -->
+                            <Grid Grid.Row="1" Margin="0,0,0,12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="8"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="8"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Border Grid.Column="0" BorderBrush="#CBD5E1" BorderThickness="1" CornerRadius="7" Background="#FFFFFF" Height="42">
+                                    <Grid>
+                                        <TextBox x:Name="tbInputKey" BorderThickness="0" Background="Transparent" Padding="12,9,32,9" FontSize="13.5" FontWeight="Medium" Foreground="#0F172A" VerticalAlignment="Center"/>
+                                        <TextBlock x:Name="tbInputKeyPlaceholder" Text="Enter product key..." Foreground="#94A3B8" Padding="12,9" FontSize="13" IsHitTestVisible="False" VerticalAlignment="Center">
+                                            <TextBlock.Style>
+                                                <Style TargetType="{x:Type TextBlock}">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Text, ElementName=tbInputKey}" Value="">
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                        <TextBlock Text="&#xE740;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" Foreground="#94A3B8" FontSize="14" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                    </Grid>
+                                </Border>
+
+                                <Button Grid.Column="2" x:Name="btnLicActivate" Style="{StaticResource SecondaryActionButtonStyle}" Click="BtnActivate_Click" Height="42" Padding="16,0" ToolTip="Activate Windows">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xE740;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" FontSize="14" Foreground="#0090D4" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                        <TextBlock x:Name="lblLicActivateBtnText" Text="Activate" FontWeight="Medium" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <Button Grid.Column="4" Style="{StaticResource SecondaryActionButtonStyle}" Click="BtnCheckStatus_Click" Height="42" Padding="14,0" ToolTip="Check Status">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="/Images/License/checkstate.png" Width="13" Height="13" Margin="0,0,6,0" VerticalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                        <TextBlock x:Name="lblLicCheckStatus" Text="Check Status" FontWeight="Medium" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                            </Grid>
+
+                            <!-- Convert SKU Prompt -->
+                            <Border Grid.Row="2" Background="#F0F8FE" BorderBrush="#D3E9FA" BorderThickness="1" CornerRadius="8" Padding="14,10" Margin="0,0,0,12">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock x:Name="lblLicChangeTypeTitle" Text="You want to change the license type?" FontWeight="SemiBold" FontSize="13" Foreground="#1E293B"/>
+                                        <TextBlock x:Name="lblLicChangeTypeDesc" Text="You can convert Windows Edition to use your own license." FontSize="12" Foreground="#64748B"/>
+                                    </StackPanel>
+                                    <Button Grid.Column="1" x:Name="btnLicChangeType" Content="Click here >" Style="{StaticResource HyperlinkButtonStyle}" FontWeight="Bold" Click="BtnChangeKey_Click" VerticalAlignment="Center" Margin="8,0,0,0"/>
+                                </Grid>
+                            </Border>
+
+                            <!-- Flexible space -->
+
+                            <!-- Note Banner (Docked at bottom to match Right Column Note) -->
+                            <Border Grid.Row="4" Background="#EFF6FF" BorderBrush="#BFDBFE" BorderThickness="1" CornerRadius="8" Padding="14,10" VerticalAlignment="Bottom">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="&#xE946;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" Foreground="#0284C7" FontSize="15" Margin="0,1,8,0" VerticalAlignment="Top"/>
+                                    <TextBlock Grid.Column="1" x:Name="lblLicNoteTitle" Text="Note:" FontWeight="Bold" FontSize="13" Foreground="#0284C7" Margin="0,0,5,0" VerticalAlignment="Top"/>
+                                    <TextBlock Grid.Column="2" x:Name="lblLicNoteDesc" Text="Activating Windows requires internet connection. Make sure to use a valid product key to avoid activation errors." FontSize="12.5" Foreground="#0369A1" LineHeight="17" VerticalAlignment="Center" TextWrapping="Wrap"/>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </Border>
+                </Grid>
+
+                <!-- ================= RIGHT COLUMN: BACKUP/RESTORE + REMOVE MAS ================= -->
+                <Grid Grid.Column="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- CARD 1: BACKUP & RESTORE ACTIVATION -->
+                    <Border Grid.Row="0" Background="#F7FAFD" BorderBrush="#CFE5F8" BorderThickness="1" CornerRadius="12" Padding="16,11" Margin="0,0,0,10">
+                        <StackPanel>
+                            <!-- Header -->
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                <Image Source="/Images/License/layers.png" Width="16" Height="16" Margin="0,0,7,0" VerticalAlignment="Center"/>
+                                <TextBlock x:Name="lblLicBackupTitle" Text="Backup &amp; Restore Activation" FontSize="15" FontWeight="Bold" Foreground="#0F172A" VerticalAlignment="Center"/>
+                            </StackPanel>
+
+                            <!-- 2 Generous Boxes Side by Side -->
+                            <Grid Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="10"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Backup Box -->
+                                <Border Grid.Column="0" Background="#F0F8FE" BorderBrush="#D3E9FA" BorderThickness="1" CornerRadius="8" Padding="12,8">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Grid.Row="0" x:Name="lblLicBackupSubTitle" Text="Backup License" FontWeight="Bold" FontSize="13" Foreground="#1E293B" Margin="0,0,0,2"/>
+                                        <TextBlock Grid.Row="1" x:Name="lblLicBackupDesc" Text="Save current license information to a file for future use." FontSize="11.5" Foreground="#64748B" TextWrapping="Wrap" Margin="0,0,0,8" Height="32"/>
+                                        <Button Grid.Row="2" Style="{StaticResource SecondaryActionButtonStyle}" Padding="12,5" Height="32" HorizontalAlignment="Left" Click="BtnBackup_Click">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Image Source="/Images/License/backup.png" Width="12" Height="12" Margin="0,0,5,0" VerticalAlignment="Center"/>
+                                                <TextBlock x:Name="lblLicBackupBtn" Text="Backup" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Button>
+                                    </Grid>
+                                </Border>
+
+                                <!-- Restore Box -->
+                                <Border Grid.Column="2" Background="#F0F8FE" BorderBrush="#D3E9FA" BorderThickness="1" CornerRadius="8" Padding="12,8">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Grid.Row="0" x:Name="lblLicRestoreSubTitle" Text="Restore License" FontWeight="Bold" FontSize="13" Foreground="#1E293B" Margin="0,0,0,2"/>
+                                        <TextBlock Grid.Row="1" x:Name="lblLicRestoreDesc" Text="Restore license from a previously backed up file." FontSize="11.5" Foreground="#64748B" TextWrapping="Wrap" Margin="0,0,0,8" Height="32"/>
+                                        <Button Grid.Row="2" Style="{StaticResource SecondaryActionButtonStyle}" Padding="12,5" Height="32" HorizontalAlignment="Left" Click="BtnRestore_Click">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Image Source="/Images/License/recover.png" Width="12" Height="12" Margin="0,0,5,0" VerticalAlignment="Center"/>
+                                                <TextBlock x:Name="lblLicRestoreBtn" Text="Restore" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Button>
+                                    </Grid>
+                                </Border>
+                            </Grid>
+
+                            <!-- Backup Note -->
+                            <Border Background="#F0F8FE" BorderBrush="#D3E9FA" BorderThickness="1" CornerRadius="6" Padding="8,5">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="&#xE946;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" Foreground="#64748B" FontSize="13" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="lblLicBackupNote" Text="Backup file only contains license information, product key is not included." FontSize="11.5" Foreground="#64748B" VerticalAlignment="Center" TextWrapping="Wrap"/>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- CARD 2: REMOVE MAS ACTIVATION SCRIPTS (BALANCED TO MATCH ACTIVATE WINDOWS BOTTOM) -->
+                    <Border Grid.Row="1" Background="#F7FAFD" BorderBrush="#CFE5F8" BorderThickness="1" CornerRadius="12" Padding="16,14" VerticalAlignment="Stretch">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <!-- Header (Dynamic Localization) -->
+                            <StackPanel Grid.Row="0" Margin="0,0,0,10">
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,2">
+                                    <Image Source="/Images/License/remove.png" Width="16" Height="16" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="lblLicRemoveMAS" Text="Remove MAS" FontSize="15" FontWeight="Bold" Foreground="#0F172A" VerticalAlignment="Center"/>
+                                </StackPanel>
+                                <TextBlock x:Name="lblLicRemoveMASDesc" Text="Uninstall MAS activation scripts from the system." FontSize="12.5" Foreground="#64748B" TextTrimming="CharacterEllipsis"/>
+                            </StackPanel>
+
+                            <!-- Windows MAS Cleanup Section (Comfortable 40px Action Chips) -->
+                            <Border Grid.Row="1" Background="#F0F8FE" BorderBrush="#D3E9FA" BorderThickness="1" CornerRadius="8" Padding="12,10" Margin="0,0,0,10">
+                                <StackPanel>
+                                    <TextBlock x:Name="lblWinRemoveTitle" Text="Windows" FontWeight="Bold" FontSize="13" Foreground="#0F172A" Margin="0,0,0,7"/>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="8"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="8"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <Button Grid.Column="0" Style="{StaticResource CleanupChipButtonStyle}" Click="BtnRemoveWinHWID_Click" Height="40" ToolTip="Remove HWID">
+                                            <TextBlock x:Name="btnRemoveHWID" Text="Remove HWID" FontSize="12" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                                        </Button>
+                                        <Button Grid.Column="2" Style="{StaticResource CleanupChipButtonStyle}" Click="BtnRemoveWinKMS_Click" Height="40" ToolTip="Remove KMS">
+                                            <TextBlock x:Name="btnRemoveWinKMS" Text="Remove KMS" FontSize="12" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                                        </Button>
+                                        <Button Grid.Column="4" Style="{StaticResource CleanupChipButtonStyle}" Click="BtnRemoveWinTSforce_Click" Height="40" ToolTip="Remove TSforce">
+                                            <TextBlock x:Name="btnRemoveWinTSforce" Text="Remove TSforce" FontSize="12" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                                        </Button>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Office MAS Cleanup Section (Comfortable 40px Action Chips) -->
+                            <Border Grid.Row="2" Background="#F0F8FE" BorderBrush="#D3E9FA" BorderThickness="1" CornerRadius="8" Padding="12,10" Margin="0,0,0,10">
+                                <StackPanel>
+                                    <TextBlock x:Name="lblOffRemoveTitle" Text="Office" FontWeight="Bold" FontSize="13" Foreground="#0F172A" Margin="0,0,0,7"/>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="8"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="8"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <Button Grid.Column="0" Style="{StaticResource CleanupChipButtonStyle}" Click="BtnRemoveOhook_Click" Height="40" ToolTip="Remove Ohook">
+                                            <TextBlock x:Name="btnRemoveOhook" Text="Remove Ohook" FontSize="12" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                                        </Button>
+                                        <Button Grid.Column="2" Style="{StaticResource CleanupChipButtonStyle}" Click="BtnRemoveOffKMS_Click" Height="40" ToolTip="Remove KMS">
+                                            <TextBlock x:Name="btnRemoveOffKMS" Text="Remove KMS" FontSize="12" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                                        </Button>
+                                        <Button Grid.Column="4" Style="{StaticResource CleanupChipButtonStyle}" Click="BtnRemoveOffTSforce_Click" Height="40" ToolTip="Remove TSforce">
+                                            <TextBlock x:Name="btnRemoveOffTSforce" Text="Remove TSforce" FontSize="12" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                                        </Button>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Flexible space -->
+
+                            <!-- Safe Restoration Notice Box (Docked at the bottom to match Note in Left Column) -->
+                            <Border Grid.Row="4" Background="#EFF6FF" BorderBrush="#BFDBFE" BorderThickness="1" CornerRadius="8" Padding="14,10" VerticalAlignment="Bottom">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="&#xE946;" FontFamily="pack://application:,,,/Resources/Fonts/#Fluent System Icons, pack://application:,,,/Resources/Fonts/#FluentSystemIcons-Regular" Foreground="#0284C7" FontSize="15" Margin="0,1,8,0" VerticalAlignment="Top"/>
+                                    <TextBlock Grid.Column="1" Text="Note:" FontWeight="Bold" FontSize="13" Foreground="#0284C7" Margin="0,0,5,0" VerticalAlignment="Top"/>
+                                    <TextBlock Grid.Column="2" Text="Removing activation scripts restores system licensing components to clean factory state before applying a genuine license." FontSize="12" Foreground="#0369A1" LineHeight="17" VerticalAlignment="Center" TextWrapping="Wrap"/>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Grid>
+
+            <!-- RETAINED ELEMENTS FOR LOCALIZATION BINDING COMPATIBILITY -->
+            <StackPanel Visibility="Collapsed">
+                <TextBlock x:Name="lblLicIntroTitle"/>
+                <TextBlock x:Name="lblLicIntroDesc"/>
+                <TextBlock x:Name="lblLicIntro1"/>
+                <TextBlock x:Name="lblLicIntro2"/>
+                <TextBlock x:Name="lblLicIntro3"/>
+                <TextBlock x:Name="lblLicIntro4"/>
+                <TextBlock x:Name="lblLicSupportTitle"/>
+                <TextBlock x:Name="lblRemoveHWIDTitle"/>
+                <TextBlock x:Name="lblRemoveHWIDDesc"/>
+                <TextBlock x:Name="lblRemoveWinKMSTitle"/>
+                <TextBlock x:Name="lblRemoveWinKMSDesc"/>
+                <TextBlock x:Name="lblRemoveWinTSforceTitle"/>
+                <TextBlock x:Name="lblRemoveWinTSforceDesc"/>
+                <TextBlock x:Name="lblRemoveOhookTitle"/>
+                <TextBlock x:Name="lblRemoveOhookDesc"/>
+                <TextBlock x:Name="lblRemoveOffKMSTitle"/>
+                <TextBlock x:Name="lblRemoveOffKMSDesc"/>
+                <TextBlock x:Name="lblRemoveOffTSforceTitle"/>
+                <TextBlock x:Name="lblRemoveOffTSforceDesc"/>
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

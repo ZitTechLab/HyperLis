@@ -1,0 +1,13 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Google\Chrome]
+"AIModeSettings"=dword:00000001
+"CreateThemesSettings"=dword:00000002
+"GeminiSettings"=dword:00000001
+"GenAILocalFoundationalModelSettings"=dword:00000001
+"HelpMeWriteSettings"=dword:00000002
+"HistorySearchSettings"=dword:00000002
+"TabCompareSettings"=dword:00000002
+"BuiltInDnsClientEnabled"=dword:00000000
+"DefaultBrowserSettingEnabled"=dword:00000000
+"DevToolsGenAiSettings"=dword:00000002

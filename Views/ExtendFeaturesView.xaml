@@ -1,0 +1,298 @@
+<UserControl x:Class="HyperLisUI.Views.ExtendFeaturesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:HyperLisUI.Views"
+             xmlns:components="clr-namespace:HyperLisUI.Views.Components"
+             mc:Ignorable="d" 
+             d:DesignHeight="1500" d:DesignWidth="900">
+
+    <Grid>
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="35,30,0,20">
+            <StackPanel Margin="0,0,20,0">
+                
+                <!-- SYSTEM SECTION -->
+                <TextBlock x:Name="lblExtendSystem" Text="System" FontSize="29" FontWeight="SemiBold" Margin="0,0,0,20"/>
+                <Grid Margin="0,0,0,30">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0">
+                         <CheckBox x:Name="EndTaskOnTaskbarChk" Content="End task in Taskbar" Style="{StaticResource ToggleSwitchStyle}" Margin="0,0,0,15" Checked="EndTaskOnTaskbar_Checked" Unchecked="EndTaskOnTaskbar_Unchecked"/>
+                         <CheckBox x:Name="TakeOwnershipChk" Content="&quot;Take Ownership&quot; in Right click" Style="{StaticResource ToggleSwitchStyle}" Margin="0,0,0,15" Checked="TakeOwnership_Checked" Unchecked="TakeOwnership_Unchecked"/>
+                         <CheckBox x:Name="GodModeChk" Content="&quot;God Mode&quot; in Right click" Style="{StaticResource ToggleSwitchStyle}" Margin="0,0,0,15" Checked="GodMode_Checked" Unchecked="GodMode_Unchecked"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1">
+                        <CheckBox x:Name="VnTimeFormatChk" Content="Vietnamese Time Format" Style="{StaticResource ToggleSwitchStyle}" Margin="0,0,0,15" Checked="VnTimeFormat_Checked" Unchecked="VnTimeFormat_Unchecked"/>
+                        <CheckBox x:Name="DisableUACChk" Content="Disable UAC" Style="{StaticResource ToggleSwitchStyle}" Margin="0,0,0,15" Checked="DisableUAC_Checked" Unchecked="DisableUAC_Unchecked"/>
+                        <CheckBox x:Name="DisableBitLockerChk" Content="Disable BitLocker" Style="{StaticResource ToggleSwitchStyle}" Margin="0,0,0,15" Checked="DisableBitLocker_Checked" Unchecked="DisableBitLocker_Unchecked"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- ADD PROGRAM TO RIGHT CLICK -->
+                <TextBlock x:Name="lblExtendAddProgram" Text="Add program to Right click" FontSize="29" FontWeight="SemiBold" Margin="0,0,0,20"/>
+                <Grid Margin="0,0,0,15" HorizontalAlignment="Left" Width="600">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" Background="White" CornerRadius="8" Margin="0,0,10,0">
+                        <Grid>
+                            <TextBox x:Name="AddProgramPathTextBox" Text="" Background="Transparent" Padding="10" BorderThickness="0" VerticalContentAlignment="Center" FontSize="14" Panel.ZIndex="2"/>
+                            <TextBlock x:Name="msgExtendSelectProgram" Text="Select a program..." Foreground="#A0A0A0" FontSize="14" VerticalAlignment="Center" Margin="12,0,0,0" Panel.ZIndex="1" IsHitTestVisible="False">
+                                <TextBlock.Style>
+                                    <Style TargetType="{x:Type TextBlock}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Text, ElementName=AddProgramPathTextBox}" Value="">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </Grid>
+                    </Border>
+                    <Button x:Name="AddProgramBrowseBtn" Grid.Column="1" Content="Browse" Margin="0,0,0,0" Background="White" Foreground="Black" Padding="15,8" BorderThickness="0" Click="AddProgramBrowseBtn_Click">
+                        <Button.Resources>
+                             <Style TargetType="{x:Type Border}">
+                                <Setter Property="CornerRadius" Value="8"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+                </Grid>
+                <WrapPanel Margin="0,0,0,30">
+                    <Button x:Name="btnExtendAdd" Content="Add" Style="{StaticResource ActionButtonStyle}" HorizontalAlignment="Left" Width="150" Margin="0,0,20,10" Click="AddProgramBtn_Click"/>
+                    <Button x:Name="btnExtendRemove" Content="Remove" Style="{StaticResource ActionButtonStyle}" HorizontalAlignment="Left" Width="150" Margin="0,0,20,10" Click="RemoveProgramBtn_Click"/>
+                    <Button x:Name="btnExtendListPrograms" Content="List of programs was added" Style="{StaticResource ActionButtonStyle}" HorizontalAlignment="Left" Width="250" Margin="0,0,20,10" Click="ListAddedProgramsBtn_Click"/>
+                </WrapPanel>
+
+
+                <!-- REDUCE LATENCY -->
+                <TextBlock x:Name="lblExtendReduceLatency" Text="Reduce Latency" FontSize="29" FontWeight="SemiBold" Margin="0,10,0,20"/>
+                <WrapPanel Margin="0,0,0,30">
+                    <Button x:Name="btnExtendMsiUtil" Content="Open MSI Util v3" Style="{StaticResource ActionButtonStyle}" Margin="0,0,20,10" Click="OpenMSIUtil_Click"/>
+                    <Button x:Name="btnExtendTimerRes" Content="Open Timer Resolution" Style="{StaticResource ActionButtonStyle}" Margin="0,0,20,10" Click="OpenTimerResolution_Click"/>
+                </WrapPanel>
+
+                <!-- EXPORT DRIVER -->
+                <TextBlock x:Name="lblExtendExportDriver" Text="Export / Import Driver from specific directory" FontSize="29" FontWeight="SemiBold" Margin="0,0,0,20"/>
+                 <Grid Margin="0,0,0,15" HorizontalAlignment="Left" Width="600">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" Background="White" CornerRadius="8" Margin="0,0,10,0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="🔍" VerticalAlignment="Center" Margin="10,0,5,0" FontSize="16"/>
+                            <TextBox x:Name="ExportDriverTextBox" Grid.Column="1" Text="D:\DriverExported" Background="Transparent" Padding="5,10,10,10" BorderThickness="0" VerticalContentAlignment="Center" FontSize="14"/>
+                        </Grid>
+                    </Border>
+                    <Button x:Name="ExportDriverBrowseBtn" Grid.Column="1" Content="Browse" Margin="0,0,0,0" Background="White" Foreground="Black" Padding="15,8" BorderThickness="0" Click="ExportDriverBrowseBtn_Click">
+                         <Button.Resources>
+                             <Style TargetType="{x:Type Border}">
+                                <Setter Property="CornerRadius" Value="8"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+                </Grid>
+                <WrapPanel Margin="0,0,0,30">
+                    <Button x:Name="ExportDriverStartBtn" Content="Export" Style="{StaticResource ActionButtonStyle}" Width="150" Margin="0,0,20,10" Click="ExportDriverStartBtn_Click"/>
+                    <Button x:Name="ImportDriverStartBtn" Content="Import" Style="{StaticResource ActionButtonStyle}" Width="150" Margin="0,0,20,10" Click="ImportDriverStartBtn_Click"/>
+                </WrapPanel>
+
+                <!-- FIND DRIVER -->
+                <TextBlock x:Name="lblExtendFindDriver" Text="Find appropriate Driver for Laptop/PC" FontSize="29" FontWeight="SemiBold" Margin="0,0,0,20"/>
+                <Button x:Name="SearchDriverBtn" Content="Search" Style="{StaticResource ActionButtonStyle}" HorizontalAlignment="Left" Width="150" Margin="0,0,0,30" Click="SearchDriverBtn_Click"/>
+
+                 <!-- EXPORT WI-FI -->
+                 <TextBlock x:Name="lblExtendExportWifi" Text="Export Wi-Fi to specific directory" FontSize="29" FontWeight="SemiBold" Margin="0,0,0,20"/>
+                 <Grid Margin="0,0,0,15" HorizontalAlignment="Left" Width="600">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" Background="White" CornerRadius="8" Margin="0,0,10,0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="🔍" VerticalAlignment="Center" Margin="10,0,5,0" FontSize="16"/>
+                            <TextBox x:Name="ExportWifiTextBox" Grid.Column="1" Text="D:\WifiExported" Background="Transparent" Padding="5,10,10,10" BorderThickness="0" VerticalContentAlignment="Center" FontSize="14"/>
+                        </Grid>
+                    </Border>
+                    <Button x:Name="ExportWifiBrowseBtn" Grid.Column="1" Content="Browse" Margin="0,0,0,0" Background="White" Foreground="Black" Padding="15,8" BorderThickness="0" Click="ExportWifiBrowseBtn_Click">
+                         <Button.Resources>
+                             <Style TargetType="{x:Type Border}">
+                                <Setter Property="CornerRadius" Value="8"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+                </Grid>
+                <Button x:Name="ExportWifiStartBtn" Content="Start" Style="{StaticResource ActionButtonStyle}" HorizontalAlignment="Left" Width="150" Margin="0,0,0,30" Click="ExportWifiStartBtn_Click"/>
+
+
+                <!-- GET DRIVER IRST -->
+                <TextBlock x:Name="lblExtendGetIrst" Text="Get Driver Intel Rapid Storage Technology (IRST)" FontSize="29" FontWeight="SemiBold" Margin="0,0,0,20"/>
+                <Border Background="#D0E0F2F7" CornerRadius="12" Padding="20" Margin="0,0,0,20">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        
+                         <TextBlock Grid.Column="0" Text="intel" Foreground="#0071C5" FontWeight="Bold" FontSize="20" Margin="0,0,20,0" VerticalAlignment="Top"/>
+    
+                         <StackPanel Grid.Column="1">
+                            <TextBlock x:Name="lblExtendIrstDesc" Text="Choose the version that is suitable for your CPU." FontSize="16" FontWeight="SemiBold" Margin="0,5,0,20"/>
+                            
+                            <ComboBox x:Name="IRSTComboBox" SelectedIndex="0" Style="{StaticResource WinUIComboBoxStyle}" Width="360" HorizontalAlignment="Left">
+                                 <ComboBoxItem Content="Loading..."/>
+                            </ComboBox>
+                         </StackPanel>
+                    </Grid>
+                </Border>
+                 <Grid Margin="0,0,0,15" HorizontalAlignment="Left" Width="600">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                     <Border Grid.Column="0" Background="White" CornerRadius="8" Margin="0,0,10,0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="🔍" VerticalAlignment="Center" Margin="10,0,5,0" FontSize="16"/>
+                            <TextBox x:Name="IRSTDriverTextBox" Grid.Column="1" Text="Choose a location to save your driver IRST." Background="Transparent" Padding="5,10,10,10" BorderThickness="0" VerticalContentAlignment="Center" FontSize="14" Foreground="#555"/>
+                        </Grid>
+                    </Border>
+                    <Button x:Name="IRSTDriverBrowseBtn" Grid.Column="1" Content="Browse" Margin="0,0,0,0" Background="White" Foreground="Black" Padding="15,8" BorderThickness="0" Click="IRSTDriverBrowseBtn_Click">
+                         <Button.Resources>
+                             <Style TargetType="{x:Type Border}">
+                                <Setter Property="CornerRadius" Value="8"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+                </Grid>
+                <Button x:Name="IRSTStartBtn" Content="Start" Style="{StaticResource ActionButtonStyle}" HorizontalAlignment="Left" Width="150" Margin="0,0,0,30" Click="IRSTStartBtn_Click"/>
+    
+                <!-- BLUR EXPLORER -->
+                <TextBlock x:Name="lblExtendBlurExplorer" Text="Blur your Windows Explorer" FontSize="29" FontWeight="SemiBold" Margin="0,0,0,20"/>
+                 <WrapPanel Margin="0,0,0,30">
+                    <Button x:Name="btnExtendInstallBlur" Content="Install" Style="{StaticResource ActionButtonStyle}" Width="150" Margin="0,0,20,10" Click="InstallBlurExplorer_Click"/>
+                    <Button x:Name="btnExtendUninstallBlur" Content="Uninstall" Style="{StaticResource ActionButtonStyle}" Width="150" Margin="0,0,20,10" Click="UninstallBlurExplorer_Click"/>
+                </WrapPanel>
+    
+
+
+
+
+                <!-- FILE HIDING -->
+                <TextBlock x:Name="lblExtendFileHiding" Text="Advanced File &amp; Folder Hiding" FontSize="29" FontWeight="SemiBold" Margin="0,0,0,20"/>
+                <Grid Margin="0,0,0,15" HorizontalAlignment="Left" Width="600">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" Background="White" CornerRadius="8" Margin="0,0,10,0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="🔍" VerticalAlignment="Center" Margin="10,0,5,0" FontSize="16"/>
+                            <TextBox x:Name="HideFolderTextBox" Grid.Column="1" Text="D:\ProtectedFolder" Background="Transparent" Padding="5,10,10,10" BorderThickness="0" VerticalContentAlignment="Center" FontSize="14"/>
+                        </Grid>
+                    </Border>
+                    <Button x:Name="HideFolderBrowseBtn" Grid.Column="1" Content="Browse" Margin="0,0,0,0" Background="White" Foreground="Black" Padding="15,8" BorderThickness="0" Click="HideFolderBrowseBtn_Click" FocusVisualStyle="{x:Null}">
+                         <Button.Resources>
+                             <Style TargetType="{x:Type Border}">
+                                <Setter Property="CornerRadius" Value="8"/>
+                            </Style>
+                             
+                            <!-- Modern Context Menu Style -->
+                            <Style x:Key="ModernContextMenuStyle" TargetType="ContextMenu">
+                                <Setter Property="Background" Value="White"/>
+                                <Setter Property="BorderBrush" Value="Transparent"/>
+                                <Setter Property="BorderThickness" Value="0"/>
+                                <Setter Property="Padding" Value="5"/>
+                                <Setter Property="HasDropShadow" Value="False"/>
+                                <Setter Property="TextOptions.TextFormattingMode" Value="Display"/>
+                                <Setter Property="TextOptions.TextRenderingMode" Value="ClearType"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ContextMenu">
+                                            <Border Background="Transparent" Padding="10">
+                                                <Grid>
+                                                    <Border Background="White" CornerRadius="12">
+                                                        <Border.Effect>
+                                                            <DropShadowEffect ShadowDepth="0" BlurRadius="10" Opacity="0.15" Color="Black"/>
+                                                        </Border.Effect>
+                                                    </Border>
+                                                    <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="12" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
+                                                        <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                                    </Border>
+                                                </Grid>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+
+                            <!-- Modern Menu Item Style -->
+                            <Style x:Key="ModernMenuItemStyle" TargetType="MenuItem">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="Foreground" Value="Black"/>
+                                <Setter Property="FontSize" Value="14"/>
+                                <Setter Property="Padding" Value="10,8"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="MenuItem">
+                                            <Border x:Name="Bd" Background="{TemplateBinding Background}" CornerRadius="6" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
+                                                <ContentPresenter Content="{TemplateBinding Header}" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="Bd" Property="Background" Value="#E6F7FF"/>
+                                                    <Setter Property="Foreground" Value="Black"/>
+                                                </Trigger>
+                                                <Trigger Property="IsPressed" Value="True">
+                                                    <Setter TargetName="Bd" Property="Background" Value="#CCEFFF"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Resources>
+                        <Button.ContextMenu>
+                            <ContextMenu Style="{StaticResource ModernContextMenuStyle}">
+                                <MenuItem x:Name="menuExtendBrowseFile" Header="Browse File" Style="{StaticResource ModernMenuItemStyle}" Click="BrowseFile_Click"/>
+                                <MenuItem x:Name="menuExtendBrowseFolder" Header="Browse Folder" Style="{StaticResource ModernMenuItemStyle}" Click="BrowseFolder_Click"/>
+                            </ContextMenu>
+                        </Button.ContextMenu>
+                    </Button>
+                </Grid>
+                <WrapPanel Margin="0,0,0,30">
+                     <Button x:Name="HideFileBtn" Content="Hide" Style="{StaticResource ActionButtonStyle}" Width="150" Margin="0,0,20,10" Click="HideFileBtn_Click"/>
+                     <Button x:Name="UnhideFileBtn" Content="Unhide" Style="{StaticResource ActionButtonStyle}" Width="150" Margin="0,0,20,10" Click="UnhideFileBtn_Click"/>
+                     <Button x:Name="ListHiddenItemsBtn" Content="List Hidden Items" Style="{StaticResource ActionButtonStyle}" Width="200" Margin="0,0,20,10" Click="ListHiddenItemsBtn_Click"/>
+                </WrapPanel>
+    
+                <!-- SECURE BOOT -->
+                <!-- <TextBlock Text="Secure Boot" FontSize="29" FontWeight="SemiBold" Margin="0,0,0,20"/>
+                <Button Content="Check State" Style="{StaticResource ActionButtonStyle}" Width="150" Margin="0,0,0,50"/> -->
+                 <!-- Bottom Margin -->
+    
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

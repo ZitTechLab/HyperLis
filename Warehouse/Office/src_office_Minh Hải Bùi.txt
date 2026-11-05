@@ -1,0 +1,278 @@
+#RequireAdmin
+#include <GUIConstantsEx.au3>
+#include <File.au3>
+#include <MsgBoxConstants.au3>
+#include <GUIConstantsEx.au3>
+#include <WindowsConstants.au3>
+
+Global $comboLang, $comboBit, $btnDownloadSelected, $btnDownloadAll, $btnInstall, $btnSelectAll
+Global $chkProject, $chkVisio, $lblStatus
+Global $opt2019, $opt2021, $opt2024, $opt365
+Global $aOfficeApps[8] = ["Access", "Excel", "Word", "PowerPoint", "Outlook", "Publisher", "OneNote", "Teams"], $aChkApp[UBound($aOfficeApps)]
+Global $bAllSelected=False
+
+Global $sODT_Setup = @ScriptDir & "\setup.exe"
+Global $sSourcePath = @ScriptDir
+Global $sConfigFile = @TempDir & "\config.xml"
+
+; === GUI ===
+GUICreate("Cài d?t Office Retail by Minh H?i", 480, 490)
+GUICtrlSetFont(-1, 12, 400)
+
+
+GUICtrlCreateGroup("", 20, 10, 440, 60)
+Local $lblTitle = GUICtrlCreateLabel("?? Ch?n phiên b?n Office", 30, 5, 190, 30)
+GUICtrlSetFont($lblTitle, 13, 400,2) ; 13pt, d?m
+GUICtrlSetColor($lblTitle, 0xFF0000) ; màu d?
+
+$opt2019 = GUICtrlCreateRadio("Office 2019", 30, 35, 100, 20)
+GUICtrlSetFont(-1, 11, 400)
+$opt2021 = GUICtrlCreateRadio("Office 2021", 140, 35, 100, 20)
+GUICtrlSetFont(-1, 11, 400)
+$opt2024 = GUICtrlCreateRadio("Office 2024", 250, 35, 100, 20)
+GUICtrlSetFont(-1, 11, 400)
+$opt365  = GUICtrlCreateRadio("Office 365", 360, 35, 90, 20)
+GUICtrlSetFont(-1, 11, 400)
+GUICtrlSetState($opt2024, $GUI_CHECKED)
+GUICtrlCreateGroup("", -99, -99, 1, 1)
+
+; Group 2: Tùy ch?n thu vi?n Offline
+GUICtrlCreateGroup("", 20, 80, 440, 100)
+Local $lblThuVienOffline = GUICtrlCreateLabel("?? Tùy ch?n thu vi?n Offline", 30, 75, 220, 20)
+GUICtrlSetFont($lblThuVienOffline, 13, 400,2)    ; c? 12, d?m
+GUICtrlSetColor($lblThuVienOffline, 0xFF0000)
+GUICtrlCreateLabel("Ngôn ng?:", 30, 105, 100, 20)
+GUICtrlSetFont(-1, 11, 400)
+$comboLang = GUICtrlCreateCombo("", 100, 100, 180, 25)
+GUICtrlSetFont(-1, 11, 400)
+GUICtrlSetData($comboLang, _
+"English (M?) – en-us|" & _
+"Vietnamese (Vi?t Nam) – vi-vn|" & _
+"Chinese (Trung Qu?c) – zh-cn|" & _
+"French (Pháp) – fr-fr|" & _
+"German (Ð?c) – de-de|" & _
+"Korean (Hàn Qu?c) – ko-kr|" & _
+"Japanese (Nh?t B?n) – ja-jp|" & _
+"Russian (Nga) – ru-ru", _
+"English (M?) – en-us")
+
+
+
+GUICtrlCreateLabel("C?u trúc:", 290, 105, 100, 20)
+GUICtrlSetFont(-1, 11, 400)
+$comboBit = GUICtrlCreateCombo("", 350, 100, 100, 25)
+GUICtrlSetFont(-1, 11, 400)
+GUICtrlSetData($comboBit, "64-bit|32-bit", "64-bit")
+
+$btnDownloadSelected = GUICtrlCreateButton("?? T?i tùy ch?n", 60, 135, 120, 30)
+GUICtrlSetFont(-1, 11, 400)
+$btnDownloadAll     = GUICtrlCreateButton("?? T?i t?t c?", 180, 135, 120, 30)
+GUICtrlSetFont(-1, 11, 400)
+GUICtrlCreateGroup("", -99, -99, 1, 1)
+
+; Group 3: Ch?n ?ng d?ng
+GUICtrlCreateGroup("", 20, 190, 440, 150)
+
+Local $lblGroupTitle = GUICtrlCreateLabel("? Ch?n ?ng d?ng c?n cài", 30, 185, 200, 25)
+GUICtrlSetFont($lblGroupTitle, 13, 400,2)         
+GUICtrlSetColor($lblGroupTitle, 0xFF0000) 
+
+
+Local $iLeft1=40, $iLeft2=280, $iTop=210
+For $i=0 To UBound($aOfficeApps)-1
+    If Mod($i,2)=0 Then
+        $aChkApp[$i]=GUICtrlCreateCheckbox($aOfficeApps[$i],$iLeft1,$iTop,150,25)
+    Else
+        $aChkApp[$i]=GUICtrlCreateCheckbox($aOfficeApps[$i],$iLeft2,$iTop,150,25)
+        $iTop+=30
+    EndIf
+    GUICtrlSetFont($aChkApp[$i], 11, 400) ; d?t c? ch? 11 cho t?ng checkbox
+Next
+GUICtrlCreateGroup("", -99, -99, 1, 1)
+
+
+
+; Group 4: S?n ph?m riêng
+; Group: S?n ph?m riêng
+GUICtrlCreateGroup("", 20, 350, 440, 50)
+Local $lblSanPhamRieng = GUICtrlCreateLabel("S?n ph?m riêng", 30, 345, 130, 20)
+GUICtrlSetFont($lblSanPhamRieng, 13, 400,2)   
+GUICtrlSetColor($lblSanPhamRieng, 0xFF0000)  ; d?
+$chkProject=GUICtrlCreateCheckbox("Project",40,370,150,25)
+GUICtrlSetFont(-1, 11, 400)
+$chkVisio=GUICtrlCreateCheckbox("Visio",280,370,150,25)
+GUICtrlSetFont(-1, 11, 400)
+GUICtrlCreateGroup("", -99, -99, 1, 1)
+
+; Nút cu?i
+$btnSelectAll = GUICtrlCreateButton("?? Ch?n t?t c?", 300, 135, 120, 30)
+GUICtrlSetFont(-1, 11, 400)
+$btnInstall   = GUICtrlCreateButton("??? Cài d?t", 180, 410, 120, 30)
+GUICtrlSetFont(-1, 11, 400)
+
+; Status
+$lblStatus = GUICtrlCreateLabel("Tr?ng thái: S?n sàng.", 20, 450, 500, 25)
+GUICtrlSetFont(-1, 10, 400,2)
+GUICtrlSetColor($lblStatus, 0x008000)
+
+GUISetState(@SW_SHOW)
+
+; === Hàm ===
+Func _UpdateStatus($msg)
+    GUICtrlSetData($lblStatus, $msg)
+EndFunc
+
+Func _GetVersion()
+    If GUICtrlRead($opt2019)=$GUI_CHECKED Then Return "Office 2019"
+    If GUICtrlRead($opt2021)=$GUI_CHECKED Then Return "Office 2021"
+    If GUICtrlRead($opt2024)=$GUI_CHECKED Then Return "Office 2024"
+    If GUICtrlRead($opt365)=$GUI_CHECKED Then Return "Office 365"
+    Return "Office 2024"
+EndFunc
+
+Func _GetProductID($ver)
+    If StringInStr($ver, "2019") Then Return "ProPlus2019Retail"
+    If StringInStr($ver, "2021") Then Return "ProPlus2021Retail"
+    If StringInStr($ver, "2024") Then Return "ProPlus2024Retail"
+    If StringInStr($ver, "365") Then Return "O365ProPlusRetail"
+    Return "ProPlus2024Retail"
+EndFunc
+
+Func _GetChannel($ver)
+    Return "Current"
+EndFunc
+
+Func _ExtractLangCode($text)
+    Local $pos = StringInStr($text, "–")
+    If $pos > 0 Then Return StringStripWS(StringTrimLeft($text, $pos+1), 3)
+    Return "en-us"
+EndFunc
+
+Func _DownloadOffline($ver, $bitVer)
+    Local $langText = GUICtrlRead($comboLang)
+    Local $lang = _ExtractLangCode($langText)
+    $bitVer = StringLeft($bitVer,2) ; "64-bit" => "64"
+    Local $ProductID = _GetProductID($ver)
+    Local $ChannelName = _GetChannel($ver)
+
+    Local $sDownloadConfig = @TempDir & "\config_download.xml"
+    Local $s = '<?xml version="1.0" encoding="UTF-8"?>' & @CRLF
+    $s &= '<Configuration>' & @CRLF
+    $s &= '  <Add OfficeClientEdition="' & $bitVer & '" Channel="' & $ChannelName & '" SourcePath="' & $sSourcePath & '">' & @CRLF
+    $s &= '    <Product ID="' & $ProductID & '">' & @CRLF
+    $s &= '      <Language ID="' & $lang & '" />' & @CRLF
+    $s &= '    </Product>' & @CRLF
+    $s &= '  </Add>' & @CRLF
+    $s &= '</Configuration>'
+
+    FileDelete($sDownloadConfig)
+    FileWrite($sDownloadConfig, $s)
+
+    _UpdateStatus("?? Ðang t?i: " & $ver & " (" & $bitVer & "-bit)...")
+    Local $iPID = Run('"' & $sODT_Setup & '" /download "' & $sDownloadConfig & '"', "", @SW_HIDE)
+    While ProcessExists($iPID)
+        Sleep(1000)
+    WEnd
+    _UpdateStatus("? Ðã t?i xong: " & $ver & " (" & $bitVer & "-bit)")
+EndFunc
+
+Func _DownloadSelected()
+    Local $ver = _GetVersion()
+    Local $bitVer = GUICtrlRead($comboBit)
+    _DownloadOffline($ver, $bitVer)
+EndFunc
+
+Func _DownloadAll()
+    Local $versions[4]=["Office 2019","Office 2021","Office 2024","Office 365"]
+    Local $bitVer = GUICtrlRead($comboBit)
+    For $v In $versions
+        _DownloadOffline($v, $bitVer)
+    Next
+    _UpdateStatus("? Ðã t?i xong t?t c?!")
+EndFunc
+
+Func _InstallOffice()
+    Local $ver = _GetVersion()
+    Local $bitVer = StringLeft(GUICtrlRead($comboBit),2)
+    Local $langText = GUICtrlRead($comboLang)
+    Local $lang = _ExtractLangCode($langText)
+
+    Local $ProductID = _GetProductID($ver)
+    Local $ChannelName = _GetChannel($ver)
+    Local $ProjectID = "ProjectProRetail"
+    Local $VisioID = "VisioProRetail"
+
+    ; Ki?m tra thu vi?n offline
+    If FileExists($sSourcePath) Then
+        _UpdateStatus("?? Ðã tìm th?y thu vi?n offline, s? cài offline...")
+    Else
+        _UpdateStatus("?? Không có thu vi?n offline, s? cài online...")
+        $sSourcePath = ""
+    EndIf
+
+    Local $sConfig = '<?xml version="1.0" encoding="UTF-8"?>' & @CRLF
+    $sConfig &= '<Configuration>' & @CRLF
+    $sConfig &= '  <Add OfficeClientEdition="' & $bitVer & '" Channel="' & $ChannelName & '"'
+    If $sSourcePath <> "" Then
+        $sConfig &= ' SourcePath="' & $sSourcePath & '"'
+    EndIf
+    $sConfig &= '>' & @CRLF
+
+    $sConfig &= '    <Product ID="' & $ProductID & '">' & @CRLF
+    $sConfig &= '      <Language ID="' & $lang & '" />' & @CRLF
+
+    For $i=0 To UBound($aChkApp)-1
+        If GUICtrlRead($aChkApp[$i])<>$GUI_CHECKED Then
+            $sConfig &= '      <ExcludeApp ID="' & $aOfficeApps[$i] & '" />' & @CRLF
+        EndIf
+    Next
+
+    $sConfig &= '    </Product>' & @CRLF
+
+    If GUICtrlRead($chkProject)=$GUI_CHECKED Then
+        $sConfig &= '    <Product ID="' & $ProjectID & '">' & @CRLF
+        $sConfig &= '      <Language ID="' & $lang & '" />' & @CRLF
+        $sConfig &= '    </Product>' & @CRLF
+    EndIf
+    If GUICtrlRead($chkVisio)=$GUI_CHECKED Then
+        $sConfig &= '    <Product ID="' & $VisioID & '">' & @CRLF
+        $sConfig &= '      <Language ID="' & $lang & '" />' & @CRLF
+        $sConfig &= '    </Product>' & @CRLF
+    EndIf
+
+    $sConfig &= '  </Add>' & @CRLF
+    $sConfig &= '</Configuration>'
+
+    FileDelete($sConfigFile)
+    FileWrite($sConfigFile, $sConfig)
+
+    _UpdateStatus("?? Ðang cài d?t Office...")
+    Local $iPID = Run('"' & $sODT_Setup & '" /configure "' & $sConfigFile & '"', "", @SW_HIDE)
+    While ProcessExists($iPID)
+        Sleep(1000)
+    WEnd
+
+    _UpdateStatus("? Ðã cài d?t xong!")
+EndFunc
+
+; === Vòng l?p
+While 1
+    Switch GUIGetMsg()
+        Case $GUI_EVENT_CLOSE
+            Exit
+        Case $btnSelectAll
+            $bAllSelected=Not $bAllSelected
+            For $i=0 To UBound($aChkApp)-1
+                GUICtrlSetState($aChkApp[$i],$bAllSelected?$GUI_CHECKED:$GUI_UNCHECKED)
+            Next
+            GUICtrlSetState($chkProject,$bAllSelected?$GUI_CHECKED:$GUI_UNCHECKED)
+            GUICtrlSetState($chkVisio,$bAllSelected?$GUI_CHECKED:$GUI_UNCHECKED)
+        Case $btnInstall
+            _InstallOffice()
+        Case $btnDownloadSelected
+            _DownloadSelected()
+        Case $btnDownloadAll
+            _DownloadAll()
+    EndSwitch
+    Sleep(50)
+WEnd

@@ -1,0 +1,90 @@
+<Window x:Class="HyperLisUI.Views.Components.CustomConfirmWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Confirm"
+        Width="520"
+        Height="320"
+        WindowStartupLocation="CenterOwner"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        Topmost="True"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True">
+    <Grid>
+        <Border Margin="6" Background="#DCE8F1" CornerRadius="16">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="14" ShadowDepth="2" Opacity="0.14" Color="#334155"/>
+            </Border.Effect>
+        </Border>
+
+        <Border Margin="6" Background="#DCE8F1" CornerRadius="16" BorderBrush="#97D8F5" BorderThickness="1" Padding="24,20,24,18">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock x:Name="txtTitle"
+                           Text="Confirmation"
+                           FontSize="20"
+                           FontWeight="SemiBold"
+                           Foreground="#333333"
+                           HorizontalAlignment="Center"
+                           Margin="0,0,0,12"/>
+
+                <TextBlock x:Name="txtMessage"
+                           Text="Do you want to continue?"
+                           Grid.Row="1"
+                           FontSize="14"
+                           Foreground="#374151"
+                           TextAlignment="Center"
+                           TextWrapping="Wrap"
+                           VerticalAlignment="Center"
+                           Margin="20,0,20,16"/>
+
+                <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button x:Name="btnYes"
+                            Width="138"
+                            Height="42"
+                            Content="Yes"
+                            Background="#9CC6E8"
+                            Foreground="#2F3A45"
+                            BorderThickness="0"
+                            Cursor="Hand"
+                            FontSize="14"
+                            FocusVisualStyle="{x:Null}"
+                            Margin="0,0,20,0"
+                            Click="Yes_Click">
+                        <Button.Resources>
+                            <Style TargetType="{x:Type Border}">
+                                <Setter Property="CornerRadius" Value="14"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+
+                    <Button x:Name="btnNo"
+                            Width="138"
+                            Height="42"
+                            Content="No"
+                            Background="#9CC6E8"
+                            Foreground="#2F3A45"
+                            BorderThickness="0"
+                            Cursor="Hand"
+                            FontSize="14"
+                            FocusVisualStyle="{x:Null}"
+                            Click="No_Click">
+                        <Button.Resources>
+                            <Style TargetType="{x:Type Border}">
+                                <Setter Property="CornerRadius" Value="14"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

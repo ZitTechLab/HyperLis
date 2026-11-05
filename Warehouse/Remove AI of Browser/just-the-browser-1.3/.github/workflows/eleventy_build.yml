@@ -1,0 +1,42 @@
+# Action to build site with Eleventy and deploy to GitHub pages
+# Based on: https://dev.to/davorg/deploying-github-pages-site-with-github-workflows-3bhh
+
+name: Eleventy Build
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Build site
+      run: npx @11ty/eleventy
+
+    - name: Update pages artifact
+      uses: actions/upload-pages-artifact@v3.0.1
+      with:
+        path: _site/
+
+  deploy:
+    needs: build
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${\{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4

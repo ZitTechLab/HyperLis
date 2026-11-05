@@ -1,0 +1,101 @@
+<UserControl x:Class="HyperLisUI.Views.StartupAppsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             mc:Ignorable="d" 
+             d:DesignHeight="700" d:DesignWidth="800">
+    <UserControl.Resources>
+        <Style x:Key="TransparentHeaderStyle" TargetType="GridViewColumnHeader" BasedOn="{StaticResource GridViewHeaderStyle}">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0,0,0,10"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Margin="0,20,340,30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- HEADER -->
+        <Grid Grid.Row="0" Margin="0,0,0,20">
+            <TextBlock x:Name="lblStartupTitle" Text="Choose startup items" FontSize="29" FontWeight="SemiBold" Foreground="#333" VerticalAlignment="Center"/>
+        </Grid>
+        
+        <!-- LIST CONTAINER (Layered for visual separation of scrollbar) -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- LAYER 1: BODY BACKGROUND (Clipped to exclude Scrollbar area) -->
+            <Border Background="#D1F1F9" CornerRadius="12" Margin="0,0,20,0"/>
+
+            <!-- LAYER 2: HEADER BACKGROUND (Visual fake for header row) -->
+            <Border Background="#A0D8EF" CornerRadius="12,12,0,0" Height="40" VerticalAlignment="Top" Margin="0,0,20,0"/>
+
+            <!-- LAYER 3: LISTVIEW -->
+            <ListView x:Name="StartupList" BorderThickness="0" Background="Transparent" AlternationCount="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="Margin" Value="0,0,4,0"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                        <Setter Property="VerticalContentAlignment" Value="Center"/>
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.View>
+                    <GridView ColumnHeaderContainerStyle="{StaticResource TransparentHeaderStyle}">
+                        <GridViewColumn x:Name="colStartupName" Header="Name" Width="250">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <CheckBox IsChecked="{Binding IsChecked}" Style="{StaticResource RoundedCheckBoxStyle}" Margin="0,0,10,0"/>
+                                        <TextBlock Text="{Binding Name}" VerticalAlignment="Center" FontWeight="Normal"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn x:Name="colStartupLocation" Header="Location" Width="450">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Grid Width="430">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="{Binding Location}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                                        <Border Grid.Column="1" x:Name="brdDisabled" Background="#FFF1F2" BorderBrush="#FDA4AF" BorderThickness="1" CornerRadius="12" Padding="12,2" Visibility="Collapsed" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                            <TextBlock Text="Disabled" FontSize="11" FontWeight="SemiBold" Foreground="#E11D48" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </Grid>
+                                    <DataTemplate.Triggers>
+                                        <DataTrigger Binding="{Binding IsDisabled}" Value="True">
+                                            <Setter TargetName="brdDisabled" Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </DataTemplate.Triggers>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </Grid>
+
+        <!-- BUTTONS -->
+        <Grid Grid.Row="2" Margin="0,20,0,0">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                <Button x:Name="btnStartupToggle" Content="Toggle (Disable/Enable)" Click="ToggleButton_Click" Style="{StaticResource ActionButtonStyle}" Margin="5,0" Width="220"/>
+                <Button x:Name="btnStartupRefresh" Content="Refresh" Click="RefreshButton_Click" Style="{StaticResource ActionButtonStyle}" Margin="5,0" Width="200"/>
+            </StackPanel>
+            
+            <CheckBox x:Name="cbHideSystem" Content="Hide system apps" Style="{StaticResource RoundedCheckBoxStyle}" IsChecked="True" HorizontalAlignment="Right" VerticalAlignment="Center" Checked="cbHideSystem_CheckedChanged" Unchecked="cbHideSystem_CheckedChanged" Margin="0,0,20,0" Foreground="#333" FontSize="14"/>
+        </Grid>
+
+    </Grid>
+</UserControl>

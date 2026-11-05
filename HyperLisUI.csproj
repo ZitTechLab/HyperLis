@@ -1,0 +1,142 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <CETCompat>false</CETCompat>
+    <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
+    <ApplicationIcon>Images\icon.ico</ApplicationIcon>
+    <AssemblyName>HyperLis</AssemblyName>
+    <Description>HyperLis</Description>
+    <Copyright>Copyright © 2026 Zit's Tech Lab</Copyright>
+    <AssemblyTitle>HyperLis</AssemblyTitle>
+    <Company>Zit's Tech Lab</Company>
+    <Product>HyperLis Optimize</Product>
+    <Version>1.0.7</Version>
+    <FileVersion>1.0.7</FileVersion>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <IncludeActivationScripts>false</IncludeActivationScripts>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\**" />
+    <Resource Include="Resources\Fonts\**" />
+    <Content Include="Download\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Warehouse\MSEDU\msoffice-main\Files\setup.exe">
+      <Link>Tools\setup.exe</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Warehouse\MSEDU\msoffice-main\Files\setup2013.exe">
+      <Link>Tools\setup2013.exe</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Warehouse\MSEDU\msoffice-main\Files\RemoveAll\**">
+      <Link>Tools\RemoveAll\%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Warehouse\bin\**">
+      <Link>Assets\USB_Boot\%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Warehouse\HyperLis.bat">
+      <Link>Config\HyperLis.bat</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Warehouse\ApplyWinPEtoHDD.ps1">
+      <Link>Config\ApplyWinPEtoHDD.ps1</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Warehouse\winget-install.ps1">
+      <Link>Config\winget-install.ps1</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Warehouse\winget-cli\**">
+      <Link>Config\winget-cli\%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Warehouse\MSI.exe">
+      <Link>Tools\MSI.exe</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Warehouse\TimerResolution.exe">
+      <Link>Tools\TimerResolution.exe</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Warehouse\BlurExplorer\ExplorerBlurMica.dll">
+      <Link>Tools\BlurExplorer\ExplorerBlurMica.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Warehouse\BlurExplorer\config.ini">
+      <Link>Tools\BlurExplorer\config.ini</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Warehouse\RAMMap\RAMMap64.exe">
+      <Link>Tools\RAMMap64.exe</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Language\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Changelog\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Warehouse\ConvertSKU.App\SKUs\**">
+      <Link>Tools\SKUs\%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Warehouse\Fix loi 709 - SGC\Spooler64\**">
+      <Link>Tools\Spooler64\%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Warehouse\startnet.cmd">
+      <Link>Config\startnet.cmd</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(IncludeActivationScripts)' == 'true'">
+    <Content Include="Warehouse\HWID_Activation.cmd">
+      <Link>Tools\HWID_Activation.cmd</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Warehouse\Office.cmd">
+      <Link>Tools\Office.cmd</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\Config\tweaks.json" />
+    <EmbeddedResource Include="Assets\Config\preset.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Warehouse\**" />
+    <EmbeddedResource Remove="Warehouse\**" />
+    <None Remove="Warehouse\**" />
+    <Page Remove="Warehouse\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Management" Version="10.0.1" />
+    <PackageReference Include="System.ServiceProcess.ServiceController" Version="10.0.1" />
+    <PackageReference Include="XamlAnimatedGif" Version="2.3.1" />
+  </ItemGroup>
+
+  <Target Name="RemoveWarehouseFromOutput" AfterTargets="Build">
+    <RemoveDir Directories="$(OutDir)Warehouse" />
+  </Target>
+
+</Project>
+
+
+
+
+

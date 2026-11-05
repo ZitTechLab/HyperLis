@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>PayloadContent</key>
+	<array>
+		<dict>
+			<!-- Configuration definitions -->
+			<key>PayloadDisplayName</key>
+			<string>Google Chrome settings</string>
+			<key>PayloadIdentifier</key>
+			<string>com.justthebrowser.chromesettings</string>
+			<key>PayloadOrganization</key>
+			<string>justthebrowser.com</string>
+			<key>PayloadType</key>
+			<string>com.google.Chrome</string>
+			<key>PayloadUUID</key>
+			<string>56526d41-6728-4fcf-a19d-51fbe5803159</string>
+			<key>PayloadVersion</key>
+			<integer>1</integer>
+			<key>AIModeSettings</key>
+			<integer>1</integer>
+			<key>CreateThemesSettings</key>
+			<integer>2</integer>
+			<key>GeminiSettings</key>
+			<integer>1</integer>
+			<key>GenAILocalFoundationalModelSettings</key>
+			<integer>1</integer>
+			<key>HelpMeWriteSettings</key>
+			<integer>2</integer>
+			<key>HistorySearchSettings</key>
+			<integer>2</integer>
+			<key>TabCompareSettings</key>
+			<integer>2</integer>
+			<key>BuiltInDnsClientEnabled</key>
+			<false />
+			<key>DefaultBrowserSettingEnabled</key>
+			<false />
+			<key>DevToolsGenAiSettings</key>
+			<integer>2</integer>
+		</dict>
+	</array>
+	<key>PayloadDisplayName</key>
+	<string>Google Chrome settings</string>
+	<key>PayloadIdentifier</key>
+	<string>com.justthebrowser.chromesettings</string>
+	<key>PayloadOrganization</key>
+	<string>justthebrowser.com</string>
+	<key>PayloadScope</key>
+	<string>User</string>
+	<key>PayloadType</key>
+	<string>Configuration</string>
+	<key>PayloadUUID</key>
+	<string>1e1cf7d3-04f2-4251-bac3-6e2020fa4e46</string>
+	<key>PayloadVersion</key>
+	<integer>1</integer>
+</dict>
+</plist>
