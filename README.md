@@ -1,7 +1,10 @@
 # HyperLis
+
 A Software for IT Support
-Website: https://zittechlab.com/
-Fanpage: https://www.facebook.com/ZitTechLab
+
+- **Website:** https://zittechlab.com/
+- **Fanpage:** https://www.facebook.com/ZitTechLab
+
 ## Source Code & Licensing
 
 HyperLis is a **source-available software project**, publicly accessible for educational and personal research purposes.
