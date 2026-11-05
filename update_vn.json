@@ -1,19 +1,16 @@
 {
-  "version": "1.0.6",
-  "release_date": "18-08-2026",
-  "download_url_setup": "https://github.com/ZitTechLab/HyperLis/releases/download/Updatev1.0.6/HyperLis_Setup_v1.0.6.exe",
-  "content":[
-            "Chỉnh sửa thuật toán S.M.A.R.T khi đọc thông tin ổ cứng, giúp đọc và xuất thông tin chính xác hơn.",
-            "Sửa lỗi giao diện cho Pop-up Import và Export Presets trong UWP Apps",
-            "Chỉnh sửa thuật toán của Startup: Quét shell:startup và Task Schedule",
-            "Bổ sung tính năng Xoá crack của Windows và Office",
-            "Chỉnh sửa lại thuật toán đọc Key OEM, trạng thái bản quyền trong Quản lí bản quyền và Đổi phiên bản SKUs",
-            "Thay đổi thông báo trạng thái bản quyền: Có thể phân biệt bản quyền kích hoạt trái phép bằng MAS hoặc bản quyền thật sự",
-            "Chỉnh sửa lại thuật toán của Sửa lỗi máy in, khắc phục lỗi 0x00000709, Cannot Connect,... triệt để hơn",
-            "Loại bỏ tuỳ chọn chuyển đổi phiên bản lên IoT Enterprise LTSC do hạn chế từ hệ thống",
-            "Chỉnh sửa lại thuật toán để có thể chuyển đổi từ phiên bản Home lên LTSC trên Windows 11",
-            "Sửa lỗi thuật toán khi chuyển đổi từ Enterprise LTSC về Home không nhận key OEM, mã lỗi: 0xC004F012 "
-  ],
-  "size": "100 MB",
+  "version": "1.0.7",
+  "release_date": "05-11-2026",
+  "download_url_setup": "https://github.com/ZitTechLab/HyperLis/releases/download/updatev1.0.7/HyperLis_Setup_v1.0.7.exe",
+  "content": [
+            "Chỉnh sửa giao diện Dashboard, Quản lý bản quyền, UWP Apps ",
+            "Cập nhật thuật toán Tối ưu mới cho Gaming",
+            "Cập nhật và bổ sung thêm tính năng mới cho WSAP",
+            "Tối ưu lại toàn bộ thuật toán trong WSAP, khắc phục một số lỗi còn tồn đọng, hỗ trợ đầy đủ: Unattend và Driver.",
+            "Chỉnh sửa lại thuật toán WSAP: Tự động phát hiện Bitlocker và Secure Boot",
+            "Chỉnh sửa lại thuật toán của UWP Apps",
+            "Sửa lỗi thuật toán tối ưu cho Gaming làm đen nền Explorer trên Windows 25H2, 26H2 gây lag máy"
+        ],
+  "size": "114 MB",
   "is_critical": false
 }
