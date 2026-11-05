@@ -16,5 +16,3 @@ You are welcome to explore the source code, study its implementation, and experi
 The source code is provided under the [HyperLis Source-Available License v1.0](LICENSE.md).
 
 Copyright © 2026 HyperLis contributors and respective rights holders. All rights reserved for their respective works.
-
-https://www.youtube.com/watch?v=dQw4w9WgXcQ&list=RDdQw4w9WgXcQ&start_radio=1&pp=ygUXbmV2ZXIgZ29ubmEgZ2l2ZSB5b3UgdXCgBwE%3D
