@@ -59,7 +59,7 @@ Interested in integrating protected HyperLis components into a commercial projec
 
 Please contact the HyperLis Development Team to discuss commercial licensing and special permissions.
 
-**Contact:** [Official HyperLis Team Email or Contact URL]
+**Contact:** https://www.facebook.com/ZitTechLab/
 
 Commercial permission must be granted through a separate written agreement.
 
