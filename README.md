@@ -73,7 +73,7 @@ Please refer to [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md), where applicab
 
 ### Copyright Notice
 
-Copyright © 2026 [Legal Name of Copyright Holder]. All rights reserved.
+Copyright © 2026 Zịt's Tech Lab. All rights reserved.
 
 **HyperLis — Everything runs smoothly.**
 
